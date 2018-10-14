@@ -1,28 +1,35 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <router-link to="/pool-creator">Pool Creator</router-link>
+    <router-link to="/project-name1">Project Name 1</router-link>
+    <router-link to="/project-name2">Project Name 2</router-link>
+    <router-link to="/deploy-contract">Deploy Contract</router-link>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
-  name: 'app',
-  components: {
-    HelloWorld
+  data () {
+    return {
+      
+    }
   }
 }
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style lang="scss">
+
+@import './scss/main';
+
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,700&subset=latin-ext');
+
+html{
+  overflow-x: hidden;
+  font-family: 'Montserrat', sans-serif;
+  body {
+    overflow: hidden;
+  }
 }
+
 </style>

@@ -1,0 +1,44 @@
+@mixin breakpoint($class) {
+    @if $class == 2xs {
+      @media (max-width: 320px) { @content; }
+    }
+   
+    @else if $class == xs {
+      @media (max-width: 576px) { @content; }
+    }
+
+    @else if $class == sm {
+      @media (max-width: 768px) { @content; }
+    }
+   
+    @else if $class == md {
+      @media (max-width: 992px) { @content; }
+    }
+   
+    @else if $class == lg {
+      @media (max-width: 1200px) { @content; }
+    }
+
+    @else if $class == xl {
+      @media (min-width: 1201px) { @content; }
+    }
+   
+    @else {
+      @warn "Breakpoint mixin supports: xs, sm, md, lg, xl";
+    }
+}
+
+@mixin font-style($color, $weight, $size){
+    color: $color !important;
+    font-weight: $weight !important;
+    font-size: $size !important;
+}
+
+@mixin font-style-res($color, $weight, $size_desktop, $size_mobile){
+    color: $color !important;
+    font-weight: $weight !important;
+    font-size: $size_desktop !important;
+    @include breakpoint(xs){
+        font-size: $size_mobile !important;
+    }
+}

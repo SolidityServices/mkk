@@ -1,0 +1,99 @@
+@import '_mixins';
+// colors
+$blue : #243AA9;
+$orange: #FD5334;
+$white: #ffffff;
+
+// Text
+$text-9 : 9px;
+$text-14 : 14px;
+$text-16 : 16px;
+$text-18 : 18px;
+$text-20 : 20px;
+$text-24 : 24px;
+$text-36 : 36px;
+
+// Weight
+$reg : 400;
+$bold : 700;
+
+// Text Stlyes
+.white-16-bold { @include font-style($white, $bold, $text-16);}
+.white-18-reg { @include font-style($white, $reg, $text-18);}
+.white-24-bold { @include font-style($white, $bold, $text-24);}
+.white-36-bold { @include font-style($white, $bold, $text-36);}
+
+.orange-14-reg { @include font-style($orange, $reg, $text-14);}
+.orange-18-reg { @include font-style($orange, $reg, $text-18);}
+.orange-20-reg { @include font-style($orange, $reg, $text-20);}
+.orange-18-bold { @include font-style($orange, $bold, $text-18);}
+.orange-24-bold { @include font-style($orange, $bold, $text-24);}
+.orange-24-16-bold { @include font-style-res($orange, $bold, $text-24, $text-16);}
+
+.blue-9-bold { @include font-style($blue, $reg, $text-9);}
+.blue-16-reg { @include font-style($blue, $reg, $text-16);}
+.blue-16-bold { @include font-style($blue, $bold, $text-16);}
+.blue-18-reg { @include font-style($blue, $reg, $text-18);}
+.blue-18-bold { @include font-style($blue, $bold, $text-18);}
+.blue-24-bold { @include font-style($blue, $bold, $text-24);}
+.blue-24-16-bold { @include font-style-res($blue, $bold, $text-24, $text-16);}
+.blue-36-20-bold { @include font-style-res($blue, $bold, $text-36, $text-20);}
+
+// Width
+
+.w-100 {width: 100% !important;}
+.w-95 {width: 95% !important;}
+.w-90 {width: 90% !important;}
+.w-80 {width: 80% !important;}
+.w-75 {width: 75% !important;}
+.w-60 {width: 60% !important;}
+.w-50 {width: 50% !important;}
+.w-40 {width: 40% !important;}
+.w-25 {width: 25% !important;}
+.w-20 {width: 20% !important;}
+.w-10 {width: 10% !important;}
+
+@media (min-width:576px) {
+    .w-sm-100 {width: 100% !important;}
+    .w-sm-80 {width: 80% !important;}
+    .w-sm-75 {width: 75% !important;}
+    .w-sm-60 {width: 60% !important;}
+    .w-sm-50 {width: 50% !important;}
+    .w-sm-40 {width: 40% !important;}
+    .w-sm-25 {width: 25% !important;}
+    .w-sm-20 {width: 20% !important;}
+    .w-sm-10 {width: 10% !important;}
+}
+
+@media (min-width:768px) {
+    .w-md-100 {width: 100% !important;}
+    .w-md-80 {width: 80% !important;}
+    .w-md-75 {width: 75% !important;}
+    .w-md-60 {width: 60% !important;}
+    .w-md-50 {width: 50% !important;}
+    .w-md-40 {width: 40% !important;}
+    .w-md-25 {width: 25% !important;}
+    .w-md-20 {width: 20% !important;}
+}
+
+@media (min-width:992px) {
+    .w-lg-100 {width: 100% !important;}
+    .w-lg-80 {width: 80% !important;}
+    .w-lg-75 {width: 75% !important;}
+    .w-lg-60 {width: 60% !important;}
+    .w-lg-50 {width: 50% !important;}
+    .w-lg-40 {width: 40% !important;}
+    .w-lg-25 {width: 25% !important;}
+    .w-lg-20 {width: 20% !important;}
+}
+
+@media (min-width:1200px) {
+    .w-xl-100 {width: 100% !important;}
+    .w-xl-80 {width: 80% !important;}
+    .w-xl-75 {width: 75% !important;}
+    .w-xl-60 {width: 60% !important;}
+    .w-xl-50 {width: 50% !important;}
+    .w-xl-40 {width: 40% !important;}
+    .w-xl-25 {width: 25% !important;}
+    .w-xl-20 {width: 20% !important;}
+}

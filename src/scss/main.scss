@@ -1,0 +1,278 @@
+@import '_variables';
+@import '_mixins';
+@import '~vue-range-slider/dist/vue-range-slider.scss';
+
+// HR & BORDERS
+
+.blue-hr {
+    margin-top: 4px !important;
+    border: 0;
+    width: 135px;
+    border-top: 4px solid $blue;
+}
+.blue-hr-2 {
+    margin-left: 18px;
+    margin-top: 0px !important;
+    border: 0;
+    width: 135px;
+    border-top: 4px solid $blue;
+}
+.blue-hr-fullw {
+    border-top: 1px solid $blue;
+}
+
+.o-border {
+    border-left: 4px solid $orange;
+    padding: 15px 10px 15px 0;
+    @include breakpoint(sm) {
+        padding: 5px 10px 5px 0;
+    }
+}
+
+.o-border-right {
+    border-right: 1px solid $orange;
+    @include breakpoint(md) {
+        border-right: none;
+    }
+}
+
+.orange-hr {
+    border-top: 4px solid $orange;
+    width: 100%;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+// HR & BORDERS END
+
+// ------------------------------------------------------
+
+// INPUTS
+
+// Text Input
+.input-text {
+    height: 40px;
+    border-radius: 20px;
+    border: 2px $blue solid;
+    color: $blue;
+    &::placeholder {
+        color: $blue;
+        font-weight: 400;
+    }
+    &:focus {
+        border: 2px solid $blue;
+        box-shadow: none;
+        color: blue;
+        font-weight: 700;
+    }
+}
+
+// Input text deploy page
+
+.input-deploy {
+    height: 40px;
+    border:0;
+    background-color: transparent;
+    color: $white;
+    &::placeholder {
+        color: $white;
+    }
+    &:focus, &:active, &:hover {
+        border: none;
+        outline: none;
+    }
+}
+
+// Input with dropdown
+.input-dd {
+    height: 40px;
+    border-bottom-left-radius: 20px;
+    border-top-left-radius: 20px;
+    border: 2px $blue solid;
+    color: $blue;
+    &::placeholder {
+        color: $blue;
+        font-weight: 700;
+    }
+    &:focus {
+        border: 2px solid $blue;
+        box-shadow: none;
+        color: blue;
+        font-weight: 700;
+    }
+}
+.input-dd-btn {
+    height: 40px;
+    width: 40px;
+    background-color: $blue;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-color: $blue;
+    &::after {
+        color: $white;
+    }
+    &:hover { background-color: $blue}
+    &:focus,
+    &:active {
+        background-color: $blue !important;
+        border-color: $blue !important;
+        box-shadow: none;
+    }
+}
+
+// Input Checkbox
+input[type=checkbox] {
+    visibility: hidden;
+}
+.input-cb {
+    width: 32px;
+    height: 32px;
+    background: $blue;
+    border-radius: 100%;
+    position: relative;
+}
+.input-cb label {
+    display: block;
+    width: 26px;
+    height: 26px;
+    border-radius: 100px;
+    transition: all .5s ease;
+    cursor: pointer;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    z-index: 1;
+    background: $white;
+    box-shadow:inset 0px 0px 1px 6px white;
+}
+.input-cb input[type=checkbox]:checked + label {
+    background: $orange;
+    width: 26px;
+    height: 26x;
+}
+
+// Input Radio
+input[type=radio] {
+    visibility: hidden;
+}
+.input-radio {
+    width: 32px;
+    height: 32px;
+    background: $blue;
+    border-radius: 50%;
+    position: relative;
+}
+.input-radio label {
+    display: block;
+    width: 26px;
+    height: 26px;
+    border-radius: 100px;
+    transition: all .5s ease;
+    cursor: pointer;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    z-index: 1;
+    background: $white;
+    box-shadow:inset 0px 0px 1px 6px white;
+}
+.input-radio input[type=radio]:checked + label {
+    background: $orange;
+    width: 26px;
+    height: 26x;
+}
+
+
+// Slider
+$knob-size: 30px;
+.range-slider-knob {
+    height: 14px;
+    width: 14px;
+    background-color: $orange;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.range-slider-fill {
+    background-color: $orange;
+}
+.range-slider-rail {
+    width: 100%;
+    background-color: $blue;
+}
+
+// INPUTS END
+
+// ----------------------------------------------
+
+// BUTTONS
+
+.blue-btn {
+    border: 2px solid $blue;
+    height: 40px;
+    border-radius: 20px;
+    background-color: $white;
+    color: $blue;
+    font-weight: 700;
+    &:hover, &:focus, &:active {
+        color: $white;
+        background-color: $blue;
+    }
+}
+
+.blue-submit {
+    height: 40px;
+    color: $white;
+    font-weight: 700;
+    border-radius: 20px;
+    border: 2px solid $blue;
+    background-color: $blue;
+    &:hover, &:focus, &:active {
+        color: $blue;
+        background-color: $white;
+        border: 2px solid $blue;
+    }
+}
+
+.white-submit {
+    height: 40px;
+    color: $blue;
+    font-weight: 700;
+    border-radius: 20px;
+    border: 2px solid $blue;
+    background-color: $white;
+    &:hover, &:focus, &:active {
+        color: $white;
+        background-color: $blue;
+        border: 2px solid $blue;
+    }
+}
+
+.display-btn {
+    height: 55px;
+    line-height: 50px;
+    padding:0 20px 10px 20px;
+    background-color: $orange;
+    font-size: 36px;
+    font-weight: 700;
+    color: $white;
+    border-radius: 0;
+}
+
+// BUTTONS END
+
+// -------------------------------------------------------
+
+// CUSTOM
+
+.mobile-back {
+    height: 50px;
+    background-color: $orange;
+    line-height: 50px;
+}
+
+.creator-block {
+    width: 135px;
+    height: 135px;
+    border: 1px solid $blue;
+    border-radius: 20px;
+}
