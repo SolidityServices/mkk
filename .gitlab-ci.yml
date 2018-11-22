@@ -18,6 +18,7 @@ install_npm:
   - ssh-keyscan -t rsa gitlab.codecluster.tk >> ~/.ssh/known_hosts || true
   - npm install
   - npm run build
+  - echo -e "sha $CI_COMMIT_SHA\ntag ${CONTAINER_TAG}\nbuild_time $(date)"  >> dist/version
 
 ###
 # Docker build
