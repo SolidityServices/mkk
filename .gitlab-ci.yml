@@ -5,6 +5,13 @@ stages:
 - docker
 - deploy
 
+variables:
+  CONTAINER_TAG: ${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHA}
+  IMAGE_TAG: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHA}
+  IMAGE_TAG_DEV: ${CI_REGISTRY_IMAGE}:dev-latest
+  IMAGE_TAG_MASTER: ${CI_REGISTRY_IMAGE}:latest
+  IMAGE_TAG_PRODUCTION: ${CI_REGISTRY_IMAGE}:prod-latest
+
 install_npm:
   stage: install
   artifacts:
