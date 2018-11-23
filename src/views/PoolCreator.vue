@@ -25,8 +25,9 @@
               <div class="input-group w-100 w-sm-40">
                 <input type="text" class="form-control input-dd" placeholder="Eth address 1">
                 <div class="input-group-append">
-                  <button class="btn btn-outline-secondary dropdown-toggle input-dd-btn" type="button"
-                          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                  <button class="btn btn-outline-secondary dropdown-toggle input-dd-btn"
+                          data-toggle="dropdown" aria-haspopup="true" type="button"
+                          aria-expanded="false"></button>
                   <div class="dropdown-menu">
                     <a class="dropdown-item" href="#">Action</a>
                     <a class="dropdown-item" href="#">Another action</a>
@@ -134,7 +135,8 @@
             <div class="row pt-3">
               <div class="col-12 col-lg-3 my-auto blue-18-reg">Receiver Address:</div>
               <div class="col-12 col-lg-3 pt-3 pt-lg-0">
-                <input type="text" class="form-control input-text w-100 w-lg-80" placeholder="Receiver Address">
+                <input type="text" class="form-control input-text w-100 w-lg-80"
+                       placeholder="Receiver Address">
               </div>
               <div class="col-12 col-lg-6 pt-3 pt-lg-0 mx-0 row my-auto">
                 <div class="input-cb">
@@ -192,8 +194,9 @@
               <div class="w-100 w-lg-20 input-group pt-3 pt-lg-0">
                 <input type="text" class="form-control input-dd" placeholder="4/22/2018">
                 <div class="input-group-append">
-                  <button class="btn btn-outline-secondary dropdown-toggle input-dd-btn" type="button"
-                          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                  <button class="btn btn-outline-secondary dropdown-toggle input-dd-btn"
+                          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                          type="button"></button>
                   <div class="dropdown-menu">
                     <a class="dropdown-item" href="#">Action</a>
                     <a class="dropdown-item" href="#">Another action</a>
@@ -243,8 +246,9 @@
               <div class="w-100 w-lg-20 input-group">
                 <input type="text" class="form-control input-dd" placeholder="Options">
                 <div class="input-group-append">
-                  <button class="btn btn-outline-secondary dropdown-toggle input-dd-btn" type="button"
-                          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                  <button class="btn btn-outline-secondary dropdown-toggle input-dd-btn"
+                          data-toggle="dropdown" aria-haspopup="true" type="button"
+                          aria-expanded="false"></button>
                   <div class="dropdown-menu">
                     <a class="dropdown-item" href="#">Action</a>
                     <a class="dropdown-item" href="#">Another action</a>
@@ -254,8 +258,8 @@
                   </div>
                 </div>
               </div>
-              <div class="blue-18-reg my-auto pl-5 pt-3 pt-lg-0">Multiple selection to Exclude countries(chips
-                solution?)
+              <div class="blue-18-reg my-auto pl-5 pt-3 pt-lg-0">
+                Multiple selection to Exclude countries(chips solution?)
               </div>
             </div>
             <div class="row my-auto mx-0 pt-3">
@@ -275,19 +279,22 @@
             <div class="row pt-3">
               <div class="col-12 col-lg-3 my-auto blue-18-reg">Add ETH address</div>
               <div class="col-12 col-lg-3 pt-2 pt-lg-0">
-                <input type="text" class="form-control input-text w-100 w-lg-80" placeholder="add ETH address">
+                <input type="text" class="form-control input-text w-100 w-lg-80"
+                       placeholder="add ETH address">
               </div>
             </div>
             <div class="row pt-3">
               <div class="col-12 col-lg-3 my-auto blue-18-reg">Add ETH address</div>
               <div class="col-12 col-lg-3 pt-2 pt-lg-0">
-                <input type="text" class="form-control input-text w-100 w-lg-80" placeholder="add ETH address">
+                <input type="text" class="form-control input-text w-100 w-lg-80"
+                       placeholder="add ETH address">
               </div>
             </div>
             <div class="row pt-3">
               <div class="col-12 col-lg-3 my-auto blue-18-reg">Add ETH address</div>
               <div class="col-12 col-lg-3 pt-2 pt-lg-0">
-                <input type="text" class="form-control input-text w-100 w-lg-80" placeholder="add ETH address">
+                <input type="text" class="form-control input-text w-100 w-lg-80"
+                       placeholder="add ETH address">
               </div>
             </div>
 
@@ -304,27 +311,26 @@
       <div class="d-none d-lg-flex col-1"></div>
 
     </div>
-    <app-footer></app-footer>
   </main>
 
 </template>
 
 <script>
-  import RangeSlider from 'vue-range-slider';
-  import 'vue-range-slider/dist/vue-range-slider.css';
+import RangeSlider from 'vue-range-slider';
+import 'vue-range-slider/dist/vue-range-slider.css';
 
-  export default {
-    data() {
-      return {
-        sliderIndMin: 20,
-        sliderIndMax: 70,
-        blockWithdraw: 50,
-      };
-    },
-    components: {
-      RangeSlider,
-    },
-  };
+export default {
+  data() {
+    return {
+      sliderIndMin: 20,
+      sliderIndMax: 70,
+      blockWithdraw: 50,
+    };
+  },
+  components: {
+    RangeSlider,
+  },
+};
 </script>
 
 <style lang="scss">

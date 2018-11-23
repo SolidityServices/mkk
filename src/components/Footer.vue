@@ -34,7 +34,9 @@
           <div class="white-36-bold pb-3 text-center">Get connected</div>
           <div class="text-center">
             <span><a href="#"><img src="../assets/header/header-icon-1.png" alt=""></a></span>
-            <span class="px-3"><a href="#"><img src="../assets/header/header-icon-2.png" alt=""></a></span>
+            <span class="px-3">
+              <a href="#"><img src="../assets/header/header-icon-2.png" alt=""></a>
+            </span>
             <span><a href="#"><img src="../assets/header/header-icon-3.png" alt=""></a></span>
           </div>
         </div>
@@ -43,8 +45,12 @@
         <div class="white-24-bold pb-3 text-center pt-5">Get connected</div>
         <div class="text-center pt-3">
           <span><a href="#"><img src="../assets/header/header-icon-1.png" alt=""></a></span>
-          <span class="px-3"><a href="#"><img src="../assets/header/header-icon-2.png" alt=""></a></span>
-          <span><a href="#"><img src="../assets/header/header-icon-3.png" alt=""></a></span>
+          <span class="px-3">
+            <a href="#"><img src="../assets/header/header-icon-2.png" alt=""></a>
+          </span>
+          <span>
+            <a href="#"><img src="../assets/header/header-icon-3.png" alt=""></a>
+          </span>
         </div>
       </div>
     </footer>
@@ -55,7 +61,7 @@
 </template>
 
 <script>
-  export default {};
+export default {};
 </script>
 
 <style lang="scss">

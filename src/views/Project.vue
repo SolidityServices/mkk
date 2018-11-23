@@ -1,7 +1,5 @@
 <template>
-
   <main>
-    <app-header></app-header>
     <div class="row">
       <div class="d-none d-sm-flex col-1"></div>
       <div class="col-12 col-sm-10">
@@ -191,8 +189,6 @@
       </div>
       <div class="d-none d-sm-flex col-1"></div>
     </div>
-
-    <app-footer></app-footer>
   </main>
 
 </template>

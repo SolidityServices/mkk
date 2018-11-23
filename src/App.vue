@@ -1,8 +1,7 @@
 <template>
   <div id="app">
     <router-link :to="{name: 'pool-creator'}">Pool Creator</router-link>
-    <router-link :to="{name: 'project-name1'}">Project Name 1</router-link>
-    <router-link :to="{name: 'project-name2'}">Project Name 2</router-link>
+    <router-link :to="{name: 'project'}">Project</router-link>
     <router-link :to="{name: 'deploy-contract'}">Deploy Contract</router-link>
     <custom-header></custom-header>
     <router-view></router-view>
