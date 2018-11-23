@@ -1,21 +1,30 @@
 <template>
   <div id="app">
-    <router-link to="/pool-creator">Pool Creator</router-link>
-    <router-link to="/project-name1">Project Name 1</router-link>
-    <router-link to="/project-name2">Project Name 2</router-link>
-    <router-link to="/deploy-contract">Deploy Contract</router-link>
+    <router-link :to="{name: 'pool-creator'}">Pool Creator</router-link>
+    <router-link :to="{name: 'project-name1'}">Project Name 1</router-link>
+    <router-link :to="{name: 'project-name2'}">Project Name 2</router-link>
+    <router-link :to="{name: 'deploy-contract'}">Deploy Contract</router-link>
+    <custom-header></custom-header>
     <router-view></router-view>
+    <custom-footer></custom-footer>
   </div>
 </template>
 
 <script>
+import Header from './components/Header.vue';
+import Footer from './components/Footer.vue';
+
 export default {
-  data () {
+  components: {
+    'custom-header': Header,
+    'custom-footer': Footer,
+  },
+  data() {
     return {
-      
-    }
-  }
-}
+
+    };
+  },
+};
 </script>
 
 <style lang="scss">
