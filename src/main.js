@@ -13,7 +13,7 @@ Vue.use(BootstrapVue);
 
 Vue.config.productionTip = false;
 
-const connectICO = new ConnectICO();
+window.connectICO = new ConnectICO();
 if (window.ethereum) {
   console.log('window.ethereum is defined');
   // Modern dapp browsers...
@@ -43,8 +43,7 @@ if (window.ethereum) {
   // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
   window.web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
 }
-
-connectICO.start();
+window.connectICO.start();
 
 new Vue({
   router,
