@@ -25,19 +25,19 @@ export default class ConnectICO {
     TokenPushRegistry.setProvider(window.web3.currentProvider);
 
     // set the initial this.account balance so it can be displayed.
-    window.web3.eth.getAccounts((err, accs) => {
+    window.web3.eth.getAccounts((err, accounts) => {
       if (err != null) {
         console.log('There was an error fetching your this.accounts.');
         return;
       }
 
-      if (accs.length === 0) {
+      if (accounts.length === 0) {
         console.log("Couldn't get any this.accounts! Make sure your Ethereum client is configured correctly.");
         return;
       }
 
       // eslint-disable-next-line prefer-destructuring
-      this.account = accs[0];
+      this.account = accounts[0];
 
       console.log('start done');
     });
