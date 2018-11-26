@@ -1,45 +1,47 @@
-import Web3 from 'web3';
 import TruffleContract from 'truffle-contract';
 
 // Import our contract artifacts and turn them into usable abstractions.
-import poolArtifact from '../../build/contracts/Pool.json';
-import poolFactoryArtifact from '../../build/contracts/PoolFactory.json';
-import kycArtifact from '../../build/contracts/KYC.json';
-import tokenPushRegistryArtifact from '../../build/contracts/TokenPushRegistry.json';
+import poolArtifact from '../build/contracts/Pool.json';
+import poolFactoryArtifact from '../build/contracts/PoolFactory.json';
+import kycArtifact from '../build/contracts/KYC.json';
+import tokenPushRegistryArtifact from '../build/contracts/TokenPushRegistry.json';
 
 const Pool = TruffleContract(poolArtifact);
 const PoolFactory = TruffleContract(poolFactoryArtifact);
 const KYC = TruffleContract(kycArtifact);
 const TokenPushRegistry = TruffleContract(tokenPushRegistryArtifact);
 
-let account;
+export default class ConnectICO {
+  constructor() {
+    this.account = null;
+  }
 
-const App = {
   start() {
     // Bootstrap the abstractions for Use.
-    Pool.setProvider(Web3.currentProvider);
-    PoolFactory.setProvider(Web3.currentProvider);
-    KYC.setProvider(Web3.currentProvider);
-    TokenPushRegistry.setProvider(Web3.currentProvider);
+    console.log(window.web3.currentProvider);
+    Pool.setProvider(window.web3.currentProvider);
+    PoolFactory.setProvider(window.web3.currentProvider);
+    KYC.setProvider(window.web3.currentProvider);
+    TokenPushRegistry.setProvider(window.web3.currentProvider);
 
-    // set the initial account balance so it can be displayed.
-    Web3.eth.getAccounts((err, accs) => {
+    // set the initial this.account balance so it can be displayed.
+    window.web3.eth.getAccounts((err, accs) => {
       if (err != null) {
-        console.log('There was an error fetching your accounts.');
+        console.log('There was an error fetching your this.accounts.');
         return;
       }
 
       if (accs.length === 0) {
-        console.log("Couldn't get any accounts! Make sure your Ethereum client is configured correctly.");
+        console.log("Couldn't get any this.accounts! Make sure your Ethereum client is configured correctly.");
         return;
       }
 
       // eslint-disable-next-line prefer-destructuring
-      account = accs[0];
+      this.account = accs[0];
 
       console.log('start done');
     });
-  },
+  }
 
   /**
    *A status message for each page for the actual tx status
@@ -63,7 +65,7 @@ const App = {
       console.log(2);
 
       instance = _instance;
-      return instance.owner.call({ from: account });
+      return instance.owner.call({ from: this.account });
     }).then((value) => {
       console.log(3);
 
@@ -72,8 +74,7 @@ const App = {
       // output.innerHTML = result;
       return result;
     });
-
-  },
+  }
   */
 
   /**
@@ -89,14 +90,14 @@ const App = {
     let result;
     PoolFactory.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call({ from: account });
+      return instance.poolList.call({ from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -116,7 +117,7 @@ const App = {
     PoolFactory.deployed().then((_instance) => {
       instance = _instance;
       console.log(2);
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       console.log(3);
       result = value.toString();
@@ -124,7 +125,7 @@ const App = {
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -141,14 +142,15 @@ const App = {
       var result;
       PoolFactory.deployed().then(function(_instance) {
           instance = _instance;
-          return instance.poolList.call(index, {from: account});
+          return instance.poolList.call(index, {from: this.account});
       }).then(function(value) {
           result = value.toString();
           console.log(result);
           // output.innerHTML = result;
           return result;
       });
-  }, */
+  }
+  */
 
   /**
    * Retuns the number of pools created by the pool factory
@@ -162,14 +164,14 @@ const App = {
     let result;
     PoolFactory.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.length.call({ from: account });
+      return instance.poolList.length.call({ from: this.account });
     }).then((value) => {
       result = value.toNumber();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
 
   /**
    * Returns pool list for a sale address
@@ -184,14 +186,14 @@ const App = {
     let result;
     PoolFactory.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolsBySales.call(saleAddress, { from: account });
+      return instance.poolsBySales.call(saleAddress, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
 
   /**
    * Cheks if a pool exists
@@ -206,14 +208,14 @@ const App = {
     let result;
     PoolFactory.deployed().then((_instance) => {
       instance = _instance;
-      return instance.pools.call(poolAddress, { from: account });
+      return instance.pools.call(poolAddress, { from: this.account });
     }).then((value) => {
       result = value;
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
 
   // PoolFactory param getters
 
@@ -229,14 +231,14 @@ const App = {
     let result;
     PoolFactory.deployed().then((_instance) => {
       instance = _instance;
-      return instance.params.owner.call({ from: account });
+      return instance.params.owner.call({ from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
 
   /**
    * Get the KYC contract address tied to the PoolFactory contract
@@ -250,14 +252,14 @@ const App = {
     let result;
     PoolFactory.deployed().then((_instance) => {
       instance = _instance;
-      return instance.params.kycContractAddress.call({ from: account });
+      return instance.params.kycContractAddress.call({ from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
 
   /**
    * Get flat fee for pool creation (1/1000)
@@ -271,14 +273,14 @@ const App = {
     let result;
     PoolFactory.deployed().then((_instance) => {
       instance = _instance;
-      return instance.params.flatFee.call({ from: account });
+      return instance.params.flatFee.call({ from: this.account });
     }).then((value) => {
       result = value.toNumber();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
 
   /**
    * Get fee rate for maximum pool allocation (1/1000)
@@ -292,7 +294,7 @@ const App = {
     let result;
     PoolFactory.deployed().then((_instance) => {
       instance = _instance;
-      return instance.params.maxAllocationFeeRate.call({ from: account });
+      return instance.params.maxAllocationFeeRate.call({ from: this.account });
     }).then((value) => {
       result = value.toNumber();
       console.log(result);
@@ -300,7 +302,7 @@ const App = {
 
       return result;
     });
-  },
+  }
 
   /**
    * Get maximum allowed fee rates set by crators for pools (1/1000)
@@ -314,14 +316,14 @@ const App = {
     let result;
     PoolFactory.deployed().then((_instance) => {
       instance = _instance;
-      return instance.params.maxCreatorFeeRate.call({ from: account });
+      return instance.params.maxCreatorFeeRate.call({ from: this.account });
     }).then((value) => {
       result = value.toNumber();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
 
   // PoolFactory param setters (onlyOwner)
 
@@ -416,7 +418,7 @@ const App = {
         maxCreatorFeeRate,
         providerFeeRate,
         toUpdate,
-        { from: account },
+        { from: this.account },
       );
     }).then((reciept) => {
       result = reciept;
@@ -424,7 +426,7 @@ const App = {
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
 
   /**
    * Set owner address in PoolFactory contract, only current owner has authority
@@ -446,7 +448,7 @@ const App = {
         0,
         0,
         [true, false, false, false, false, false],
-        { from: account },
+        { from: this.account },
       );
     }).then((reciept) => {
       result = reciept;
@@ -454,7 +456,7 @@ const App = {
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
 
   /**
    * Set KYC contract address in PoolFactory contract, only owner has authority
@@ -477,7 +479,7 @@ const App = {
         0,
         0,
         [false, true, false, false, false, false],
-        { from: account },
+        { from: this.account },
       );
     }).then((reciept) => {
       result = reciept;
@@ -485,7 +487,7 @@ const App = {
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
 
   /**
    * Set flat fee in PoolFactory contract for creating pools, only owner has authority
@@ -508,7 +510,7 @@ const App = {
         0,
         0,
         [false, false, true, false, false, false],
-        { from: account },
+        { from: this.account },
       );
     }).then((reciept) => {
       result = reciept;
@@ -516,7 +518,7 @@ const App = {
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
 
   /**
    * Set maximum allocation fee for creating pools, only owner has authority
@@ -539,7 +541,7 @@ const App = {
         0,
         0,
         [false, false, false, true, false, false],
-        { from: account },
+        { from: this.account },
       );
     }).then((reciept) => {
       result = reciept;
@@ -547,7 +549,7 @@ const App = {
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
 
   /**
    * Set maximum allowed fee for pool creators, only owner has authority
@@ -570,7 +572,7 @@ const App = {
         maxCreatorFeeRate,
         0,
         [false, false, false, false, true, false],
-        { from: account },
+        { from: this.account },
       );
     }).then((reciept) => {
       result = reciept;
@@ -578,7 +580,7 @@ const App = {
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
 
   /**
    * Set provider fee rate for creating pools, only owner has authority
@@ -601,7 +603,7 @@ const App = {
         0,
         providerFeeRate,
         [false, false, false, false, false, true],
-        { from: account },
+        { from: this.account },
       );
     }).then((reciept) => {
       result = reciept;
@@ -609,7 +611,7 @@ const App = {
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
 
   // Pool factory stats getters
 
@@ -627,7 +629,7 @@ const App = {
     PoolFactory.deployed().then((_instance) => {
       instance = _instance;
       return instance.at();
-    }).then(address => Web3.eth, getBalance(address)).then((value) => {
+    }).then(address => web3.eth, getBalance(address)).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
@@ -688,7 +690,7 @@ const App = {
         withdrawTimelock,
         whitelistPool,
         {
-          from: account,
+          from: this.account,
           value: transferValue,
         });
     }).then((reciept) => {
@@ -697,7 +699,7 @@ const App = {
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
 
   /**
    * Function for owner to withdraw accumulated fees from PoolFactory
@@ -711,7 +713,7 @@ const App = {
     let result;
     PoolFactory.deployed().then((_instance) => {
       instance = _instance;
-      return instance.withdraw({ from: account });
+      return instance.withdraw({ from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
@@ -754,7 +756,7 @@ const App = {
    *
    * @return {PoolParams}
    */
-
+  /*
   async getPoolFactoryParams(poolAddress) {
     let instance;
     const result = {
@@ -778,7 +780,7 @@ const App = {
     };
     PoolFactory.at(poolAddress).then((_instance) => {
       instance = _instance;
-      return instance.params.call(poolAddress, { from: account });
+      return instance.params.call(poolAddress, { from: this.account });
     }).then((value) => {
       result.saleParticipateFunctionSig = value[0].toString();
       result.saleWithdrawFunctionSig = value[1].toString();
@@ -802,7 +804,8 @@ const App = {
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
+  */
 
   /**
    * Get the KYC contract address tied to the Pool contract
@@ -818,14 +821,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.params.kycAddress(index, { from: account });
+      return instance.params.kycAddress(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -842,14 +845,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -866,14 +869,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -890,14 +893,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -914,14 +917,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -938,14 +941,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -962,14 +965,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -986,14 +989,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1010,14 +1013,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1034,14 +1037,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1058,14 +1061,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1083,14 +1086,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1108,14 +1111,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1133,14 +1136,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1157,14 +1160,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1182,14 +1185,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1199,7 +1202,7 @@ const App = {
    *
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @param {string} address address to check
-   * @return {bool} is on whitelist
+   * @return {boolean} is on whitelist
    */
   /*
   async isOnWhitelist(poolAddress, address) {
@@ -1207,14 +1210,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1232,14 +1235,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1256,14 +1259,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1280,14 +1283,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1304,14 +1307,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1328,14 +1331,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1354,14 +1357,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1378,14 +1381,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1402,14 +1405,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   // Pool contributor queries
@@ -1428,14 +1431,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1447,19 +1450,21 @@ const App = {
    * @param {number} index
    * @return {string} pool contributor address
    */
+  /*
   async getContributor(poolAddress, index) {
     let instance;
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
+  */
 
   /**
    * Get number of individual pool contributors
@@ -1475,14 +1480,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1500,14 +1505,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1525,14 +1530,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1551,14 +1556,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   // Pool operations
@@ -1577,14 +1582,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1601,14 +1606,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1625,14 +1630,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1649,14 +1654,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1673,14 +1678,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1697,14 +1702,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1721,14 +1726,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1745,14 +1750,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1769,14 +1774,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1792,14 +1797,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1815,14 +1820,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1839,14 +1844,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1862,14 +1867,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1886,14 +1891,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1911,14 +1916,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1931,7 +1936,7 @@ const App = {
    */
   // DUPLICATE changeTokenAddress: async function(poolAddress, tokenAddress){
   //
-  // },
+  // }
 
   /**
    * Confirm that the tokens are received from the sale (only creator)
@@ -1947,14 +1952,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1970,14 +1975,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -1993,14 +1998,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -2016,14 +2021,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -2039,14 +2044,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -2062,14 +2067,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   // Pool param setters
@@ -2088,14 +2093,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -2112,14 +2117,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -2136,14 +2141,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -2160,14 +2165,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -2184,14 +2189,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -2208,14 +2213,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -2232,14 +2237,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -2256,14 +2261,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -2280,14 +2285,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -2304,14 +2309,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -2328,14 +2333,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -2352,14 +2357,14 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
 
   /**
@@ -2377,64 +2382,13 @@ const App = {
     let result;
     Pool.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: account });
+      return instance.poolList.call(index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
     });
-  },
+  }
   */
-};
-
-/*
-window.addEventListener('load', function() {
-  // Checking if Web3 has been injected by the browser (Mist/MetaMask)
-  if (typeof Web3 !== 'undefined') {
-    console.warn("Using Web3 detected from external source. If you find that your accounts don't appear or you have 0 MetaCoin, ensure you've configured that source properly. If using MetaMask, see the following link. Feel free to delete this warning. :) http://truffleframework.com/tutorials/truffle-and-metamask")
-    // Use Mist/MetaMask's provider
-    window.Web3 = new Web3(Web3.currentProvider);
-  } else {
-    console.warn("No Web3 detected. Falling back to http://localhost:8545. You should remove this fallback when you deploy live, as it's inherently insecure. Consider switching to Metamask for development. More info here: http://truffleframework.com/tutorials/truffle-and-metamask");
-    // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-    window.Web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-  }
-
-  App.start();
-
-  //App.watchEvents();
-  });
-*/
-
-window.addEventListener('load', async () => {
-  if (window.ethereum) {
-  // Modern dapp browsers...
-    window.Web3 = new Web3(window.ethereum);
-    try {
-      // Request account access if needed
-      await window.ethereum.enable();
-      // Acccounts now exposed
-      Web3.eth.sendTransaction({/* ... */});
-    } catch (error) {
-      // User denied account access...
-    }
-  } else if (window.Web3) {
-    // Legacy dapp browsers...
-    window.Web3 = new Web3(Web3.currentProvider);
-    // Acccounts always exposed
-    Web3.eth.sendTransaction({/* ... */});
-  } else {
-    // Non-dapp browsers...
-    console.log('Non-Ethereum browser detected. '
-      + 'You should consider trying MetaMask! '
-      + 'Falling back to http://localhost:8545. '
-      + "You should remove this fallback when you deploy live, as it's inherently insecure. "
-      + 'Consider switching to Metamask for development. '
-      + 'More info here: http://truffleframework.com/tutorials/truffle-and-metamask');
-    // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-    window.Web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
-  }
-
-  App.start();
-});
+}
