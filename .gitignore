@@ -21,3 +21,11 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw*
+
+#truffle
+.tern-port
+yarn.lock
+package-lock.json
+
+#ganache databases
+ganache-dbs
