@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import BootstrapVue from 'bootstrap-vue';
+import Notifications from 'vue-notification'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import Web3 from 'web3';
@@ -10,6 +11,7 @@ import store from './store';
 import ConnectICO from './connectICO';
 
 Vue.use(BootstrapVue);
+Vue.use(Notifications);
 
 Vue.config.productionTip = false;
 

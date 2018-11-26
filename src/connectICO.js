@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import TruffleContract from 'truffle-contract';
 
 // Import our contract artifacts and turn them into usable abstractions.
@@ -27,19 +28,31 @@ export default class ConnectICO {
     // set the initial this.account balance so it can be displayed.
     window.web3.eth.getAccounts((err, accounts) => {
       if (err != null) {
+        Vue.notify({
+          type: 'error',
+          title: 'Error',
+          text: 'There was an error fetching your accounts!',
+        });
         console.log('There was an error fetching your this.accounts.');
         return;
       }
 
       if (accounts.length === 0) {
-        console.log("Couldn't get any this.accounts! Make sure your Ethereum client is configured correctly.");
+        Vue.notify({
+          type: 'error',
+          title: 'Error',
+          text: 'Couldn\'t get any this.accounts! '
+            + 'Make sure your Ethereum client is configured correctly!',
+        });
+        console.log('Couldn\'t get any this.accounts! '
+          + 'Make sure your Ethereum client is configured correctly.');
         return;
       }
 
       // eslint-disable-next-line prefer-destructuring
       this.account = accounts[0];
 
-      console.log('start done');
+      console.log('Application initialized');
     });
   }
 
@@ -525,7 +538,7 @@ export default class ConnectICO {
    *
    * Frontend page: PoolFactory admin page for provider/owner
    *
-   * @param maxAllocationFeeRate fee "taxing" the maximum allocation parameter
+   * @param maxAllocationFeeRate fee 'taxing' the maximum allocation parameter
    */
   async setMaxAllocationFeeRate(maxAllocationFeeRate) {
     let instance;
