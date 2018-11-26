@@ -1,3 +1,7 @@
+# Pool factroy info page 
+
+(can be just a section)
+
 # Pool creator page
 
 ## Inputs
@@ -84,9 +88,13 @@ createPool(
 
 # Pool admin page
 
+# Pool info page
+
+(can be just a section)
+
 # Pool contributor page
 
-# Pool factroy admin page
+# Pool factory admin page
 
 # KYC admin page
 
