@@ -1,6 +1,8 @@
 .DS_Store
 node_modules
 /dist
+/build
+/build/contracts
 
 # local env files
 .env.local

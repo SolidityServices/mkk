@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <notifications position="top center"/>
     <router-link :to="{name: 'pool-creator'}">Pool Creator</router-link>
     <router-link :to="{name: 'project'}">Project</router-link>
     <router-link :to="{name: 'deploy-contract'}">Deploy Contract</router-link>
