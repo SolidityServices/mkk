@@ -1,6 +1,10 @@
 # Pool factroy info page 
 
-(can be just a section)
+(can be just a section in Pool creator page)
+
+## To display
+
+
 
 # Pool creator page
 
@@ -90,17 +94,27 @@ createPool(
 
 # Pool info page
 
+## To display
+
 (can be just a section)
 
 # Pool contributor page
 
-# Pool factory admin page
+# Pool factory admin page 
 
-# KYC admin page
+(page for only insiders, no need for fancy desing)
 
-# Token Push Registry admin page
+# KYC admin page 
 
-# Pool listing page
+(page for only insiders, no need for fancy desing)
+
+# Token Push Registry admin page 
+
+(page for only insiders, no need for fancy desing)
+
+# Pool listing page 
+
+(just a simple page to select pools, no need for MKK design)
 
 # Notes
 - pool = deal
