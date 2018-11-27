@@ -1,8 +1,45 @@
-# Pool factroy info page 
+# Pool factroy public info page 
 
 (can be just a section in Pool creator page)
 
 ## To display
+
+- Contract owner address
+  + description:
+  + format in contract:
+  + display format:
+  + function: getPoolFactoryOwner()
+
+- KYC contract address
+  + description:
+  + format in contract:
+  + display format:
+  + function: getPoolFactoryKycContractAddress()
+
+- Flat fee
+  + description: Fix fee paid by the creator to the service provider for creating a new pool
+  + format in contract: wei
+  + display format: ether - https://etherconverter.online/ 1 ether = 1000000000000000000 wei, if not secified, should be 0
+  + function: getFlatFee()
+
+- Max allocation fee
+  + description: Fee paid by the creator to the service provider for the maximum allocation `(PoolFactory.params.maxAllocationFee * maxPoolAllocation / 1000)`
+  + format in contract: integer from 0-10000 
+  + display format: percentage valu with 2 decimals accuracy, original contract value has to be divided by 100: 0 -> 0.00%, 1234 -> 12.34%, 10000 -> 100.00%
+  + function: getMaxAllocationFeeRate()
+
+- Max creator fee
+  + description: Maximum allowed fee settable by the pool creator
+  + format in contract: integer from 0-10000 
+  + display format: percentage valu with 2 decimals accuracy, original contract value has to be divided by 100: 0 -> 0.00%, 1234 -> 12.34%, 10000 -> 100.00%
+  + function: getMaxCreatorFeeRate()
+
+- Provider fee rate
+  + description: Amount of fee, the service provider receives from each pool contribution
+  + format in contract: integer from 0-10000 
+  + display format: percentage valu with 2 decimals accuracy, original contract value has to be divided by 100: 0 -> 0.00%, 1234 -> 12.34%, 10000 -> 100.00%
+  + function: getProviderFeeRate()
+
 
 
 
