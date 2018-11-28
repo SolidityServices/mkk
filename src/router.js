@@ -6,6 +6,8 @@ import Index from './views/Index.vue';
 import Project from './views/Project.vue';
 import PoolCreator from './views/PoolCreator.vue';
 import DeployContract from './views/DeployContract.vue';
+import PoolList from './views/PoolList.vue';
+
 
 Vue.use(Router);
 
@@ -32,6 +34,11 @@ export default new Router({
       path: 'project',
       name: 'project',
       component: Project,
+    },
+    {
+      path: 'pool-list',
+      name: 'pool-list',
+      component: PoolList,
     },
   ],
 });
