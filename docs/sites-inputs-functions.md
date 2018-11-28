@@ -128,6 +128,8 @@ createPool(
 
 # Pool admin page
 
+All functions on this page will need the poolAddress, before arriving to this page, the user needs to select a pool from the list
+
 ## Inputs
 
 ### Manage parameters
@@ -164,13 +166,13 @@ createPool(
 
 - update min contribution
   + description: Minimum contribution amount allowed
-  + input field type: Number input field in ether units
+  + input field type: Number input field in ether units with decimals
   + desired format for contract: converted to wei units: https://etherconverter.online/ 1 ether = 1000000000000000000 wei
   + function: `setMinContribution(poolAddress, minContribution)`
 
 - update max contribution
   + description: Maximum contribution amount allowed
-  + input field type: Number input field in ether units
+  + input field type: Number input field in ether units with decimals
   + desired format for contract: converted to wei units: https://etherconverter.online/ 1 ether = 1000000000000000000 wei
   + function: `setMaxContribution(poolAddress, maxContribution)`
 
@@ -192,27 +194,77 @@ createPool(
   + desired format for contract: same as input
   + function: `setTokenAddress(poolAddress, tokenAddress)`
 
-#### Function for all
+#### Function for all params
 
 
 
 ### Manage whitelist
 
+- add whitelist address
+  + input field type: text input field
+  + desired format for contract: same as input
+  + function: `addWhitelist(poolAddress, whitelistAddress)`
+
+- remove whitelist address
+  + input field type: text input field
+  + desired format for contract: same as input
+  + function: `removeWhitelist(poolAddress, whitelistAddress)`
+
 ### Pool operations
 
+- send funds to sale
+  + description:
+  + function: sendToSale(poolAddress)
+
+- send to sale function
+  + description: send to sale using pre determined function signature (only possible if function signature is presented, not yet implemented)
+  + input field type: none 
+  + desired format for contract: none
+  + function: not yet implemented
+  
+- confirm tokens received
+  + description: confirmation for tokens received from the sale
+  + input field type: number - number of tokens expected in eth unit, with decimals
+  + desired format for contract: converted to wei units: https://etherconverter.online/ 1 ether = 1000000000000000000 wei
+  + function: areTokensReceivedConfirmed(poolAddress)
+  
+- withdraw from sale function
+  + description: withdraw from sale using pre determined function signature (only possible if function signature is presented, not yet implemented)
+  + input field type: none 
+  + desired format for contract: none
+  + function: not yet implemented
+  
+- creator withdraw
+  + description: Withdrawal of accumulated fees in the pool
+  + input field type: none 
+  + desired format for contract: none
+  + function: creatorWithdraw(poolAddress)
+  
+- push out token
+  + description: Push out received sale tokens to the pool contributor
+  + input field type: contributor address
+  + desired format for contract: address (same)
+  + function: pushOutToken(poolAddress, recipientAddress)
+  
 
 # Pool info page
 (can be just a section in Pool admin and Pool Contributor page)
 
+All functions on this page will need the poolAddress, before arriving to this page, the user needs to select a pool from the list
+
 ## To display
 
 # Pool contributor page
+
+All functions on this page will need the poolAddress, before arriving to this page, the user needs to select a pool from the list
 
 # Pool factory admin page 
 
 (page for only insiders, no need for fancy desing)
 
 # Pool provider admin page 
+
+All functions on this page will need the poolAddress, before arriving to this page, the user needs to select a pool from the list
 
 (page for only insiders, no need for fancy desing)
 
