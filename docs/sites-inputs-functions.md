@@ -6,14 +6,14 @@
 
 - Contract owner address
   + description:
-  + format in contract:
-  + display format:
+  + format in contract: address type
+  + display format: sting
   + function: getPoolFactoryOwner()
 
 - KYC contract address
   + description:
-  + format in contract:
-  + display format:
+  + format in contract: address type
+  + display format: sting
   + function: getPoolFactoryKycContractAddress()
 
 - Flat fee
@@ -72,7 +72,6 @@
   + input field type: date and time input field
   + desired format for contract: unix timestamp with one second resolution e.g: 2018-11-26T20:30:35+00:00 -> 1543264235
 
-
 - min contribution (optional)
   + description: Minimum contribution amount allowed
   + input field type: Number input field in ether units with any amount of decimals
@@ -98,9 +97,9 @@
   + input field type: time duration input with settable amount of days, hours, seconds
   + desired format for contract: unix timestamp for durations with one second resolution e.g: 01h-01m-01s -> 3661
 
-- whitelist pool
+- is whitelist pool
   + description: Will the pool have a whitelist for allowed users
-  + input field type: checkbox
+  + input field type: checkbox (or similar)
   + desired format for contract: boolean
 
 - transfer value
@@ -129,15 +128,91 @@ createPool(
 
 # Pool admin page
 
+## Inputs
+
+### Manage parameters
+
+- update creator address
+  + description: Address of the pool creator
+  + input field type: text input field
+  + desired format for contract: same as input 
+  + function: `setCreator(poolAddress, creatorAddress)`
+
+- update creator fee rate
+  + description: Fee percentage collected for the pool creator
+  + input field type: number input field, percentage value with two decimal accuracy e.g 12.34%, allowed range: 0-100
+  + desired format for contract: has to be an integer, has to be multiplied by 100, eg: 1.00% -> 100 , 100.00% -> 10000, 12.34% -> 1234
+  + function: `setCreatorFeeRate(poolAddress, creatorFeeRate)`
+
+- update sale start date
+  + description: Start date of the token sale
+  + input field type: date and time input field
+  + desired format for contract: unix timestamp with one second resolution e.g: 2018-11-26T20:30:35+00:00 -> 1543264235
+  + function: `setSaleStartDate(poolAddress, saleStartDate)`
+
+- update sale end date
+  + description: End date of the token sale
+  + input field type: date and time input field
+  + desired format for contract: unix timestamp with one second resolution e.g: 2018-11-26T20:30:35+00:00 -> 1543264235
+  + function: `setSaleEndDate(poolAddress, saleEndDate)`
+
+- update withdraw timelock
+  + description: The amount of time has to be elapsed between contribution and withdrawal of contribution
+  + input field type: time duration input with settable amount of days, hours, seconds
+  + desired format for contract: unix timestamp for durations with one second resolution e.g: 01h-01m-01s -> 3661
+  + function: `setWithdrawTimelock(poolAddress, withdrawTimelock)`
+
+- update min contribution
+  + description: Minimum contribution amount allowed
+  + input field type: Number input field in ether units
+  + desired format for contract: converted to wei units: https://etherconverter.online/ 1 ether = 1000000000000000000 wei
+  + function: `setMinContribution(poolAddress, minContribution)`
+
+- update max contribution
+  + description: Maximum contribution amount allowed
+  + input field type: Number input field in ether units
+  + desired format for contract: converted to wei units: https://etherconverter.online/ 1 ether = 1000000000000000000 wei
+  + function: `setMaxContribution(poolAddress, maxContribution)`
+
+- update min pool goal
+  + description: Minimum goal for the pool 
+  + input field type: Number input field in ether units
+  + desired format for contract: converted to wei units: https://etherconverter.online/ 1 ether = 1000000000000000000 wei
+  + function: `setMinPoolGoal(poolAddress, minPoolGoal)`
+
+- update whitelist pool
+  + description: Will the pool have a whitelist for allowed users
+  + input field type: checkbox (or similar)
+  + desired format for contract: boolean
+  + function: `setWhitelistPool(poolAddress, isWhitelistPool)`
+
+- update token address
+  + description: Ethereum address of the erc-20 token contract of the sale
+  + input field type: text input field
+  + desired format for contract: same as input
+  + function: `setTokenAddress(poolAddress, tokenAddress)`
+
+#### Function for all
+
+
+
+### Manage whitelist
+
+### Pool operations
+
+
 # Pool info page
+(can be just a section in Pool admin and Pool Contributor page)
 
 ## To display
-
-(can be just a section)
 
 # Pool contributor page
 
 # Pool factory admin page 
+
+(page for only insiders, no need for fancy desing)
+
+# Pool provider admin page 
 
 (page for only insiders, no need for fancy desing)
 
