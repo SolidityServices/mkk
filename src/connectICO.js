@@ -1,3 +1,5 @@
+/* eslint-disable */ //vagy ez vagy a szellemi épségem
+
 import Vue from 'vue';
 import TruffleContract from 'truffle-contract';
 
@@ -67,28 +69,8 @@ export default class ConnectICO {
     status.innerHTML = message;
   },
   */
+
   // PoolFactory pool queries
-  /*
-  getKYCOwner() {
-    let instance;
-    let result;
-    console.log(1);
-
-    KYC.deployed().then((_instance) => {
-      console.log(2);
-
-      instance = _instance;
-      return instance.owner.call({ from: this.account });
-    }).then((value) => {
-      console.log(3);
-
-      result = value.toString();
-      console.log(result);
-      // output.innerHTML = result;
-      return result;
-    });
-  }
-  */
 
   /**
    * Return all existing pool addresses in a list
@@ -121,8 +103,8 @@ export default class ConnectICO {
    * @param {number} index
    * @return {string} Pool address
    */
-  /*
-  getPool(index) {
+
+  async getPool(index) {
     let instance;
     let result;
     console.log(1);
@@ -139,7 +121,7 @@ export default class ConnectICO {
       return result;
     });
   }
-  */
+
 
   /**
    *Returns a list of pool addresses between a first and last index (including boundaries)
@@ -150,7 +132,8 @@ export default class ConnectICO {
    * @param {number} lastIndex
    * @return {string[]} list of pool adresses in range
    */
-  /* getPoolRange: async function(firstIndex, lastIndex){
+  /*
+  async getPoolRange(firstIndex, lastIndex){
       var instance;
       var result;
       PoolFactory.deployed().then(function(_instance) {
@@ -457,7 +440,8 @@ export default class ConnectICO {
       return instance.setParams(
         ownerAddress,
         0x0,
-        0, 0,
+        0,
+        0,
         0,
         0,
         [true, false, false, false, false, false],
@@ -635,21 +619,21 @@ export default class ConnectICO {
    *
    * @return the whole ETH balace of the PoolFactory contract
    */
-  /* getBalance function does not exist
+  // getBalance function does not exist
   async getPoolFactoryBalance() {
     let instance;
     let result;
     PoolFactory.deployed().then((_instance) => {
       instance = _instance;
       return instance.at();
-    }).then(address => web3.eth, getBalance(address)).then((value) => {
+    }).then((_address) => {
+      return web3.eth.getBalance(_address);
+    }).then((value) => {
       result = value.toString();
       console.log(result);
-      // output.innerHTML = result;
       return result;
     });
-  },
-  */
+  }
 
   // PoolFactory operations
 
@@ -720,7 +704,6 @@ export default class ConnectICO {
    * Frontend page: PoolFactory admin page for provider/owner
    *
    */
-  /* DUPLICATE FUNCTION!
   async withdraw() { // onlyOwner
     let instance;
     let result;
@@ -733,8 +716,7 @@ export default class ConnectICO {
       // output.innerHTML = result;
       return result;
     });
-  },
-  */
+  }
 
   // Pool
   // Pool param getters
@@ -769,7 +751,7 @@ export default class ConnectICO {
    *
    * @return {PoolParams}
    */
-  /*
+
   async getPoolFactoryParams(poolAddress) {
     let instance;
     const result = {
@@ -818,7 +800,6 @@ export default class ConnectICO {
       return result;
     });
   }
-  */
 
   /**
    * Get the KYC contract address tied to the Pool contract
@@ -842,7 +823,6 @@ export default class ConnectICO {
       return result;
     });
   }
-  */
 
   /**
    * Address of the service provider (same as pool factory owner)

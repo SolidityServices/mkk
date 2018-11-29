@@ -1,3 +1,4 @@
+/* eslint-disable */
 var PoolFactory = artifacts.require('./PoolFactory.sol')
 var Pool = artifacts.require('./Pool.sol')
 var SafeMath = artifacts.require('../node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol')

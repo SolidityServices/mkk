@@ -10,7 +10,6 @@ contract Pool {
     struct ContributorData{
         uint lastContributionTime;
         uint grossContribution;
-        mapping(address => uint) payedOut; //(tokenAddress => amountPayedOut) 0x0 address: ETH
     }
 
     struct Params{
@@ -34,7 +33,7 @@ contract Pool {
     }
 
     struct PoolStats{
-        address[] contributorList;
+        address[] contributorList; // possible to get on frontend?
         uint256 allGrossContributions;
         uint256 creatorStash;
         uint256 providerStash;
@@ -47,11 +46,13 @@ contract Pool {
     mapping(bytes3 => bool) public kycCountryBlacklist; //key: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
 
     mapping(address => ContributorData) public contributors;
-    mapping(address => uint) totalPayedOut; //(tokenAddress => totalAmountPayedOut) 0x0 address: ETH
+    mapping(address => mapping(address => uint)) private payedOut; //(contributorAddress => (tokenAddress => amountPayedOut)) 0x0 tokenAddress: ETH
+
+    mapping(address => uint) private totalPayedOut; //(tokenAddress => totalAmountPayedOut) 0x0 address: ETH
 
     uint8 ETHEREUM_DECIMALS = 18;
 
-    Params params;
+    Params public params;
 
     PoolStats public poolStats;
     
@@ -83,8 +84,7 @@ contract Pool {
         
     }*/
     
-    constructor(
-        address[5] addresses, uint[9] integers, bool _whitelistPool) public {
+    constructor (address[5] addresses, uint[9] integers, bool _whitelistPool) public {
         params.kycAddress = addresses[0];
         params.provider = addresses[1];
         params.creator = addresses[2];
@@ -175,13 +175,13 @@ contract Pool {
     function calculateERC20OwedToContributor(address tokenType, address contributor) private view returns (uint) {
         uint totalBalance = SafeMath.add(totalPayedOut[tokenType], ERC20Basic(tokenType).balanceOf(address(this)));
         uint totalReward = calculateReward(totalBalance, contributor);
-        return SafeMath.sub(totalReward, contributors[contributor].payedOut[tokenType]);
+        return SafeMath.sub(totalReward, payedOut[contributor][tokenType]);
     }
 
     function calculateETHOwedToContributor(address contributor) private view returns (uint) {
         uint totalBalance = SafeMath.add(totalPayedOut[0x0], SafeMath.sub(address(this).balance, SafeMath.add(poolStats.creatorStash, poolStats.providerStash)));
         uint totalReward = calculateReward(totalBalance, contributor);
-        return SafeMath.sub(totalReward, contributors[contributor].payedOut[0x0]);
+        return SafeMath.sub(totalReward, payedOut[contributor][0x0]);
     }
 
     function withdraw(uint amount) public {
@@ -203,7 +203,7 @@ contract Pool {
     function withdrawRefund() public {
         require(poolStats.sentToSale, "withdrawRefund(): Error, the pools funds were not sent to the sale yet");
         uint amount = calculateETHOwedToContributor(msg.sender);
-        contributors[msg.sender].payedOut[0x0] = SafeMath.add(contributors[msg.sender].payedOut[0x0], amount);
+        payedOut[msg.sender][0x0] = SafeMath.add(payedOut[msg.sender][0x0], amount);
         totalPayedOut[0x0] = SafeMath.add(totalPayedOut[0x0], amount);
         msg.sender.transfer(amount);
     }
@@ -213,7 +213,7 @@ contract Pool {
         require(poolStats.sentToSale, "sendOutToken(address _tokenAddress, address recipient): Error, the pools funds were not sent to the sale yet");
         require(params.tokenAddress != 0x0, "sendOutToken(address _tokenAddress, address recipient): Error, ERC20 token addres cannot be 0x0, that is reserved for ether");
         uint amount = calculateERC20OwedToContributor(_tokenAddress, recipient);
-        contributors[recipient].payedOut[_tokenAddress] = SafeMath.add(contributors[recipient].payedOut[_tokenAddress], amount);
+        payedOut[recipient][_tokenAddress] = SafeMath.add(payedOut[recipient][_tokenAddress], amount);
         totalPayedOut[_tokenAddress] = SafeMath.add(totalPayedOut[_tokenAddress], amount);
         ERC20Basic(_tokenAddress).transfer(recipient, amount);
     }

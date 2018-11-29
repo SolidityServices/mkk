@@ -1,3 +1,4 @@
+/* eslint-disable */
 //for testing purposes only
 var Pool = artifacts.require('./Pool.sol')
 

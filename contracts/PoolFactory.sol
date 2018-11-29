@@ -19,7 +19,7 @@ contract PoolFactory{
 
     address[] public poolList;
     mapping (address => bool) public pools;
-    mapping (address => address[]) public poolsBySales;
+    mapping (address => address[]) public poolsBySales; // possible to get on frontend?
     //pools by creators?
     //creator whitelist
 

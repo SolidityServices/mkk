@@ -214,7 +214,7 @@ All functions on this page will need the poolAddress, before arriving to this pa
 
 - send funds to sale
   + description:
-  + function: sendToSale(poolAddress)
+  + function: `sendToSale(poolAddress)`
 
 - send to sale function
   + description: send to sale using pre determined function signature (only possible if function signature is presented, not yet implemented)
@@ -226,7 +226,7 @@ All functions on this page will need the poolAddress, before arriving to this pa
   + description: confirmation for tokens received from the sale
   + input field type: number - number of tokens expected in eth unit, with decimals
   + desired format for contract: converted to wei units: https://etherconverter.online/ 1 ether = 1000000000000000000 wei
-  + function: areTokensReceivedConfirmed(poolAddress)
+  + function: `areTokensReceivedConfirmed(poolAddress)`
   
 - withdraw from sale function
   + description: withdraw from sale using pre determined function signature (only possible if function signature is presented, not yet implemented)
@@ -238,13 +238,13 @@ All functions on this page will need the poolAddress, before arriving to this pa
   + description: Withdrawal of accumulated fees in the pool
   + input field type: none 
   + desired format for contract: none
-  + function: creatorWithdraw(poolAddress)
+  + function: `creatorWithdraw(poolAddress)`
   
 - push out token
   + description: Push out received sale tokens to the pool contributor
   + input field type: contributor address
   + desired format for contract: address (same)
-  + function: pushOutToken(poolAddress, recipientAddress)
+  + function: `pushOutToken(poolAddress, recipientAddress)`
   
 
 # Pool info page
