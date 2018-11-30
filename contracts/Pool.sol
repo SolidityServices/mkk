@@ -33,13 +33,14 @@ contract Pool {
     }
 
     struct PoolStats{
-        address[] contributorList; // possible to get on frontend?
         uint256 allGrossContributions;
         uint256 creatorStash;
         uint256 providerStash;
         bool tokensReceivedConfirmed;
         bool sentToSale;
     }
+
+    address[] public contributorList; // possible to get on frontend?
 
     mapping(address => bool) public admins; //additional admins
     mapping(address => bool) public whitelist; 
@@ -50,9 +51,9 @@ contract Pool {
 
     mapping(address => uint) private totalPayedOut; //(tokenAddress => totalAmountPayedOut) 0x0 address: ETH
 
-    uint8 ETHEREUM_DECIMALS = 18;
+    uint8 private ETHEREUM_DECIMALS = 18;
 
-    Params public params;
+    Params private params;
 
     PoolStats public poolStats;
     
@@ -158,7 +159,7 @@ contract Pool {
         require(block.timestamp < params.saleEndDate, "contribute(): Error, the sale has ended");
         require(!poolStats.sentToSale, "contribute(): Error, the pools funds were already sent to the sale");
         contributors[msg.sender].lastContributionTime = block.timestamp;
-        if(contributors[msg.sender].lastContributionTime == 0) poolStats.contributorList.push(msg.sender);
+        if(contributors[msg.sender].lastContributionTime == 0) contributorList.push(msg.sender);
         contributors[msg.sender].grossContribution = SafeMath.add(contributors[msg.sender].grossContribution, msg.value);
         poolStats.allGrossContributions = SafeMath.add(poolStats.allGrossContributions, msg.value);
     }
