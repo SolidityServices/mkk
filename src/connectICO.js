@@ -152,7 +152,6 @@ export default class ConnectICO {
     }).then((value) => {
       result = value.toString();
       console.log(result);
-      // output.innerHTML = result;
       return result;
     });
   }
@@ -183,13 +182,14 @@ export default class ConnectICO {
   }
   */
 
-  /**
+  /** FIX CONTRACT (GETTER)
    * Retuns the number of pools created by the pool factory
    *
    * Frontend page: PoolFactory info page
    *
    * @return {number} number of pools
    */
+/*   
   async getPoolNumber() {
     let instance;
     let result;
@@ -199,11 +199,10 @@ export default class ConnectICO {
     }).then((value) => {
       result = value.toNumber();
       console.log(result);
-      // output.innerHTML = result;
       return result;
     });
   }
-
+ */
   /**
    * Returns pool list for a sale address
    *
@@ -1194,21 +1193,20 @@ export default class ConnectICO {
    * @param {string} address address to check
    * @return {boolean} is admin
    */
-  /*
+  
   async isAdmin(poolAddress, address) {
     let instance;
     let result;
-    Pool.deployed().then((_instance) => {
+    Pool.at(poolAddress).then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: this.account });
+      return instance.admins.call(address, { from: this.account });
     }).then((value) => {
-      result = value.toString();
+      result = value;
       console.log(result);
-      // output.innerHTML = result;
       return result;
     });
   }
-  */
+ 
 
   /**
    * Check if the given address is on the whitelist of the pool
@@ -1219,21 +1217,20 @@ export default class ConnectICO {
    * @param {string} address address to check
    * @return {boolean} is on whitelist
    */
-  /*
+  
   async isOnWhitelist(poolAddress, address) {
     let instance;
     let result;
-    Pool.deployed().then((_instance) => {
+    Pool.at(poolAddress).then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: this.account });
+      return instance.whitelist.call(address, { from: this.account });
     }).then((value) => {
-      result = value.toString();
+      result = value;
       console.log(result);
-      // output.innerHTML = result;
       return result;
     });
   }
-  */
+ 
 
   /**
    * Check a country code if its on blacklist for the pool
@@ -1244,21 +1241,20 @@ export default class ConnectICO {
    * @param {string} countryCode 3 letter country code (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3)
    * @return {boolean} is on blacklist
    */
-  /*
+  
   async isOnCountryBlacklist(poolAddress, countryCode) {
     let instance;
     let result;
-    Pool.deployed().then((_instance) => {
+    Pool.at(poolAddress).then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: this.account });
+      return instance.kycCountryBlacklist.call(countryCode, { from: this.account });
     }).then((value) => {
-      result = value.toString();
+      result = value;
       console.log(result);
-      // output.innerHTML = result;
       return result;
     });
   }
-  */
+ 
 
   /**
    * Get all ETH balance of a given pool contract
@@ -1268,21 +1264,61 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return ETH balance
    */
-  /*
+  
   async getPoolBalance(poolAddress) {
     let instance;
     let result;
-    Pool.deployed().then((_instance) => {
+    Pool.at(poolAddress).then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: this.account });
+      return web3.eth.getBalance(instance.address);
     }).then((value) => {
       result = value.toString();
       console.log(result);
-      // output.innerHTML = result;
       return result;
     });
   }
-  */
+ 
+  /**
+   * Get all Pool stats
+   *
+   * Frontend page: Pool info page (can be the same as Pool contributor page)
+   *
+   * @param {string} poolAddress address of the Pool this function iteracts with
+   *
+   * @typedef {Object} PoolStats
+   *
+   * @property {number} allGrossContributions -
+   * @property {number} creatorStash -
+   * @property {number} providerStash -
+   * @property {number} tokensReceivedConfirmed -
+   * @property {boolean} sentToSale -
+   *
+   * @return {PoolStats}
+   */
+
+  async getAllPoolStats(poolAddress) {
+    let instance;
+    const result = {
+      allGrossContributions: null,
+      creatorStash: null,
+      providerStash: null,
+      tokensReceivedConfirmed: null,
+      sentToSale: null,
+    };
+    Pool.at(poolAddress).then((_instance) => {
+      instance = _instance;
+      return instance.poolStats.call({ from: this.account });
+    }).then((value) => {
+      result.allGrossContributions = value[0].toNumber();
+      result.creatorStash = value[1].toNumber();
+      result.providerStash = value[2].toNumber();
+      result.tokensReceivedConfirmed = value[3];
+      result.sentToSale = value[4];
+      console.log(result);
+      return result;
+    });
+  }
+ 
 
   /**
    * Get all ETH contributions of the pool without applying fees
@@ -1292,21 +1328,20 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return all gross contributions
    */
-  /*
+  
   async getAllGrossContributions(poolAddress) {
     let instance;
     let result;
-    Pool.deployed().then((_instance) => {
+    Pool.at(poolAddress).then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: this.account });
+      return instance.poolStats.call({ from: this.account });
     }).then((value) => {
-      result = value.toString();
+      result = value[0].toNumber();
       console.log(result);
-      // output.innerHTML = result;
       return result;
     });
   }
-  */
+ 
 
   /**
    * Get ETH amount that the pool creator collected from fees
@@ -1316,21 +1351,20 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return creator stash
    */
-  /*
+  
   async getCreatorStash(poolAddress) {
     let instance;
     let result;
-    Pool.deployed().then((_instance) => {
+    Pool.at(poolAddress).then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: this.account });
+      return instance.poolStats.call({ from: this.account });
     }).then((value) => {
-      result = value.toString();
+      result = value[1].toNumber();
       console.log(result);
-      // output.innerHTML = result;
       return result;
     });
   }
-  */
+ 
 
   /**
    * Get ETH amount that the service provider collected from fees
@@ -1340,47 +1374,19 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return provider stash
    */
-  /*
+  
   async getProviderStash(poolAddress) {
     let instance;
     let result;
-    Pool.deployed().then((_instance) => {
+    Pool.at(poolAddress).then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: this.account });
+      return instance.poolStats.call({ from: this.account });
     }).then((value) => {
-      result = value.toString();
+      result = value[2].toNumber();
       console.log(result);
-      // output.innerHTML = result;
       return result;
     });
   }
-  */
-
-  /**
-   * Get total token amouts that has been payed out the by pool by different tokens
-   *
-   * Frontend page: Pool info page (can be the same as Pool contributor page)
-   *
-   * @param {string} poolAddress address of the Pool this function iteracts with
-   * @param {string} tokenAddress address of the token
-   * we want to query the payout amount in ETH is 0x0
-   * @return payout amount
-   */
-  /*
-  async getTotalPayedOutByToken(poolAddress, tokenAddress) {
-    let instance;
-    let result;
-    Pool.deployed().then((_instance) => {
-      instance = _instance;
-      return instance.poolList.call(index, { from: this.account });
-    }).then((value) => {
-      result = value.toString();
-      console.log(result);
-      // output.innerHTML = result;
-      return result;
-    });
-  }
-  */
 
   /**
    * Cehck if the pool funds have been sent to sale
@@ -1390,21 +1396,20 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return {boolean} true: sent, false: not sent yet
    */
-  /*
+  
   async isSentToSale(poolAddress) {
     let instance;
     let result;
-    Pool.deployed().then((_instance) => {
+    Pool.at(poolAddress).then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: this.account });
+      return instance.poolStats.call({ from: this.account });
     }).then((value) => {
-      result = value.toString();
+      result = value[4];
       console.log(result);
-      // output.innerHTML = result;
       return result;
     });
   }
-  */
+ 
 
   /**
    * Check if token receiving is confirmed
@@ -1414,17 +1419,42 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return {boolean} true: confirmed, false: not confirmed yet
    */
-  /*
+  
   async areTokensReceivedConfirmed(poolAddress) {
     let instance;
     let result;
-    Pool.deployed().then((_instance) => {
+    Pool.at(poolAddress).then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: this.account });
+      return instance.poolStats.call({ from: this.account });
     }).then((value) => {
-      result = value.toString();
+      result = value[3];
       console.log(result);
-      // output.innerHTML = result;
+      return result;
+    });
+  }
+ 
+
+
+  /** FIX CONTRACT (GETTER)
+   * Get total token amouts that has been payed out the by pool by different tokens
+   *
+   * Frontend page: Pool info page (can be the same as Pool contributor page)
+   *
+   * @param {string} poolAddress address of the Pool this function iteracts with
+   * @param {string} tokenAddress address of the token
+   * we want to query the payout amount in ETH is 0x0
+   * @return payout amount
+   */
+/*   
+  async getTotalPayedOutByToken(poolAddress, tokenAddress) {
+    let instance;
+    let result;
+    Pool.at(poolAddress).then((_instance) => {
+      instance = _instance;
+      return instance.totalPayedOut.call(tokenAddress, { from: this.account });
+    }).then((value) => {
+      result = value;
+      console.log(result);
       return result;
     });
   }
@@ -1465,23 +1495,22 @@ export default class ConnectICO {
    * @param {number} index
    * @return {string} pool contributor address
    */
-  /*
+  
   async getContributor(poolAddress, index) {
     let instance;
     let result;
-    Pool.deployed().then((_instance) => {
+    Pool.at(poolAddress).then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: this.account });
+      return instance.contributorList.call(index, { from: this.account });
     }).then((value) => {
-      result = value.toString();
+      result = value;
       console.log(result);
-      // output.innerHTML = result;
       return result;
     });
   }
-  */
+ 
 
-  /**
+  /** FIX CONTRACT (GETTER)
    * Get number of individual pool contributors
    *
    * Frontend page: Pool info page (can be the same as Pool contributor page)
@@ -1489,24 +1518,23 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return {number} number of individual pool contributors
    */
-  /*
+/*   
   async getContributorNumber(poolAddress) {
     let instance;
     let result;
-    Pool.deployed().then((_instance) => {
+    Pool.at(poolAddress).then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: this.account });
+      return instance.contributorList.length.call({ from: this.account });
     }).then((value) => {
-      result = value.toString();
+      result = value;
       console.log(result);
-      // output.innerHTML = result;
       return result;
     });
   }
-  */
+*/
 
   /**
-   * Get the least contribuition time of a specific contributor
+   * Get the last contribuition time of a specific contributor
    *
    * Frontend page: Pool info page (can be the same as Pool contributor page)
    *
@@ -1514,21 +1542,20 @@ export default class ConnectICO {
    * @param {string} contributorAddress address of contributor
    * @return contribution time
    */
-  /*
+  
   async getLastContributionTimeByContributor(poolAddress, contributorAddress) {
     let instance;
     let result;
-    Pool.deployed().then((_instance) => {
+    Pool.at(poolAddress).then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: this.account });
+      return instance.contributors.call(contributorAddress, { from: this.account });
     }).then((value) => {
-      result = value.toString();
+      result = value[0].toNumber();
       console.log(result);
-      // output.innerHTML = result;
       return result;
     });
   }
-  */
+ 
 
   /**
    * Get ETH contribution amount before fees applied by pool contributor
@@ -1539,21 +1566,20 @@ export default class ConnectICO {
    * @param {string} contributorAddress contributor address
    * @return contribution amount
    */
-  /*
+  
   async getGrossContributionByContributor(poolAddress, contributorAddress) {
     let instance;
     let result;
-    Pool.deployed().then((_instance) => {
+    Pool.at(poolAddress).then((_instance) => {
       instance = _instance;
-      return instance.poolList.call(index, { from: this.account });
+      return instance.contributors.call(contributorAddress, { from: this.account });
     }).then((value) => {
-      result = value.toString();
+      result = value[1].toNumber();
       console.log(result);
-      // output.innerHTML = result;
       return result;
     });
   }
-  */
+ 
 
   /**
    * Get payout amounts by token by pool contributor
