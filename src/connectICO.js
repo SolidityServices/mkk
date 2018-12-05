@@ -1087,6 +1087,50 @@ export default class ConnectICO {
       return result;
     });
   }
+
+  /**
+   * Get unix timestamp in seconds for start date of the sale
+   *
+   * Frontend page: Pool info page (can be the same as Pool contributor page)
+   *
+   * @param {string} poolAddress address of the Pool this function iteracts with
+   * @return sale start date
+   */
+
+  async getStartDate(poolAddress) {
+    let instance;
+    let result;
+    Pool.at(poolAddress).then((_instance) => {
+      instance = _instance;
+      return instance.getParams1.call({ from: this.account });
+    }).then((value) => {
+      result = value[2].toNumber();
+      console.log(result);
+      return result;
+    });
+  }
+
+  /**
+   * Get unix timestamp in seconds for end date of the sale
+   *
+   * Frontend page: Pool info page (can be the same as Pool contributor page)
+   *
+   * @param {string} poolAddress address of the Pool this function iteracts with
+   * @return sale end date
+   */
+
+  async getEndDate(poolAddress) {
+    let instance;
+    let result;
+    Pool.at(poolAddress).then((_instance) => {
+      instance = _instance;
+      return instance.getParams1.call({ from: this.account });
+    }).then((value) => {
+      result = value[3].toNumber();
+      console.log(result);
+      return result;
+    });
+  }
  
 
   /**

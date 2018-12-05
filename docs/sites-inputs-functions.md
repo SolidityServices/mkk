@@ -19,7 +19,7 @@
 - Flat fee
   + description: Fix fee paid by the creator to the service provider for creating a new pool
   + format in contract: wei
-  + display format: ether - https://etherconverter.online/ 1 ether = 1000000000000000000 wei, if not secified, should be 0
+  + display format: ether - https://etherconverter.online/ 1 ether = 1000000000000000000 wei, if not specified, should be 0
   + function: getFlatFee()
 
 - Max allocation fee
@@ -75,17 +75,17 @@
 - min contribution (optional)
   + description: Minimum contribution amount allowed
   + input field type: Number input field in ether units with any amount of decimals
-  + desired format for contract: converted to wei units: https://etherconverter.online/ 1 ether = 1000000000000000000 wei, if not secified, should be 0
+  + desired format for contract: converted to wei units: https://etherconverter.online/ 1 ether = 1000000000000000000 wei, if not specified, should be 0
 
 - max contribution (optional)
   + description: Maximum contribution amount allowed
   + input field type: Number input field in ether units
-  + desired format for contract: converted to wei units: https://etherconverter.online/ 1 ether = 1000000000000000000 wei, if not secified, should be 0
+  + desired format for contract: converted to wei units: https://etherconverter.online/ 1 ether = 1000000000000000000 wei, if not specified, should be 0
 
 - min pool goal (optional)
   + description: Minimum goal for the pool 
   + input field type: Number input field in ether units
-  + desired format for contract: converted to wei units: https://etherconverter.online/ 1 ether = 1000000000000000000 wei, if not secified, should be 0
+  + desired format for contract: converted to wei units: https://etherconverter.online/ 1 ether = 1000000000000000000 wei, if not specified, should be 0
 
 - max pool allocation
   + description: Maximium amount of funds collectable by the pool
@@ -103,7 +103,7 @@
   + desired format for contract: boolean
 
 - transfer value
-  + description: 
+  + description: Amount of ether creator needs to send
   + input field type: no input field, calculated value: `(PoolFactory.params.flatFee + PoolFactory.params.maxAllocationFee * maxPoolAllocation / 1000)` - connectICO.js: `getFlatFee()`, `getMaxAllocationFeeRate()`
   + desired format for contract: converted to wei units: https://etherconverter.online/ 1 ether = 1000000000000000000 wei
 
@@ -253,6 +253,137 @@ All functions on this page will need the poolAddress, before arriving to this pa
 All functions on this page will need the poolAddress, before arriving to this page, the user needs to select a pool from the list
 
 ## To display
+
+- pool contract address
+  + description: address of the pool
+  + format in contract: address type
+  + display format: sting
+  + function: needs to be known at this point, can be queried from poolFactory: `getPool(index)`
+
+- pool balance
+  + description: eth balance of the pool
+  + format in contract: wei
+  + display format: ether - https://etherconverter.online/ 1 ether = 1000000000000000000 wei
+  + function: `getPoolBalance(poolAddress)`
+
+- allGrossContributions
+  + description: all contributions received by the pool
+  + format in contract: wei
+  + display format: ether - https://etherconverter.online/ 1 ether = 1000000000000000000 wei
+  + function: `getAllGrossContributions(poolAddress)`
+
+- creator address
+  + description:
+  + format in contract: address type
+  + display format: sting
+  + function: `getCreatorAddress(poolAddress)`
+
+- provider address 
+  + description: 
+  + format in contract: address type
+  + display format: sting
+  + function: `getProviderAddress(poolAddress)`
+
+- creatorStash
+  + description: accumulated fees for the pool creator
+  + format in contract: wei
+  + display format: ether - https://etherconverter.online/ 1 ether = 1000000000000000000 wei
+  + function: `getCreatorStash(poolAddress)`
+
+- providerStash
+  + description: accumulated fees for the pool provider
+  + format in contract: wei
+  + display format: ether - https://etherconverter.online/ 1 ether = 1000000000000000000 wei
+  + function: `getProviderStash(poolAddress)`
+
+- sentToSale
+  + description: if funds have been sent from the pool to the sale
+  + display format: boolean
+  + format in contract: boolean 
+  + function: `isSentToSale(poolAddress)`
+
+- tokensReceivedConfirmed
+  + description: if sale tokens have been received from the sale to the pool
+  + display format: boolean
+  + format in contract: boolean
+  + function: `areTokensReceivedConfirmed(poolAddress)`
+
+- sale address
+  + description: Ethereum address of the token sale contract
+  + format in contract: address type
+  + display format: sting
+  + function: `getSaleAddress(poolAddress)`
+
+- token address
+  + description: Ethereum address of the erc-20 token contract of the sale
+  + format in contract: address type
+  + display format: sting
+  + function: `getTokenAddress(poolAddress)`
+
+- creator fee rate
+  + description: Fee percentage collected for the pool creator
+  + display format: number input field, percentage value with two decimal accuracy e.g 12.34%, allowed range: 0-100
+  + format in contract: has to be an integer, has to be multiplied by 100, eg: 1.00% -> 100 , 100.00% -> 10000, 12.34% -> 1234
+  + function: `getCreatorFeeRate(poolAddress)`
+  
+- provider fee rate
+  + description: Fee percentage collected for the provider
+  + display format: number input field, percentage value with two decimal accuracy e.g 12.34%, allowed range: 0-100
+  + format in contract: has to be an integer, has to be multiplied by 100, eg: 1.00% -> 100 , 100.00% -> 10000, 12.34% -> 1234
+  + function: `getProviderFeeRate(poolAddress)`
+
+- sale start date
+  + description: Start date of the token sale
+  + display format: date and time input field
+  + format in contract: unix timestamp with one second resolution e.g: 2018-11-26T20:30:35+00:00 -> 1543264235
+  + function: `getStartDate(poolAddress)`
+
+- sale end date
+  + description: End date of the token sale
+  + display format: date and time input field
+  + format in contract: unix timestamp with one second resolution e.g: 2018-11-26T20:30:35+00:00 -> 1543264235
+  + function: `getEndDate(poolAddress)`
+
+- min contribution 
+  + description: Minimum contribution amount allowed
+  + format in contract: wei
+  + display format: ether - https://etherconverter.online/ 1 ether = 1000000000000000000 wei
+  + function: `getMinContribution(poolAddress)`
+
+- max contribution 
+  + description: Maximum contribution amount allowed
+  + format in contract: wei
+  + display format: ether - https://etherconverter.online/ 1 ether = 1000000000000000000 wei
+  + function: `getMaxContribution(poolAddress)`
+
+- min pool goal 
+  + description: Minimum goal for the pool 
+  + format in contract: wei
+  + display format: ether - https://etherconverter.online/ 1 ether = 1000000000000000000 wei
+  + function: `getMinPoolGoal(poolAddress)`
+
+- max pool allocation
+  + description: Maximium amount of funds collectable by the pool
+  + format in contract: wei
+  + display format: ether - https://etherconverter.online/ 1 ether = 1000000000000000000 wei
+  + function: `getMaxPoolAllocation(poolAddress)`
+
+- withdraw timelock (optional)
+  + description: The amount of time has to be elapsed between contribution and withdrawal of contribution
+  + display format: time duration input with settable amount of days, hours, seconds
+  + format in contract: unix timestamp for durations with one second resolution e.g: 01h-01m-01s -> 3661
+  + function: `getWithdrawTimelock(poolAddress)`
+
+- is whitelist pool
+  + description: Will the pool have a whitelist for allowed users
+  + display format: boolean
+  + format in contract: boolean
+  + function: `isWhitelistPool(poolAddress)`
+
+  ### Batch functions
+  
+  - `getAllPoolStats(poolAddress)`
+  - `getPoolParams(poolAddress)`
 
 # Pool contributor page
 
