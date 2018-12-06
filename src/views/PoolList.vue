@@ -37,34 +37,34 @@
             <div class="d-none d-lg-flex col-lg-1"></div>
             <div class="col-12 col-lg-3 col-2xl-2 py-2">
                 <form class="form-inline my-2 my-lg-0">
-                    <input class="w-75 form-control search-form" type="search" placeholder="Search" aria-label="Search">
-                    <button class="w-25 search-form-btn my-2 my-sm-0 text-right" type="submit"><img src="../assets/search.png" alt=""></button>
+                    <input class="w-75 form-control search-form" type="search" placeholder="Search"
+                           aria-label="Search">
+                    <button class="w-25 search-form-btn my-2 my-sm-0 text-right" type="submit">
+                      <img src="../assets/search.png" alt="">
+                    </button>
                 </form>
             </div>
             <div class="d-none d-xl-flex col-xl-2 col-2xl-3"></div>
-            
+
             <div class="d-none d-xl-flex col-lg-2"></div>
             <div class="col-lg-12 col-xl-8 col-2xl-7 mb-5 mt-3">
                 <hr class="blue-hr-fullw w-100">
             </div>
             <div class="d-none d-xl-flex col-xl-2 col-2xl-3"></div>
 
-
-
             <pool-list-item></pool-list-item>
             <pool-list-item></pool-list-item>
             <pool-list-item></pool-list-item>
-
-            
         </div>
     </div>
-    
+
 </template>
 
 <script>
 import PoolListItem from '../components/PoolListItem.vue';
+
 export default {
-components: {
+  components: {
     'pool-list-item': PoolListItem,
   },
   data() {
@@ -72,7 +72,7 @@ components: {
 
     };
   },
-}
+};
 </script>
 
 <style lang="scss">
@@ -146,5 +146,3 @@ components: {
     }
 
 </style>
-
-

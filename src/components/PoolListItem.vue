@@ -7,7 +7,11 @@
     <div class="d-none d-xl-flex col-xl-2"></div>
     <div class="col-12 col-lg-3 col-xl-2 border-right">
         <div class="pl-3 pt-1">
-            <div class="orange-24-bold">Sparkster<span class="pl-3 d-inline"><img src="../assets/heart.png" alt=""></span></div>
+            <div class="orange-24-bold">Sparkster
+              <span class="pl-3 d-inline">
+                <img src="../assets/heart.png" alt=""/>
+              </span>
+            </div>
             <div class="d-flex pt-1">
                 <div class="pr-1"><img src="../assets/b-icon-1.png" alt=""></div>
                 <div class="pr-1"><img src="../assets/b-icon-2.png" alt=""></div>
@@ -26,7 +30,7 @@
                     <button class="btn blue-btn-2 blue-10-bold px-3">Pledge</button>
                 </div>
             </div>
-            
+
         </div>
 
     </div>
@@ -67,7 +71,8 @@
                 </div>
             </div>
             <div class="ml-auto position-relative">
-                <div class="profile-img" v-bind:style="{'background-image': 'url(' + require('../assets/casey.jpg') + ')'}">
+                <div class="profile-img"
+                 v-bind:style="{'background-image': 'url(' + require('../assets/casey.jpg') + ')'}">
                     <div class="profile-filter"></div>
                 </div>
                 <div class="profile-name white-12-bold">Casey Neistat</div>
@@ -83,13 +88,13 @@
     <div class="d-none d-xl-flex col-xl-2 col-2xl-3"></div>
 
 </div>
-    
+
 </template>
 
 <script>
 export default {
-    
-}
+
+};
 </script>
 
 <style lang="scss">
@@ -166,7 +171,4 @@ export default {
             max-width: 58.333333%;
         }
     }
-
-
-
 </style>
