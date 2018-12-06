@@ -389,27 +389,39 @@ All functions on this page will need the poolAddress, before arriving to this pa
 
 All functions on this page will need the poolAddress, before arriving to this page, the user needs to select a pool from the list
 
+TO DO
+
 # Pool factory admin page 
 
-(page for only insiders, no need for fancy desing)
+(page for only insiders, no need for fancy design)
+
+TO DO
 
 # Pool provider admin page 
 
 All functions on this page will need the poolAddress, before arriving to this page, the user needs to select a pool from the list
 
-(page for only insiders, no need for fancy desing)
+(page for only insiders, no need for fancy design)
+
+TO DO
 
 # KYC admin page 
 
-(page for only insiders, no need for fancy desing)
+(page for only insiders, no need for fancy design)
+
+TO DO
 
 # Token Push Registry admin page 
 
-(page for only insiders, no need for fancy desing)
+(page for only insiders, no need for fancy design)
+
+TO DO
 
 # Pool listing page 
 
 (just a simple page to select pools, no need for MKK design)
+
+TO DO
 
 # Notes
 - pool = deal
