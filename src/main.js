@@ -15,6 +15,8 @@ Vue.use(Notifications);
 
 Vue.config.productionTip = false;
 
+let initSuccess = false;
+
 window.connectICO = new ConnectICO();
 if (window.ethereum) {
   console.log('window.ethereum is defined');
@@ -25,7 +27,9 @@ if (window.ethereum) {
     window.ethereum.enable();
     // Accounts now exposed
     window.web3.eth.sendTransaction({/* ... */});
+    initSuccess = true;
   } catch (error) {
+    initSuccess = false;
     // User denied account access...
   }
 } else if (window.web3) {
@@ -34,6 +38,7 @@ if (window.ethereum) {
   window.web3 = new Web3(Web3.currentProvider);
   // Acccounts always exposed
   Web3.eth.sendTransaction({/* ... */});
+  initSuccess = true;
 } else {
   // Non-dapp browsers...
   console.log('Non-Ethereum browser detected. '
@@ -44,8 +49,12 @@ if (window.ethereum) {
     + 'More info here: http://truffleframework.com/tutorials/truffle-and-metamask');
   // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
   window.web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+  initSuccess = false;
 }
-window.connectICO.start();
+
+if (initSuccess) {
+  window.connectICO.start();
+}
 
 new Vue({
   router,
