@@ -248,7 +248,7 @@ All functions on this page will need the poolAddress, before arriving to this pa
   
 
 # Pool info page
-(can be just a section in Pool admin and Pool Contributor page)
+(should be just a section in Pool admin and Pool Contributor page)
 
 All functions on this page will need the poolAddress, before arriving to this page, the user needs to select a pool from the list
 

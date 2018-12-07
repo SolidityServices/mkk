@@ -246,7 +246,7 @@ contract Pool {
     */
 
     
-    function confirmTokensReceived(uint tokensExpected) public onlyCreator{
+    function confirmTokensReceived(uint tokensExpected) public onlyAdmin{
         require(poolStats.sentToSale, "confirmTokensReceived(uint tokensExpected): Error, the pools funds were not sent to the sale yet");
         require(!poolStats.tokensReceivedConfirmed, "confirmTokensReceived(uint tokensExpected): Error, tokens are already confirmed as received");
         require (tokensExpected > 0, "confirmTokensReceived(uint tokensExpected): Error, number of tokens expected has to be greater than 0");
