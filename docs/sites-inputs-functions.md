@@ -196,7 +196,7 @@ All functions on this page will need the poolAddress, before arriving to this pa
 
 #### Function for all params
 
-
+`setPoolParamsCreator()`
 
 ### Manage whitelist
 
