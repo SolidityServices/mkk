@@ -2112,7 +2112,7 @@ export default class ConnectICO {
     let result;
     Pool.at(poolAddress).then((_instance) => {
       instance = _instance;
-      return instance.poviderWithdraw({ from: this.account});
+      return instance.providerWithdraw({ from: this.account});
     }).then((value) => {
       result = value;
       console.log(result);

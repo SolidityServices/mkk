@@ -4,7 +4,7 @@ contract KYC {
     address public owner;
     mapping(address => bool) public admins; 
     mapping(address => bool) public kycAddresses;
-    mapping(address => string) public kycCountry;
+    mapping(address => bytes32) public kycCountry;
     
     modifier onlyOwner{
         require(msg.sender == owner, "modifier onlyOwner: Error, tx was not initiated by owner address");
@@ -39,11 +39,13 @@ contract KYC {
         require(addressList.length == countryList.length,  "addKYCAddress(address[] addressList, bytes3[] countryList): Error, addressList and countryList has different lenghts");
         for(uint i = 0; i < addressList.length; i++){
             kycAddresses[addressList[i]] = true;
-            kycCountry[addressList[i]] = bytes3ToString(countryList[i]);
+            //kycCountry[addressList[i]] = bytes3ToString(countryList[i]);
+            kycCountry[addressList[i]] = countryList[i];
+
         }
     }
 
-    function addKYCAddress(address KYCAddress, string country) public onlyAdmin {
+    function addKYCAddress(address KYCAddress, bytes3 country) public onlyAdmin {
         kycAddresses[KYCAddress] = true;
         kycCountry[KYCAddress] = country;
     }
@@ -57,6 +59,7 @@ contract KYC {
         return kycAddresses[addr];
     }
 
+/* 
     function bytes3ToString(bytes3 x) private pure returns (string) {
         bytes memory bytesString = new bytes(3);
         uint charCount = 0;
@@ -73,5 +76,6 @@ contract KYC {
         }
         return string(bytesStringTrimmed);
     }
+     */
     
 }

@@ -44,7 +44,7 @@ contract Pool {
 
     mapping(address => bool) public admins; //additional admins
     mapping(address => bool) public whitelist; 
-    mapping(bytes3 => bool) public kycCountryBlacklist; //key: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
+    mapping(bytes32 => bool) public kycCountryBlacklist; //key: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
 
     mapping(address => ContributorData) public contributors;
     mapping(address => mapping(address => uint)) private payedOut; //(contributorAddress => (tokenAddress => amountPayedOut)) 0x0 tokenAddress: ETH
@@ -142,18 +142,19 @@ contract Pool {
         }
     }*/
 
-    function addCountryBlacklist(bytes3 country) public onlyAdmin {
+    function addCountryBlacklist(bytes32 country) public onlyAdmin {
         kycCountryBlacklist[country] = true;
     }
 
-    function removeCountryBlacklist(bytes3 country) public onlyAdmin {
+    function removeCountryBlacklist(bytes32 country) public onlyAdmin {
         kycCountryBlacklist[country] = false;
     }
     
     function contribute() public payable {
         if(params.whitelistPool) require(whitelist[msg.sender], "contribute(): Error, tx was not initiated by whitelisted address");
         require(KYC(params.kycAddress).checkKYC(msg.sender), "contribute(): Error, tx was not initiated by KYC address");
-        require(SafeMath.add(msg.value, contributors[msg.sender].grossContribution) >= params.minContribution, "contribute(): Error, tx value is lower than minimum allowed");
+        require(!kycCountryBlacklist[KYC(params.kycAddress).kycCountry(msg.sender)], "contribute(): Contributors countr is on blacklist");
+        require(SafeMath.add(msg.value, contributors[msg.sender].grossContribution) >= params.minContribution, "contribute(): Error, contribution value is lower than minimum allowed");
         require(params.maxContribution == 0 || SafeMath.add(msg.value, contributors[msg.sender].grossContribution) <= params.maxContribution, "contribute(): Error, tx value is higher than maximum allowed");
         require(params.maxPoolAllocation == 0 || SafeMath.add(msg.value, poolStats.allGrossContributions) <= params.maxPoolAllocation, "contribute(): Error, all contributions are higher than maximum allowed");
         require(block.timestamp < params.saleEndDate, "contribute(): Error, the sale has ended");
@@ -300,7 +301,7 @@ contract Pool {
         //empty fallback to take refund tx-s
     }
 
-    function poviderWithdraw() public onlyProvider{
+    function providerWithdraw() public onlyProvider{
         uint amount = poolStats.providerStash;
         poolStats.providerStash = 0;
         params.creator.transfer(amount);
