@@ -1,9 +1,5 @@
 <template>
   <div id="app">
-    <router-link :to="{name: 'pool-creator'}">Pool Creator</router-link>
-    <router-link :to="{name: 'project'}">Project</router-link>
-    <router-link :to="{name: 'deploy-contract'}">Deploy Contract</router-link>
-    <router-link :to="{name: 'pool-list'}">Pool List</router-link>
     <custom-header></custom-header>
     <router-view></router-view>
     <custom-footer></custom-footer>

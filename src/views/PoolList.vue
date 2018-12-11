@@ -31,12 +31,8 @@
                 </form>
             </div>
         </div>
-      <div class="d-flex flex-row justify-content-center">
-        <hr class="blue-hr-fullw w-100">
-      </div>
 
-
-      <div class="d-flex flex-row flex-wrap">
+      <div class="d-flex flex-row flex-wrap mb-3">
           <pool-list-item v-for="pools in filteredPools"></pool-list-item>
           <pool-list-item></pool-list-item>
           <pool-list-item></pool-list-item>
