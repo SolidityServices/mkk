@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "truffle compile && vue-cli-service serve",
     "build": "truffle compile && vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "dev": "vue-cli-service serve"
   },
   "dependencies": {
     "bootstrap": "^4.1.3",
