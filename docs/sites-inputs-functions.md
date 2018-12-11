@@ -128,6 +128,7 @@ createPool(
 
 # Pool admin page
 
+(Called Pool Dashboard in some mkk docs)
 All functions on this page will need the poolAddress, before arriving to this page, the user needs to select a pool from the list
 
 ## Inputs
@@ -388,32 +389,6 @@ All functions on this page will need the poolAddress, before arriving to this pa
 # Pool contributor page
 
 All functions on this page will need the poolAddress, before arriving to this page, the user needs to select a pool from the list
-
-TO DO
-
-# Pool factory admin page 
-
-(page for only insiders, no need for fancy design)
-
-TO DO
-
-# Pool provider admin page 
-
-All functions on this page will need the poolAddress, before arriving to this page, the user needs to select a pool from the list
-
-(page for only insiders, no need for fancy design)
-
-TO DO
-
-# KYC admin page 
-
-(page for only insiders, no need for fancy design)
-
-TO DO
-
-# Token Push Registry admin page 
-
-(page for only insiders, no need for fancy design)
 
 TO DO
 
