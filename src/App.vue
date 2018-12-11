@@ -1,7 +1,7 @@
 <template>
-  <div id="app">
+  <div id="app" class="d-flex flex-column wrapper">
     <custom-header></custom-header>
-    <router-view></router-view>
+    <router-view class="flex-grow-1"></router-view>
     <custom-footer></custom-footer>
   </div>
 </template>
@@ -34,6 +34,10 @@ html{
   font-family: 'Montserrat', sans-serif;
   body {
     overflow: hidden;
+
+    .wrapper {
+      min-height: 100vh;
+    }
   }
 }
 
