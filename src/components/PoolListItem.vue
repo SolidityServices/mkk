@@ -1,5 +1,8 @@
 <template>
-    <div class="d-flex flex-column w-100">
+    <div class="d-flex flex-column w-100 mb-3">
+      <div class="d-flex flex-row mb-3">
+        <hr class="blue-hr-fullw w-100">
+      </div>
       <div class="d-flex flex-row">
         <div class="active-block white-12-bold">ACTIVE</div>
       </div>
@@ -81,9 +84,6 @@
             </div>
           </div>
         </div>
-      </div>
-      <div class="d-flex flex-row">
-        <hr class="blue-hr-fullw w-100">
       </div>
     </div>
 </template>

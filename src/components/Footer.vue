@@ -56,14 +56,14 @@ export default {};
 <style lang="scss">
 
   footer {
-    height: 550px;
+    height: 400px;
     background: url('../assets/footer-bg.png') center;
     background-size: cover;
   }
 
   @media(max-width: 992px) {
     footer {
-      height: 250px;
+      height: 200px;
     }
   }
 
