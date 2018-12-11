@@ -15,7 +15,7 @@ module.exports = {
       provider: () => new HDWalletProvider(infura.mnemonic, `https://rinkeby.infura.io/v3/${infura.apiKey}`),
       network_id: 4,
       gas: 5000000,
-      gasPrice: 20000000000, //20 gwei
+      gasPrice: 20000000000, // 20 gwei
     },
   },
   solc: {

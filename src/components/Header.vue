@@ -1,6 +1,6 @@
 <template>
-  <header class="d-flex justify-content-center">
-    <div class="d-flex flex-row w-80 h-100">
+  <header class="d-flex flex-column justify-content-center align-items-center">
+    <div class="d-flex flex-row w-80 mb-4">
       <div class="d-flex align-items-center justify-content-center justify-content-sm-start col-12 col-sm">
         <img src="../assets/logo.png" alt="">
       </div>
@@ -13,6 +13,12 @@
         <span><a href="#"><img src="../assets/header/header-icon-3.png" alt=""></a></span>
       </div>
     </div>
+    <div class="d-flex flex-row flex-wrap w-80 w-lg-60 justify-content-center">
+      <router-link :to="{name: 'pool-creator'}" class="custom-navbar-item">Pool Creator</router-link>
+      <router-link :to="{name: 'project'}" class="custom-navbar-item">Project</router-link>
+      <router-link :to="{name: 'deploy-contract'}" class="custom-navbar-item">Deploy Contract</router-link>
+      <router-link :to="{name: 'pool-list'}" class="custom-navbar-item">Pool List</router-link>
+    </div>
   </header>
 </template>
 
@@ -20,7 +26,8 @@
 export default {};
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+  @import '../scss/_variables.scss';
 
   header {
     height: 170px;
@@ -30,13 +37,19 @@ export default {};
 
   @media(max-width: 576px) {
     header {
-      height: 110px;
-
       .header-logo {
         img {
           width: 50%;
         }
       }
     }
+  }
+
+  .custom-navbar-item {
+    font-size: 18px;
+    color: $white;
+    text-transform: uppercase;
+    padding-left: 10px;
+    padding-right: 10px;
   }
 </style>
