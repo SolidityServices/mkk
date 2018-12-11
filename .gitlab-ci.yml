@@ -18,11 +18,15 @@ install_npm:
     expire_in: 20 mins
     paths:
     - dist/
+  variables:
+    MNEMONIC: ${MNEMONIC_DEV}
+    INFURA_APIKEY: ${INFURA_APIKEY_DEV}
   script:
   - eval $(ssh-agent -s)
   - ssh-add /root/gitlab_ci_key
   - mkdir ~/.ssh || true
   - ssh-keyscan -t rsa gitlab.codecluster.tk >> ~/.ssh/known_hosts || true
+  - echo -e "{\n  \"mnemonic\": \"${MNEMONIC}\", \n  \"apiKey\": \"${INFURA_APIKEY}\"\n}" > infura.json
   - npm install -g truffle
   - npm install
   - npm run build
