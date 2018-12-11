@@ -111,31 +111,9 @@ export default class ConnectICO {
   // PoolFactory pool queries
 
   /**
-   * Return all existing pool addresses in a list
-   *
-   * Frontend page: PoolFactory info page
-   *
-   * @return {string[]} all existing pool addresses in a list
-   */
-
-  getAllPools() {
-    let instance;
-    let result;
-    PoolFactory.deployed().then((_instance) => {
-      instance = _instance;
-      return instance.poolList.call({ from: this.account });
-    }).then((value) => {
-      result = value.toString();
-      console.log(result);
-      // output.innerHTML = result;
-      return result;
-    });
-  }
-
-  /**
    * Return one pool address of the given index
    *
-   * Frontend page: PoolFactory info page
+   * Frontend page: Pool listing page
    *
    * @param {number} index
    * @return {string} Pool address
@@ -155,67 +133,42 @@ export default class ConnectICO {
     });
   }
 
-
-  /**
-   *Returns a list of pool addresses between a first and last index (including boundaries)
-   *
-   * Frontend page: PoolFactory info page
-   *
-   * @param {number} firstIndex
-   * @param {number} lastIndex
-   * @return {string[]} list of pool adresses in range
-   */
-  /*
-  async getPoolRange(firstIndex, lastIndex){
-      var instance;
-      var result;
-      PoolFactory.deployed().then(function(_instance) {
-          instance = _instance;
-          return instance.poolList.call(index, {from: this.account});
-      }).then(function(value) {
-          result = value.toString();
-          console.log(result);
-          // output.innerHTML = result;
-          return result;
-      });
-  }
-  */
-
-  /** FIX CONTRACT (GETTER)
+  /** 
    * Retuns the number of pools created by the pool factory
    *
-   * Frontend page: PoolFactory info page
+   * Frontend page: Pool listing page
    *
    * @return {number} number of pools
    */
-/*
+
   async getPoolNumber() {
     let instance;
     let result;
     PoolFactory.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolList.length.call({ from: this.account });
+      return instance.getPoolNumber.call({ from: this.account });
     }).then((value) => {
       result = value.toNumber();
       console.log(result);
       return result;
     });
   }
- */
+
   /**
-   * Returns pool list for a sale address
+   * Returns one item of pool list for a sale address by its index
    *
-   * Frontend page: PoolFactory info page
+   * Frontend page: Pool listing page
    *
+   * @param {number} index
    * @param {string} saleAddress
-   * @return {string[]} list of pool adresses for a given sale
+   * @return {string} pool address
    */
-  async getPoolsBySales(saleAddress) {
+  async getPoolBySale(saleAddress, index) {
     let instance;
     let result;
     PoolFactory.deployed().then((_instance) => {
       instance = _instance;
-      return instance.poolsBySales.call(saleAddress, { from: this.account });
+      return instance.getPoolBySale.call(saleAddress, index, { from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
@@ -224,10 +177,77 @@ export default class ConnectICO {
     });
   }
 
+  /** 
+   * Retuns the number of pools created by the pool factory for one sale
+   *
+   * Frontend page: Pool listing page
+   *
+   * @param {string} saleAddress
+   * @return {number} number of pools
+   */
+
+  async getPoolsBySaleNumber(saleAddress) {
+    let instance;
+    let result;
+    PoolFactory.deployed().then((_instance) => {
+      instance = _instance;
+      return instance.getPoolsBySaleNumber.call(saleAddress, { from: this.account });
+    }).then((value) => {
+      result = value.toNumber();
+      console.log(result);
+      return result;
+    });
+  }
+
+  /**
+   * Returns one item of pool list for a sale address by its index
+   *
+   * Frontend page: Pool listing page
+   *
+   * @param {number} index
+   * @param {string} saleAddress
+   * @return {string} pool address
+   */
+  async getPoolByCreator(creatorAddress, index) {
+    let instance;
+    let result;
+    PoolFactory.deployed().then((_instance) => {
+      instance = _instance;
+      return instance.getPoolByCreator.call(creatorAddress, index, { from: this.account });
+    }).then((value) => {
+      result = value.toString();
+      console.log(result);
+      // output.innerHTML = result;
+      return result;
+    });
+  }
+
+  /** 
+   * Retuns the number of pools created by the pool factory by the given creator
+   *
+   * Frontend page: Pool listing page
+   *
+   * @param {string} creatorAddress
+   * @return {number} number of pools
+   */
+
+  async getPoolsByCreatorNumber(creatorAddress) {
+    let instance;
+    let result;
+    PoolFactory.deployed().then((_instance) => {
+      instance = _instance;
+      return instance.getPoolsByCreatorNumber.call(creatorAddress, { from: this.account });
+    }).then((value) => {
+      result = value.toNumber();
+      console.log(result);
+      return result;
+    });
+  }
+
   /**
    * Cheks if a pool exists
    *
-   * Frontend page: PoolFactory info page
+   * Frontend page: Pool listing page
    *
    * @param {string} poolAddress
    * @return {boolean} true if pool exists, fales if not
