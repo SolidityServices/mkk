@@ -116,7 +116,7 @@ contract PoolFactory{
         return poolList.length;
     }
 
-    function getPoolsBySaleNumber(address saleAddress) public view returns (uint){
+    function getPoolNumberBySale(address saleAddress) public view returns (uint){
         return poolsBySale[saleAddress].length;
     }
 
@@ -124,7 +124,7 @@ contract PoolFactory{
         return poolsBySale[saleAddress][index];
     }
 
-    function getPoolsByCreatorNumber(address creatorAddress) public view returns (uint){
+    function getPoolNumberByCreator(address creatorAddress) public view returns (uint){
         return poolsByCreator[creatorAddress].length;
     }
 

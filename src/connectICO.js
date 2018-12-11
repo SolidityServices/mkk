@@ -186,12 +186,12 @@ export default class ConnectICO {
    * @return {number} number of pools
    */
 
-  async getPoolsBySaleNumber(saleAddress) {
+  async getPoolNumberBySale(saleAddress) {
     let instance;
     let result;
     PoolFactory.deployed().then((_instance) => {
       instance = _instance;
-      return instance.getPoolsBySaleNumber.call(saleAddress, { from: this.account });
+      return instance.getPoolNumberBySale.call(saleAddress, { from: this.account });
     }).then((value) => {
       result = value.toNumber();
       console.log(result);
@@ -231,12 +231,12 @@ export default class ConnectICO {
    * @return {number} number of pools
    */
 
-  async getPoolsByCreatorNumber(creatorAddress) {
+  async getPoolNumberByCreator(creatorAddress) {
     let instance;
     let result;
     PoolFactory.deployed().then((_instance) => {
       instance = _instance;
-      return instance.getPoolsByCreatorNumber.call(creatorAddress, { from: this.account });
+      return instance.getPoolNumberByCreator.call(creatorAddress, { from: this.account });
     }).then((value) => {
       result = value.toNumber();
       console.log(result);
