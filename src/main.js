@@ -17,7 +17,10 @@ Vue.config.productionTip = false;
 
 let initSuccess = false;
 
-window.connectICO = new ConnectICO();
+const connectIco = new ConnectICO();
+window.connectICO = connectIco;
+Vue.prototype.$connectIco = connectIco;
+
 if (window.ethereum) {
   console.log('window.ethereum is defined');
   // Modern dapp browsers...

@@ -95,7 +95,7 @@ export default class ConnectICO {
       });
   }
 
-  
+
   /**
    *A status message for each page for the actual tx status
    *
@@ -117,7 +117,7 @@ export default class ConnectICO {
    *
    * @return {string[]} all existing pool addresses in a list
    */
-  /*
+
   getAllPools() {
     let instance;
     let result;
@@ -131,7 +131,6 @@ export default class ConnectICO {
       return result;
     });
   }
-  */
 
   /**
    * Return one pool address of the given index
@@ -189,7 +188,7 @@ export default class ConnectICO {
    *
    * @return {number} number of pools
    */
-/*   
+/*
   async getPoolNumber() {
     let instance;
     let result;
@@ -845,7 +844,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return {string} address of the KYC contract
    */
-  
+
   async getPoolKycContractAddress(poolAddress) {
     let instance;
     let result;
@@ -867,7 +866,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return {string} address provider
    */
-  
+
   async getProviderAddress(poolAddress) {
     let instance;
     let result;
@@ -880,7 +879,7 @@ export default class ConnectICO {
       return result;
     });
   }
-  
+
 
   /**
    * Address of the pool creator
@@ -890,7 +889,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return {string} pool creator address
    */
-  
+
   async getCreatorAddress(poolAddress) {
     let instance;
     let result;
@@ -903,7 +902,7 @@ export default class ConnectICO {
       return result;
     });
   }
-  
+
 
   /**
    * Get fee rate for the service provider after every pool income (1/1000)
@@ -913,7 +912,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return provider fee rate
    */
-  
+
   async getProviderFeeRate(poolAddress) {
     let instance;
     let result;
@@ -926,7 +925,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
   /**
    * Get fee rate for the pool creator after every pool income (1/1000)
@@ -936,7 +935,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return creator fee rate
    */
-  
+
   async getCreatorFeeRate(poolAddress) {
     let instance;
     let result;
@@ -949,7 +948,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
   /**
    * Get address of the ICO token sale contract the pool is raising funds for
@@ -959,7 +958,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return {string} sale contract address
    */
-  
+
   async getSaleAddress(poolAddress) {
     let instance;
     let result;
@@ -972,7 +971,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
   /**
    * Get address of the erc20 token distributed in the sale
@@ -982,7 +981,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return {string} token address
    */
-  
+
   async getTokenAddress(poolAddress) {
     let instance;
     let result;
@@ -995,7 +994,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
   /**
    * Get minimum amount of ETH contribution allowed in one tx
@@ -1005,7 +1004,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return minium contribution
    */
-  
+
   async getMinContribution(poolAddress) {
     let instance;
     let result;
@@ -1018,7 +1017,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
   /**
    * Get maximum amount of ETH contribution allowed in one tx
@@ -1028,7 +1027,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return maximum contribution
    */
-  
+
   async getMaxContribution(poolAddress) {
     let instance;
     let result;
@@ -1041,7 +1040,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
   /**
    * Getminimum amount of ETH needed to be raised by the pool for the sale
@@ -1051,7 +1050,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return minimum pool goal
    */
-  
+
   async getMinPoolGoal(poolAddress) {
     let instance;
     let result;
@@ -1064,7 +1063,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
   /**
    * Get maximum amount of ETH allowed to be raised by the pool for the sale
@@ -1074,7 +1073,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return max pool goal
    */
-  
+
   async getMaxPoolAllocation(poolAddress) {
     let instance;
     let result;
@@ -1131,7 +1130,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
   /**
    * Get unix timestamp in seconds for how much
@@ -1142,7 +1141,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return withdraw timelock
    */
-  
+
   async getWithdrawTimelock(poolAddress) {
     let instance;
     let result;
@@ -1155,7 +1154,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
   /**
    * Get sale function signature for the case of sales,
@@ -1166,7 +1165,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return {string} sale function signature
    */
-  
+
   async getSaleParticipateFunctionSig(poolAddress) {
     let instance;
     let result;
@@ -1179,7 +1178,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
   /**
    * Get withdraw function signature for the case of sales,
@@ -1190,7 +1189,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return {string} withdraw function signature
    */
-  
+
   async getSaleWtidrawFunctionSig(poolAddress) {
     let instance;
     let result;
@@ -1203,7 +1202,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
   /**
    * Check if the pool enforces a whitelist for participants
@@ -1213,7 +1212,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return {boolean} is whitelist pool
    */
-  
+
   async isWhitelistPool(poolAddress) {
     let instance;
     let result;
@@ -1226,7 +1225,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
   /**
    * Checik if a given address is an admin address for the pool
@@ -1237,7 +1236,7 @@ export default class ConnectICO {
    * @param {string} address address to check
    * @return {boolean} is admin
    */
-  
+
   async isAdmin(poolAddress, address) {
     let instance;
     let result;
@@ -1250,7 +1249,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
   /**
    * Check if the given address is on the whitelist of the pool
@@ -1261,7 +1260,7 @@ export default class ConnectICO {
    * @param {string} address address to check
    * @return {boolean} is on whitelist
    */
-  
+
   async isOnWhitelist(poolAddress, address) {
     let instance;
     let result;
@@ -1274,7 +1273,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
   /**
    * Check a country code if its on blacklist for the pool
@@ -1285,7 +1284,7 @@ export default class ConnectICO {
    * @param {string} countryCode 3 letter country code (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3)
    * @return {boolean} is on blacklist
    */
-  
+
   async isOnCountryBlacklist(poolAddress, countryCode) {
     let instance;
     let result;
@@ -1298,7 +1297,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
   /**
    * Get all ETH balance of a given pool contract
@@ -1308,7 +1307,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return ETH balance
    */
-  
+
   async getPoolBalance(poolAddress) {
     let instance;
     let result;
@@ -1321,7 +1320,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
   /**
    * Get all Pool stats
    *
@@ -1362,7 +1361,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
   /**
    * Get all ETH contributions of the pool without applying fees
@@ -1372,7 +1371,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return all gross contributions
    */
-  
+
   async getAllGrossContributions(poolAddress) {
     let instance;
     let result;
@@ -1385,7 +1384,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
   /**
    * Get ETH amount that the pool creator collected from fees
@@ -1395,7 +1394,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return creator stash
    */
-  
+
   async getCreatorStash(poolAddress) {
     let instance;
     let result;
@@ -1408,7 +1407,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
   /**
    * Get ETH amount that the service provider collected from fees
@@ -1418,7 +1417,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return provider stash
    */
-  
+
   async getProviderStash(poolAddress) {
     let instance;
     let result;
@@ -1440,7 +1439,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return {boolean} true: sent, false: not sent yet
    */
-  
+
   async isSentToSale(poolAddress) {
     let instance;
     let result;
@@ -1453,7 +1452,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
   /**
    * Check if token receiving is confirmed
@@ -1463,7 +1462,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return {boolean} true: confirmed, false: not confirmed yet
    */
-  
+
   async areTokensReceivedConfirmed(poolAddress) {
     let instance;
     let result;
@@ -1476,7 +1475,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
 
   /** FIX CONTRACT (GETTER)
@@ -1489,7 +1488,7 @@ export default class ConnectICO {
    * we want to query the payout amount in ETH is 0x0
    * @return payout amount
    */
-/*   
+/*
   async getTotalPayedOutByToken(poolAddress, tokenAddress) {
     let instance;
     let result;
@@ -1539,7 +1538,7 @@ export default class ConnectICO {
    * @param {number} index
    * @return {string} pool contributor address
    */
-  
+
   async getContributor(poolAddress, index) {
     let instance;
     let result;
@@ -1552,7 +1551,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
   /** FIX CONTRACT (GETTER)
    * Get number of individual pool contributors
@@ -1562,7 +1561,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return {number} number of individual pool contributors
    */
-/*   
+/*
   async getContributorNumber(poolAddress) {
     let instance;
     let result;
@@ -1586,7 +1585,7 @@ export default class ConnectICO {
    * @param {string} contributorAddress address of contributor
    * @return contribution time
    */
-  
+
   async getLastContributionTimeByContributor(poolAddress, contributorAddress) {
     let instance;
     let result;
@@ -1599,7 +1598,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
   /**
    * Get ETH contribution amount before fees applied by pool contributor
@@ -1610,7 +1609,7 @@ export default class ConnectICO {
    * @param {string} contributorAddress contributor address
    * @return contribution amount
    */
-  
+
   async getGrossContributionByContributor(poolAddress, contributorAddress) {
     let instance;
     let result;
@@ -1623,7 +1622,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
   /** FIX CONTRACT (GETTER)
    * Get payout amounts by token by pool contributor
@@ -1708,7 +1707,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @param {string} adminAddress address of admin to remove
    */
-  
+
   async removeAdmin(poolAddress, adminAddress) {
     let instance;
     let result;
@@ -1778,7 +1777,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @param {string} whitelistAddress address to remove from whitelist
    */
-  
+
   async removeWhitelist(poolAddress, whitelistAddress) {
     let instance;
     let result;
@@ -1847,7 +1846,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @param {string} countryCode 3 letter country code (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3)
    */
-  
+
   async removeCountryBlacklist(poolAddress, countryCode) {
     let instance;
     let result;
@@ -1860,7 +1859,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
   /**
    * Contribute to pool payable - tx has to have ETH value
@@ -1983,7 +1982,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @param {string} recipientAddress address to push out their coins
    */
-  
+
   async pushOutToken(poolAddress, recipientAddress) {
     let instance;
     let result;
@@ -1996,7 +1995,7 @@ export default class ConnectICO {
       return result;
     });
   }
-  
+
 
   /**
    * Change erc20 token address distributed by the sale for the pool (only creator)
@@ -2018,7 +2017,7 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @param {BigNumber} tokensExpected amount of tokens expected from the sale
    */
-  
+
   async confirmTokensReceived(poolAddress, tokensExpected) {
     let instance;
     let result;
@@ -2031,7 +2030,7 @@ export default class ConnectICO {
       return result;
     });
   }
-  
+
 
   /**
    * Send pool funds to sale (only creator)
@@ -2040,7 +2039,7 @@ export default class ConnectICO {
    *
    * @param {string} poolAddress address of the Pool this function interacts with
    */
-  
+
   async sendToSale(poolAddress) {
     let instance;
     let result;
@@ -2053,7 +2052,7 @@ export default class ConnectICO {
       return result;
     });
   }
-  
+
 
   /**
    * Send pool funds to sale to predefined special function (only creator)
@@ -2062,7 +2061,7 @@ export default class ConnectICO {
    *
    * @param {string} poolAddress address of the Pool this function iteracts with
    */
-  
+
   async sendToSaleFunction(poolAddress) {
     let instance;
     let result;
@@ -2075,7 +2074,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
   /**
    * Whitdraw tokens from sale with predefined special function (only creator)
@@ -2084,7 +2083,7 @@ export default class ConnectICO {
    *
    * @param {string} poolAddress address of the Pool this function iteracts with
    */
-  
+
   async withdrawFromSaleFunction(poolAddress) {
     let instance;
     let result;
@@ -2097,7 +2096,7 @@ export default class ConnectICO {
       return result;
     });
   }
- 
+
 
   /**
    * Withdraw provider fee from the stash (onyl provider)
@@ -2106,7 +2105,7 @@ export default class ConnectICO {
    *
    * @param {string} poolAddress address of the Pool this function iteracts with
    */
-  
+
   async poviderWithdraw(poolAddress) {
     let instance;
     let result;
@@ -2149,7 +2148,7 @@ export default class ConnectICO {
    * Set all pool parameters settable by creator
    *
    * Should be null if you dont want to change a particular parameter
-   * 
+   *
    * @param {string} creator creator address
    * @param {number} creatorFeeRate 1/1000 fee rate of the pool income payed to the pool creator
    * @param {number} saleStartDate unix timestamp in seconds of the start of the sale
@@ -2264,7 +2263,7 @@ export default class ConnectICO {
 
       Pool.at(poolAddress).then((_instance) => {
         instance = _instance;
-        return instance.setParams(      
+        return instance.setParams(
           creator,
           creatorFeeRate,
           saleStartDate,
@@ -2290,7 +2289,7 @@ export default class ConnectICO {
    * Set all pool parameters settable by provider
    *
    * Should be null if you dont want to change a particular parameter
-   * 
+   *
    * @param {string} provider creator address
    * @param {number} providerFeeRate 1/1000 fee rate of the pool income payed to the pool creator
    * @param {number} maxPoolAllocation unix timestamp in seconds of the start of the sale
@@ -2334,7 +2333,7 @@ export default class ConnectICO {
 
       Pool.at(poolAddress).then((_instance) => {
         instance = _instance;
-        return instance.setParams(      
+        return instance.setParams(
           provider,
           providerFeeRate,
           maxPoolAllocation,
@@ -2362,7 +2361,7 @@ export default class ConnectICO {
     let result;
     Pool.at(poolAddress).then((_instance) => {
         instance = _instance;
-        return instance.setParams(      
+        return instance.setParams(
           providerAddress,
           0,
           0,
@@ -2390,7 +2389,7 @@ export default class ConnectICO {
     let result;
     Pool.at(poolAddress).then((_instance) => {
         instance = _instance;
-        return instance.setParams(      
+        return instance.setParams(
           creatorAddress,
           0,
           0,
@@ -2425,7 +2424,7 @@ export default class ConnectICO {
     let result;
     Pool.at(poolAddress).then((_instance) => {
         instance = _instance;
-        return instance.setParams(      
+        return instance.setParams(
           0x0,
           providerFeeRate,
           0,
@@ -2452,7 +2451,7 @@ export default class ConnectICO {
     let result;
     Pool.at(poolAddress).then((_instance) => {
         instance = _instance;
-        return instance.setParams(      
+        return instance.setParams(
           0x0,
           creatorFee,
           0,
@@ -2480,13 +2479,13 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @param {string} tokenAddress new token address
    */
-  
+
   async setTokenAddress(poolAddress, tokenAddress) {
   let instance;
     let result;
     Pool.at(poolAddress).then((_instance) => {
         instance = _instance;
-        return instance.setParams(      
+        return instance.setParams(
           0x0,
           0,
           0,
@@ -2505,7 +2504,7 @@ export default class ConnectICO {
         return result;
       });
   }
- 
+
 
   /**
    * Set if pool is whitelist pool (only creator)
@@ -2515,13 +2514,13 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @param {boolean} isWhitelistPool
    */
-  
+
   async setWhitelistPool(poolAddress, isWhitelistPool) {
     let instance;
     let result;
     Pool.at(poolAddress).then((_instance) => {
         instance = _instance;
-        return instance.setParams(      
+        return instance.setParams(
           0x0,
           0,
           0,
@@ -2540,7 +2539,7 @@ export default class ConnectICO {
         return result;
       });
   }
- 
+
 
   /**
    * Set new sale start date (only creator)
@@ -2550,13 +2549,13 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @param saleStartDate
    */
-  
+
   async setSaleStartDate(poolAddress, saleStartDate) {
     let instance;
     let result;
     Pool.at(poolAddress).then((_instance) => {
         instance = _instance;
-        return instance.setParams(      
+        return instance.setParams(
           0x0,
           0,
           saleStartDate,
@@ -2575,7 +2574,7 @@ export default class ConnectICO {
         return result;
       });
   }
- 
+
 
   /**
    * Set new sale end date (only creator)
@@ -2585,13 +2584,13 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @param saleEndDate
    */
-  
+
   async setSaleEndDate(poolAddress, saleEndDate) {
     let instance;
     let result;
     Pool.at(poolAddress).then((_instance) => {
         instance = _instance;
-        return instance.setParams(      
+        return instance.setParams(
           0x0,
           0,
           0,
@@ -2610,7 +2609,7 @@ export default class ConnectICO {
         return result;
       });
     }
- 
+
 
   /**
    * Set new minimum amount of ETH contribution allowed in one tx (only creator)
@@ -2620,13 +2619,13 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @param minContribution new minimum contribution
    */
-  
+
   async setMinContribution(poolAddress, minContribution) {
     let instance;
     let result;
     Pool.at(poolAddress).then((_instance) => {
         instance = _instance;
-        return instance.setParams(      
+        return instance.setParams(
           0x0,
           0,
           0,
@@ -2645,7 +2644,7 @@ export default class ConnectICO {
         return result;
       });
   }
- 
+
 
   /**
    * Set new maximum amount of ETH contribution allowed in one tx (only creator)
@@ -2655,13 +2654,13 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @param maxContribution new maximum contribution
    */
-  
+
   async setMaxContribution(poolAddress, maxContribution) {
 	let instance;
     let result;
     Pool.at(poolAddress).then((_instance) => {
         instance = _instance;
-        return instance.setParams(      
+        return instance.setParams(
           0x0,
           0,
           0,
@@ -2680,7 +2679,7 @@ export default class ConnectICO {
         return result;
       });
   }
- 
+
 
   /**
    * Set new minimum amount of ETH needed to be raised by the pool for the sale (only creator)
@@ -2690,13 +2689,13 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @param minPoolGoal new minimum pool goal
    */
-  
+
   async setMinPoolGoal(poolAddress, minPoolGoal) {
     let instance;
     let result;
     Pool.at(poolAddress).then((_instance) => {
         instance = _instance;
-        return instance.setParams(      
+        return instance.setParams(
           0x0,
           0,
           0,
@@ -2715,7 +2714,7 @@ export default class ConnectICO {
         return result;
       });
   }
- 
+
 
   /**
    * Set new maximum amount of ETH allowed to be raised by the pool for the sale (only creator)
@@ -2725,13 +2724,13 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @param maxPoolAllocation new maximum pool allocation
    */
-  
+
   async setMaxPoolAllocation(poolAddress, maxPoolAllocation) {
     let instance;
     let result;
     Pool.at(poolAddress).then((_instance) => {
         instance = _instance;
-        return instance.setParams(      
+        return instance.setParams(
           0x0,
           0,
           maxPoolAllocation,
@@ -2743,7 +2742,7 @@ export default class ConnectICO {
         return result;
       });
   }
- 
+
 
   /**
    * Set new unix timestamp in seconds for how much time funds are
@@ -2754,13 +2753,13 @@ export default class ConnectICO {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @param withdrawTimelock new withdraw timelock
    */
-  
+
   async setWithdrawTimelock(poolAddress, withdrawTimelock) {
     	let instance;
     let result;
     Pool.at(poolAddress).then((_instance) => {
         instance = _instance;
-        return instance.setParams(      
+        return instance.setParams(
           0x0,
           0,
           0,
@@ -2779,5 +2778,5 @@ export default class ConnectICO {
         return result;
       });
   }
- 
+
 }
