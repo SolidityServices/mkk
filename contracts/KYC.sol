@@ -33,7 +33,7 @@ contract KYC is Ownable {
         }
     }
 
-    function removeKYCAddress(address[] addresList) public onlyAdmin {
+    function removeKYCAddress(address[] addressList) public onlyAdmin {
       for(uint i = 0; i < addressList.length; i++){
           kycAddresses[addressList[i]] = false;
           delete kycCountry[addressList[i]];

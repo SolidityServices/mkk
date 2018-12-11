@@ -133,7 +133,7 @@ export default class ConnectICO {
     });
   }
 
-  /** 
+  /**
    * Retuns the number of pools created by the pool factory
    *
    * Frontend page: Pool listing page
@@ -177,7 +177,7 @@ export default class ConnectICO {
     });
   }
 
-  /** 
+  /**
    * Retuns the number of pools created by the pool factory for one sale
    *
    * Frontend page: Pool listing page
@@ -222,7 +222,7 @@ export default class ConnectICO {
     });
   }
 
-  /** 
+  /**
    * Retuns the number of pools created by the pool factory by the given creator
    *
    * Frontend page: Pool listing page
@@ -282,7 +282,7 @@ export default class ConnectICO {
     let result;
     PoolFactory.deployed().then((_instance) => {
       instance = _instance;
-      return instance.params.owner.call({ from: this.account });
+      return instance.owner.call({ from: this.account });
     }).then((value) => {
       result = value.toString();
       console.log(result);
