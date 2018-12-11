@@ -4,7 +4,6 @@ import '../node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol';
 import {stringUtils} from './utils/stringUtils.sol';
 
 contract KYC is Ownable {
-    address public owner;
     mapping(address => bool) public admins;
     mapping(address => bool) public kycAddresses;
     mapping(address => bytes32) public kycCountry;
@@ -14,17 +13,15 @@ contract KYC is Ownable {
     }
 
     function addAdmin(address[] addressList) public onlyOwner {
-        for(uint i = 0; i < addressList.length; i++){
+        for(uint i = 0; i < addressList.length; i++) {
             admins[addressList[i]] = true;
         }
     }
 
-    function addAdmin(address adminAddress) public onlyOwner {
-        admins[adminAddress] = true;
-    }
-
-    function removeAdmin(address adminAddress) public onlyOwner {
-        admins[adminAddress] = false;
+    function removeAdmin(address[] addressList) public onlyOwner {
+      for(uint i = 0; i < addressList.length; i++) {
+          admins[addressList[i]] = false;
+      }
     }
 
     function addKYCAddress(address[] addressList, bytes32[] countryList) public onlyAdmin {
@@ -36,14 +33,11 @@ contract KYC is Ownable {
         }
     }
 
-    function addKYCAddress(address KYCAddress, bytes3 country) public onlyAdmin {
-        kycAddresses[KYCAddress] = true;
-        kycCountry[KYCAddress] = country;
-    }
-
-    function removeKYCAddress(address KYCAddress) public onlyAdmin {
-        kycAddresses[KYCAddress] = false;
-        delete kycCountry[KYCAddress];
+    function removeKYCAddress(address[] addresList) public onlyAdmin {
+      for(uint i = 0; i < addressList.length; i++){
+          kycAddresses[addressList[i]] = false;
+          delete kycCountry[addressList[i]];
+      }
     }
 
     //This function is not really necessary, since you already declared kycAddresses mapping as public
