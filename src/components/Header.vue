@@ -2,15 +2,15 @@
   <header class="d-flex flex-column justify-content-center align-items-center">
     <div class="d-flex flex-row w-80 mb-4">
       <div class="d-flex align-items-center justify-content-center justify-content-sm-start col-12 col-sm">
-        <img src="../assets/logo.png" alt="">
+        <router-link :to="{name: 'index'}">
+          <img src="../assets/logo.png" alt="">
+        </router-link>
       </div>
 
       <div class="align-items-center d-none d-sm-flex col-sm ml-auto justify-content-end">
-        <span><a href="#"><img src="../assets/header/header-icon-1.png" alt=""></a></span>
-        <span class="px-3">
-                 <a href="#"><img src="../assets/header/header-icon-2.png" alt=""></a>
-               </span>
-        <span><a href="#"><img src="../assets/header/header-icon-3.png" alt=""></a></span>
+        <span><a href="#" target="_blank"><img src="../assets/header/header-icon-1.png" alt=""></a></span>
+        <span><a href="#" target="_blank" class="px-3"><img src="../assets/header/header-icon-2.png" alt=""></a></span>
+        <span><a href="#" target="_blank"><img src="../assets/header/header-icon-3.png" alt=""></a></span>
       </div>
     </div>
     <div class="d-flex flex-row flex-wrap w-80 w-lg-60 justify-content-center">
