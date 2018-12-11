@@ -7,7 +7,7 @@ contract KYC is Ownable {
     address public owner;
     mapping(address => bool) public admins;
     mapping(address => bool) public kycAddresses;
-    mapping(address => string) public kycCountry;
+    mapping(address => bytes32) public kycCountry;
 
     constructor () public {
         admins[owner] = true;
@@ -27,15 +27,16 @@ contract KYC is Ownable {
         admins[adminAddress] = false;
     }
 
-    function addKYCAddress(address[] addressList, bytes3[] countryList) public onlyAdmin {
+    function addKYCAddress(address[] addressList, bytes32[] countryList) public onlyAdmin {
         require(addressList.length == countryList.length,  "addKYCAddress(address[] addressList, bytes3[] countryList): Error, addressList and countryList has different lenghts");
         for(uint i = 0; i < addressList.length; i++){
             kycAddresses[addressList[i]] = true;
-            kycCountry[addressList[i]] = stringUtils.bytes3ToString(countryList[i]);
+            kycCountry[addressList[i]] = countryList[i];
+
         }
     }
 
-    function addKYCAddress(address KYCAddress, string country) public onlyAdmin {
+    function addKYCAddress(address KYCAddress, bytes3 country) public onlyAdmin {
         kycAddresses[KYCAddress] = true;
         kycCountry[KYCAddress] = country;
     }
@@ -44,7 +45,6 @@ contract KYC is Ownable {
         kycAddresses[KYCAddress] = false;
         delete kycCountry[KYCAddress];
     }
-
 
     //This function is not really necessary, since you already declared kycAddresses mapping as public
     function checkKYC(address addr) public view returns (bool) {

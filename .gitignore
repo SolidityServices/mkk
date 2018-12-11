@@ -27,5 +27,8 @@ yarn-error.log*
 yarn.lock
 package-lock.json
 
-#ganache databases
-ganache-dbs
+#ganache databases, accounts
+personal
+
+#processes.env
+infura.json

@@ -18,7 +18,13 @@ install_npm:
     expire_in: 20 mins
     paths:
     - dist/
+  variables:
+    MNEMONIC: ${MNEMONIC_DEV}
+    INFURA_APIKEY: ${INFURA_APIKEY_DEV}
   script:
+  - cp infura.json.ci infura.json
+  - sed -i -e "s@MNEMONIC_VALUE@${MNEMONIC}@g" infura.json
+  - sed -i -e "s@INFURA_APIKEY_VALUE@${INFURA_APIKEY}@g" infura.json
   - eval $(ssh-agent -s)
   - ssh-add /root/gitlab_ci_key
   - mkdir ~/.ssh || true

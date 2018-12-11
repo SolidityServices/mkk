@@ -1,23 +1,22 @@
 <template>
-
   <div>
-    <div class="footer-top d-lg-none">
-      <div class="text-center">
-        <img class="w-50" src="../assets/3D_logo-mobile.png" alt="">
+    <div class="d-lg-none my-4 flex-column justify-content-center">
+      <div class="w-50 mx-auto text-center">
+        <img class="img-fluid" src="../assets/3D_logo.png" alt="">
       </div>
-      <div class="blue-18-bold w-50 text-center mx-auto my-4">
-        We bring these two sides together, creating
-        critical support for ICO founders and exclusive
-        deals for our member all while giving our community
-        a powerful voice in the ICO market.
+      <div class="blue-18-bold w-50 text-center mx-auto mt-4">
+        We bring these two sides together, creating critical support for ICO founders and exclusive
+        deals for our member all while giving our community a powerful voice in the ICO market.
       </div>
     </div>
-    <footer>
-      <div class="d-none d-lg-flex row justify-content-md-center h-100">
-        <div class="col col-lg-5 my-auto row">
-          <div class="col-2 pr-5">
+
+    <footer class="d-flex justify-content-center">
+      <div class="d-flex flex-row w-80">
+        <div class="d-none d-lg-flex flex-row col-6">
+          <div class="d-flex align-items-center justify-content-center col-2">
             <img src="../assets/3D_logo.png" alt="">
           </div>
+
           <div class="col col-lg-10 my-auto pt-5 pl-5">
             <img src="../assets/connectico.png" alt="">
             <p class="white-16-bold pt-4">
@@ -28,32 +27,22 @@
             </p>
           </div>
         </div>
-        <div class="col-md-3 col-lg-2">
-        </div>
-        <div class="col col-lg-4 my-auto">
-          <div class="white-36-bold pb-3 text-center">Get connected</div>
+        <div class="d-flex flex-column justify-content-center mx-auto mr-lg-0">
+          <div class="white-36-bold pb-3 text-center d-none d-lg-flex">Get connected</div>
+          <div class="white-24-bold pb-3 text-center d-flex d-lg-none">Get connected</div>
           <div class="text-center">
             <span><a href="#"><img src="../assets/header/header-icon-1.png" alt=""></a></span>
             <span class="px-3">
               <a href="#"><img src="../assets/header/header-icon-2.png" alt=""></a>
             </span>
-            <span><a href="#"><img src="../assets/header/header-icon-3.png" alt=""></a></span>
+            <span>
+              <a href="#"><img src="../assets/header/header-icon-3.png" alt=""></a>
+            </span>
           </div>
         </div>
       </div>
-      <div class="d-lg-none">
-        <div class="white-24-bold pb-3 text-center pt-5">Get connected</div>
-        <div class="text-center pt-3">
-          <span><a href="#"><img src="../assets/header/header-icon-1.png" alt=""></a></span>
-          <span class="px-3">
-            <a href="#"><img src="../assets/header/header-icon-2.png" alt=""></a>
-          </span>
-          <span>
-            <a href="#"><img src="../assets/header/header-icon-3.png" alt=""></a>
-          </span>
-        </div>
-      </div>
     </footer>
+
     <div class="w-100 text-center blue-18-reg footer-bottom">
       All Rights Reserved Connectico Ltd. 2018.
     </div>
@@ -67,15 +56,14 @@ export default {};
 <style lang="scss">
 
   footer {
-    background-image: url('../assets/footer-bg.png');
-    height: 550px;
-    background-position: center;
+    height: 400px;
+    background: url('../assets/footer-bg.png') center;
     background-size: cover;
   }
 
   @media(max-width: 992px) {
     footer {
-      height: 250px;
+      height: 200px;
     }
   }
 

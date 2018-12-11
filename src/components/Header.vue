@@ -1,45 +1,38 @@
 <template>
-  <header>
-    <div class="d-none d-lg-flex row justify-content-md-center h-100">
-      <div class="col col-lg-2 my-auto">
-        <img src="../assets/logo.png" alt="">
+  <header class="d-flex flex-column justify-content-center align-items-center">
+    <div class="d-flex flex-row w-80 mb-4">
+      <div class="d-flex align-items-center justify-content-center justify-content-sm-start col-12 col-sm">
+        <router-link :to="{name: 'index'}">
+          <img src="../assets/logo.png" alt="">
+        </router-link>
       </div>
-      <div class="col-md3-3 col-lg-6">
-      </div>
-      <div class="col col-lg-2 my-auto">
-        <span><a href="#"><img src="../assets/header/header-icon-1.png" alt=""></a></span>
-        <span class="px-3">
-                 <a href="#"><img src="../assets/header/header-icon-2.png" alt=""></a>
-               </span>
-        <span><a href="#"><img src="../assets/header/header-icon-3.png" alt=""></a></span>
+
+      <div class="align-items-center d-none d-sm-flex col-sm ml-auto justify-content-end">
+        <span><a href="#" target="_blank"><img src="../assets/header/header-icon-1.png" alt=""></a></span>
+        <span><a href="#" target="_blank" class="px-3"><img src="../assets/header/header-icon-2.png" alt=""></a></span>
+        <span><a href="#" target="_blank"><img src="../assets/header/header-icon-3.png" alt=""></a></span>
       </div>
     </div>
-    <div class="d-lg-none row h-100">
-      <div class="col-12 my-auto text-center header-logo">
-        <img src="../assets/logo.png" alt="">
-      </div>
+    <div class="d-flex flex-row flex-wrap w-80 w-lg-60 justify-content-center">
+      <router-link :to="{name: 'pool-creator'}" class="custom-navbar-item">Pool Creator</router-link>
+      <router-link :to="{name: 'project'}" class="custom-navbar-item">Project</router-link>
+      <router-link :to="{name: 'deploy-contract'}" class="custom-navbar-item">Deploy Contract</router-link>
+      <router-link :to="{name: 'pool-list'}" class="custom-navbar-item">Pool List</router-link>
     </div>
   </header>
 </template>
 
 <script>
-export default {
-};
+export default {};
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+  @import '../scss/_variables.scss';
 
   header {
-    background-image: url('../assets/header/header-bg.png');
     height: 170px;
-    background-position: center;
+    background: url('../assets/header/header-bg.png') center;
     background-size: cover;
-  }
-
-  @media(max-width: 576px) {
-    header {
-      height: 110px;
-    }
   }
 
   @media(max-width: 576px) {
@@ -52,4 +45,11 @@ export default {
     }
   }
 
+  .custom-navbar-item {
+    font-size: 18px;
+    color: $white;
+    text-transform: uppercase;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
 </style>

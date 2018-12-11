@@ -128,6 +128,7 @@ createPool(
 
 # Pool admin page
 
+(Called Pool Dashboard in some mkk docs)
 All functions on this page will need the poolAddress, before arriving to this page, the user needs to select a pool from the list
 
 ## Inputs
@@ -391,35 +392,29 @@ All functions on this page will need the poolAddress, before arriving to this pa
 
 TO DO
 
-# Pool factory admin page 
-
-(page for only insiders, no need for fancy design)
-
-TO DO
-
-# Pool provider admin page 
-
-All functions on this page will need the poolAddress, before arriving to this page, the user needs to select a pool from the list
-
-(page for only insiders, no need for fancy design)
-
-TO DO
-
-# KYC admin page 
-
-(page for only insiders, no need for fancy design)
-
-TO DO
-
-# Token Push Registry admin page 
-
-(page for only insiders, no need for fancy design)
-
-TO DO
-
 # Pool listing page 
 
-(just a simple page to select pools, no need for MKK design)
+A page to select pools
+
+- all pools
+  + description: Display 10 newest pool addresses, button for previous 10 (if there is more than 10), each pool address should be a clickable link leading to the pool contributor page
+  + display format: 10 addresses in a table
+  + format in contract: address
+  + function: `getPool(index)`, `getPoolNumber()`
+
+- by sale
+  + description: If sale address is provided after clicking a 'get' buttonDisplay 10 newest pool addresses, button for previous 10 (if there is more than 10), each pool address should be a clickable link leading to the pool contributor page, 
+  + input field type: text input field
+  + display format: 10 addresses in a table
+  + format in contract: address
+  + function: `getPoolBySale(saleAddress, index)`, `getPoolNumberBySale(saleAddress)`
+
+- by creator
+  + description: If creator address is provided after clicking a 'get' buttonDisplay 10 newest pool addresses, button for previous 10 (if there is more than 10), each pool address should be a clickable link leading to the pool contributor page, 
+  + input field type: text input field
+  + display format: 10 addresses in a table
+  + format in contract: address
+  + function: `getPoolByCreator(saleAddress, index)`, `getPoolNumberByCreator(saleAddress)`
 
 TO DO
 
