@@ -4,10 +4,13 @@ pragma solidity ^0.4.24;
 
 library SemiSafeMath {
 
-    function pow(uint256 _a, uint256 _b) internal pure returns (uint256 c){
-        c = _a ** _b;
-        assert((_b <= 0 || _a < 0) || c >= _a);
-        return c;
+    function pow(uint256 a, uint256 pow) internal pure returns (uint256 c) {
+        uint256 result = 1;
+        for (uint256 i = 0; i < pow; i++) {
+            result *= a;
+            assert(result >= a);
+        }
+        return result;
     }
 
 }
