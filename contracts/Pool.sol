@@ -146,12 +146,8 @@ contract Pool {
         poolStats.allGrossContributions = poolStats.allGrossContributions.add(msg.value);
     }
 
-    function reciprocalContributionRationPow18(address contributor) private view returns (uint) {
-        return SemiSafeMath.pow(poolStats.allGrossContributions, ETHEREUM_DECIMALS / contributors[contributor].grossContribution);
-    }
-
     function calculateReward(uint toDistribute, address contributor) private view returns (uint) {
-        return SemiSafeMath.pow(toDistribute, ETHEREUM_DECIMALS / reciprocalContributionRationPow18(contributor));
+        return (toDistribute * ( (1 ether) * contributors[contributor].grossContribution / poolStats.allGrossContributions)) / (1 ether);
     }
 
     function calculateERC20OwedToContributor(address tokenType, address contributor) private view returns (uint) {
