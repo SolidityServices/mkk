@@ -324,9 +324,9 @@ export default class ConnectICO {
     let result;
     PoolFactory.deployed().then((_instance) => {
       instance = _instance;
-      return instance.params.flatFee.call({ from: this.account });
+      return instance.params.call({ from: this.account });
     }).then((value) => {
-      result = value.toNumber();
+      result = value[1].toNumber();
       console.log(result);
       // output.innerHTML = result;
       return result;
