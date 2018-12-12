@@ -1,8 +1,6 @@
 const HDWalletProvider = require('truffle-hdwallet-provider');
 const infura = require('./infura.json');
 
-require('dotenv').config(); // Store environment-specific variable from '.env' to process.env
-
 module.exports = {
   networks: {
     ganache: {

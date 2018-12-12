@@ -707,8 +707,8 @@ export default class ConnectICO {
    * @param {number} withdrawTimelock unix timestamp in seconds for how much time funds
    * are locked from withdrawal after contribution
    * @param {boolean} whitelistPool pool has address whitelist or not
-   * @param {number} transferValue Ethereum fee for creating pools, must equal
-   * flatFee + (maxAllocationFeeRate * _maxPoolAllocation)/1000 or more
+   * @param {number} transferValue Ethereum fee for creating pools in wei units, must equal
+   * flatFee + (maxAllocationFeeRate * _maxPoolAllocation)/1000 or more 
    */
   async createPool(
     saleAddress,
