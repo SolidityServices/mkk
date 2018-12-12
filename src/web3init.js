@@ -11,9 +11,10 @@ if (window.ethereum) {
     // Request account access if needed
     window.ethereum.enable();
     // Accounts now exposed
-    window.web3.eth.sendTransaction({/* ... */});
     window.ethInitSuccess = true;
+    console.log('Init success');
   } catch (error) {
+    console.log('Init fail');
     window.ethInitSuccess = false;
     // User denied account access...
   }
@@ -22,7 +23,6 @@ if (window.ethereum) {
   // Legacy dapp browsers...
   window.web3 = new Web3(Web3.currentProvider);
   // Acccounts always exposed
-  Web3.eth.sendTransaction({/* ... */});
   window.ethInitSuccess = true;
 } else {
   // Non-dapp browsers...

@@ -22,9 +22,9 @@ export default {
     if (window.ethInitSuccess) {
       console.log('Starting ConnectICO');
       const connectIco = new ConnectICO();
+      connectIco.start();
       window.connectICO = connectIco;
       Vue.prototype.$connectIco = connectIco;
-      window.connectICO.start();
     } else {
       console.log('Showing notification');
       this.$notify({
