@@ -8,6 +8,8 @@
 </template>
 
 <script>
+import Vue from 'vue';
+import ConnectICO from './connectICO';
 import Header from './components/Header.vue';
 import Footer from './components/Footer.vue';
 
@@ -19,6 +21,9 @@ export default {
   mounted() {
     if (window.ethInitSuccess) {
       console.log('Starting ConnectICO');
+      const connectIco = new ConnectICO();
+      window.connectICO = connectIco;
+      Vue.prototype.$connectIco = connectIco;
       window.connectICO.start();
     } else {
       console.log('Showing notification');
