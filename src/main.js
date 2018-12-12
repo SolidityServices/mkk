@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import BootstrapVue from 'bootstrap-vue';
+import VeeValidate, { Validator } from 'vee-validate';
 import Notifications from 'vue-notification';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
@@ -10,12 +11,18 @@ import router from './router';
 import store from './store';
 import ConnectICO from './connectICO';
 
+Validator.extend('eth-address', {
+  getMessage: field => `The ${field} value is not an Ethereum address.`,
+  validate: value => Web3.utils.isAddress(value),
+});
+
+Vue.use(VeeValidate);
 Vue.use(BootstrapVue);
 Vue.use(Notifications);
 
 Vue.config.productionTip = false;
 
-let initSuccess = false;
+window.ethInitSuccess = false;
 
 const connectIco = new ConnectICO();
 window.connectICO = connectIco;
@@ -30,9 +37,9 @@ if (window.ethereum) {
     window.ethereum.enable();
     // Accounts now exposed
     window.web3.eth.sendTransaction({/* ... */});
-    initSuccess = true;
+    window.ethInitSuccess = true;
   } catch (error) {
-    initSuccess = false;
+    window.ethInitSuccess = false;
     // User denied account access...
   }
 } else if (window.web3) {
@@ -41,7 +48,7 @@ if (window.ethereum) {
   window.web3 = new Web3(Web3.currentProvider);
   // Acccounts always exposed
   Web3.eth.sendTransaction({/* ... */});
-  initSuccess = true;
+  window.ethInitSuccess = true;
 } else {
   // Non-dapp browsers...
   console.log('Non-Ethereum browser detected. '
@@ -52,10 +59,10 @@ if (window.ethereum) {
     + 'More info here: http://truffleframework.com/tutorials/truffle-and-metamask');
   // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
   window.web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
-  initSuccess = false;
+  window.ethInitSuccess = false;
 }
 
-if (initSuccess) {
+if (window.ethInitSuccess) {
   window.connectICO.start();
 }
 

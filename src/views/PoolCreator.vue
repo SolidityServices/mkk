@@ -24,7 +24,8 @@
         <div class="d-flex flex-column col-12">
           <div class="col-12 blue-24-16-bold py-3 pl-4"> Sale ETH address:</div>
           <div class="col-12 input-group w-100">
-            <input type="text" class="form-control input-text"
+            <input type="text" v-validate="'required|eth-address'" data-vv-name="Sale ETH address"
+                   class="form-control input-text"
                    v-model="pool.sale_address" placeholder="Sale ETH address"/>
           </div>
         </div>
@@ -32,7 +33,8 @@
         <div class="d-flex flex-column col-12">
           <div class="col-12 blue-24-16-bold py-3 pl-4"> Token address (optional):</div>
           <div class="col-12 input-group w-100">
-            <input type="text" class="form-control input-text"
+            <input type="text" v-validate="'eth-address'" data-vv-name="Sale ETH address"
+                   class="form-control input-text"
                    v-model="pool.token_address" placeholder="Token ETH address"/>
           </div>
         </div>
@@ -52,8 +54,9 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Creator fee (%):</div>
             <div class="col-12 col-lg-6">
-              <input type="text" class="form-control input-text w-100"
-                     placeholder="2%" min="0" max="100" v-model="pool.fee">
+              <input type="number" v-validate="'required|numeric|min_value:0|max_value:100'"
+                     class="form-control input-text w-100"
+                     placeholder="2" min="0" max="100" v-model="pool.fee">
             </div>
           </div>
 
@@ -80,17 +83,19 @@
           </div>
 
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Minimum pool goal</div>
+            <div class="col-12 col-lg-6 blue-18-reg">Minimum pool goal in ETH</div>
             <div class="col-12 col-lg-6">
-              <input type="number" class="form-control input-text w-100"
+              <input type="number" v-validate="'required|numeric|min_value:0'"
+                     class="form-control input-text w-100" data-vv-name="Minimum pool goal"
                      v-model="pool.min_pool_goal">
             </div>
           </div>
 
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Max allocation</div>
+            <div class="col-12 col-lg-6 blue-18-reg">Max allocation in ETH</div>
             <div class="col-12 col-lg-6">
-              <input type="number" class="form-control input-text w-100"
+              <input type="number" v-validate="'required|numeric|min_value:0'"
+                     class="form-control input-text w-100" data-vv-name="Max allocation"
                      v-model="pool.max_allocation">
             </div>
           </div>
@@ -98,8 +103,8 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 d-flex flex-row align-items-center">
               <div class="input-cb mr-3">
-                <input type="checkbox" v-model="pool.whitelist" id="autoWithdraw" name=""/>
-                <label for="autoWithdraw"></label>
+                <input type="checkbox" v-model="pool.whitelist" id="whitelist" name=""/>
+                <label for="whitelist"></label>
               </div>
               <div class="blue-18-reg">Whitelist pool</div>
             </div>
@@ -114,17 +119,19 @@
           </div>
 
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Minimum contribution (optional)</div>
+            <div class="col-12 col-lg-6 blue-18-reg">Minimum ETH contribution (optional)</div>
             <div class="col-12 col-lg-6">
-              <input type="number" class="form-control input-text w-100"
+              <input type="number" v-validate="'numeric|min_value:0'" min="0"
+                     class="form-control input-text w-100" data-vv-name="Minimum contribution"
                      v-model="pool.individual_min"/>
             </div>
           </div>
 
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Maximum contribution (optional)</div>
+            <div class="col-12 col-lg-6 blue-18-reg">Maximum ETH contribution (optional)</div>
             <div class="col-12 col-lg-6">
-              <input type="number" class="form-control input-text"
+              <input type="number" v-validate="'numeric|min_value:0'" min="0"
+                     class="form-control input-text" data-vv-name="Maximum contribution"
                      v-model="pool.individual_max"/>
             </div>
           </div>
@@ -132,7 +139,6 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg"></div>
             <div class="col-12 col-lg-6">
-
             </div>
           </div>
 
@@ -147,7 +153,9 @@
       </div>
 
       <div class="d-flex flex-row justify-content-center my-5">
-        <button class="btn blue-submit px-4" @click="submit">Submit</button>
+        <button class="btn blue-submit px-4" @click="submit" :disabled="submitDisabled">
+          Submit
+        </button>
       </div>
     </div>
   </div>
@@ -186,6 +194,9 @@ export default {
         * this.pool.max_allocation / 1000
       );
     },
+    submitDisabled() {
+      return !window.ethInitSuccess;
+    },
   },
   methods: {
     submit() {
@@ -203,21 +214,6 @@ export default {
         this.pool.whitelist,
         this.transferValue,
       );
-      /*
-      createPool(
-    saleAddress,
-    tokenAddress,
-    creatorFeeRate,
-    saleStartDate,
-    saleEndDate,
-    minContribution,
-    maxContribution,
-    minPoolGoal,
-    maxPoolAllocation,
-    withdrawTimelock,
-    whitelistPool,
-    transferValue,
-       */
     },
   },
 };
