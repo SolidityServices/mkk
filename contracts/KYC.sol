@@ -1,81 +1,58 @@
 pragma solidity ^0.4.24;
 
-contract KYC {
-    address public owner;
-    mapping(address => bool) public admins; 
+import '../node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol';
+import {stringUtils} from './utils/stringUtils.sol';
+
+contract KYC is Ownable {
+    mapping(address => bool) public admins;
     mapping(address => bool) public kycAddresses;
     mapping(address => bytes32) public kycCountry;
-    
-    modifier onlyOwner{
-        require(msg.sender == owner, "modifier onlyOwner: Error, tx was not initiated by owner address");
-        _;
-    }
-    
-    modifier onlyAdmin{
-        require(admins[msg.sender], "modifier onlyAdmin: Error, tx was not initiated by admin address");
-        _;
-    }
 
     constructor () public {
-        owner = msg.sender;
         admins[owner] = true;
+        addKYCAddress(owner, "hun");
     }
 
     function addAdmin(address[] addressList) public onlyOwner {
-        for(uint i = 0; i < addressList.length; i++){
+        for(uint i = 0; i < addressList.length; i++) {
             admins[addressList[i]] = true;
         }
     }
 
-    function addAdmin(address adminAddress) public onlyOwner {
-        admins[adminAddress] = true;
+    function removeAdmin(address[] addressList) public onlyOwner {
+      for(uint i = 0; i < addressList.length; i++) {
+          admins[addressList[i]] = false;
+      }
     }
 
-    function removeAdmin(address adminAddress) public onlyOwner {
-        admins[adminAddress] = false;
+    function addKYCAddress(address kycAddress, bytes32 country) public onlyAdmin {
+        kycAddresses[kycAddress] = true;
+        kycCountry[kycAddress] = country;
     }
 
-    function addKYCAddress(address[] addressList, bytes3[] countryList) public onlyAdmin {
+    function addKYCAddress(address[] addressList, bytes32[] countryList) public onlyAdmin {
         require(addressList.length == countryList.length,  "addKYCAddress(address[] addressList, bytes3[] countryList): Error, addressList and countryList has different lenghts");
         for(uint i = 0; i < addressList.length; i++){
             kycAddresses[addressList[i]] = true;
-            //kycCountry[addressList[i]] = bytes3ToString(countryList[i]);
             kycCountry[addressList[i]] = countryList[i];
 
         }
     }
 
-    function addKYCAddress(address KYCAddress, bytes3 country) public onlyAdmin {
-        kycAddresses[KYCAddress] = true;
-        kycCountry[KYCAddress] = country;
+    function removeKYCAddress(address[] addressList) public onlyAdmin {
+      for(uint i = 0; i < addressList.length; i++){
+          kycAddresses[addressList[i]] = false;
+          delete kycCountry[addressList[i]];
+      }
     }
 
-    function removeKYCAddress(address KYCAddress) public onlyAdmin {
-        kycAddresses[KYCAddress] = false;
-        delete kycCountry[KYCAddress];
-    }
-
-    function checkKYC(address addr) public view returns (bool){
+    //This function is not really necessary, since you already declared kycAddresses mapping as public
+    function checkKYC(address addr) public view returns (bool) {
         return kycAddresses[addr];
     }
 
-/* 
-    function bytes3ToString(bytes3 x) private pure returns (string) {
-        bytes memory bytesString = new bytes(3);
-        uint charCount = 0;
-        for (uint j = 0; j < 3; j++) {
-            byte char = byte(bytes32(uint(x) * 2 ** (8 * j)));
-            if (char != 0) {
-                bytesString[charCount] = char;
-                charCount++;
-            }
-        }
-        bytes memory bytesStringTrimmed = new bytes(charCount);
-        for (j = 0; j < charCount; j++) {
-            bytesStringTrimmed[j] = bytesString[j];
-        }
-        return string(bytesStringTrimmed);
+    modifier onlyAdmin {
+        require(admins[msg.sender], "modifier onlyAdmin: Error, tx was not initiated by admin address");
+        _;
     }
-     */
-    
 }

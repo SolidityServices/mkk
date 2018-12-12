@@ -1,60 +1,42 @@
 <template>
-    <div class="row mx-0 my-4">
-        <div class="col-12 row mx-0">
-            <div class="d-none d-xl-flex col-xl-2"></div>
-            <div class="pl-5 pl-lg-0 col-lg-2 col-xl-1 px-0 d-flex py-2">
+    <div class="container">
+        <div class="d-flex flex-row mt-4 flex-wrap">
+            <div class="d-flex px-3 mb-3"
+                 v-for="option in options"
+                 :key="option.value"
+            >
                 <div class="my-auto px-2 input-radio">
-                    <input type="radio" name="exampleRadios" id="exampleRadios1"
-                            value="option1" checked/>
-                    <label for="exampleRadios1"></label>
+                    <input type="radio"
+                           :name="`radio_${option.value}`"
+                           :id="`radio_${option.value}`"
+                           :value="option.value"
+                           v-model="selectedOption"/>
+                    <label :for="`radio_${option.value}`"></label>
                 </div>
-                <div class="pl-1 my-auto blue-14-bold">Active</div>
+                <label class="pl-1 my-auto blue-14-bold"
+                       :for="`radio_${option.value}`">{{option.text}}</label>
             </div>
-            <div class="pl-5 pl-lg-0 col-lg-2 col-xl-1 px-0 d-flex py-2">
-                <div class="my-auto px-2 input-radio">
-                    <input type="radio" name="exampleRadios" id="exampleRadios2"
-                            value="option1" checked/>
-                    <label for="exampleRadios2"></label>
-                </div>
-                <div class="pl-1 my-auto blue-14-bold">Upcoming</div>
-            </div>
-            <div class="pl-5 pl-lg-0 col-lg-2 col-xl-1 px-0 d-flex py-2">
-                <div class="my-auto px-2 input-radio">
-                    <input type="radio" name="exampleRadios" id="exampleRadios3"
-                            value="option1" checked/>
-                    <label for="exampleRadios3"></label>
-                </div>
-                <div class="pl-1 my-auto blue-14-bold">Closed</div>
-            </div>
-            <div class="pl-5 pl-lg-0 col-lg-2 col-xl-1 px-0 d-flex py-2">
-                <div class="my-auto px-2 input-radio">
-                    <input type="radio" name="exampleRadios" id="exampleRadios4"
-                            value="option1" checked/>
-                    <label for="exampleRadios4"></label>
-                </div>
-                <div class="pl-1 my-auto blue-14-bold">Waiting for tokens</div>
-            </div>
-            <div class="d-none d-lg-flex col-lg-1"></div>
-            <div class="col-12 col-lg-3 col-2xl-2 py-2">
+
+
+            <div class="col-12 col-lg-3 col-2xl-2 ml-auto">
                 <form class="form-inline my-2 my-lg-0">
-                    <input class="w-75 form-control search-form" type="search" placeholder="Search"
+                    <input class="w-75 form-control search-form"
+                           type="text"
+                           v-model="filter"
+                           placeholder="Search"
                            aria-label="Search">
-                    <button class="w-25 search-form-btn my-2 my-sm-0 text-right" type="submit">
+                    <div class="w-25 search-form-btn my-2 my-sm-0 text-right pr-1">
                       <img src="../assets/search.png" alt="">
-                    </button>
+                    </div>
                 </form>
             </div>
-            <div class="d-none d-xl-flex col-xl-2 col-2xl-3"></div>
+        </div>
 
-            <div class="d-none d-xl-flex col-lg-2"></div>
-            <div class="col-lg-12 col-xl-8 col-2xl-7 mb-5 mt-3">
-                <hr class="blue-hr-fullw w-100">
-            </div>
-            <div class="d-none d-xl-flex col-xl-2 col-2xl-3"></div>
-
-            <pool-list-item></pool-list-item>
-            <pool-list-item></pool-list-item>
-            <pool-list-item></pool-list-item>
+      <div class="d-flex flex-row flex-wrap mb-3">
+          <pool-list-item v-for="pools in filteredPools"></pool-list-item>
+          <pool-list-item></pool-list-item>
+          <pool-list-item></pool-list-item>
+          <pool-list-item></pool-list-item>
         </div>
     </div>
 
@@ -64,13 +46,35 @@
 import PoolListItem from '../components/PoolListItem.vue';
 
 export default {
+  name: 'PoolList',
   components: {
     'pool-list-item': PoolListItem,
   },
-  data() {
-    return {
+  data: () => ({
+    selectedOption: null,
+    options: [
+      { text: 'Active', value: 'active' },
+      { text: 'Upcoming', value: 'upcoming' },
+      { text: 'Closed', value: 'closed' },
+      { text: 'Waiting for token', value: 'waiting' },
+    ],
+    pools: [],
+    filter: '',
+  }),
+  created() {
+    const pools = this.$connectIco.getAllPools();
+    if (pools && pools.length > 0) {
+      this.pools = pools;
+    }
+  },
+  computed: {
+    filteredPools() {
+      if (this.filter === '') {
+        return this.pools;
+      }
 
-    };
+      return this.pools.filter(item => item.name.contains(this.filter));
+    },
   },
 };
 </script>
