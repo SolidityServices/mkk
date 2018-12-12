@@ -709,6 +709,7 @@ export default class ConnectICO {
    * @param {boolean} whitelistPool pool has address whitelist or not
    * @param {number} transferValue Ethereum fee for creating pools in wei units, must equal
    * flatFee + (maxAllocationFeeRate * _maxPoolAllocation)/1000 or more 
+   * @return address of the created pool
    */
   async createPool(
     saleAddress,
@@ -744,8 +745,9 @@ export default class ConnectICO {
           value: transferValue,
         });
     }).then((reciept) => {
-      result = reciept;
-      console.log(result);
+      result = reciept.logs[0].args.poolAddress;
+      console.log(reciept);
+      console.log("pool address: " + result);
       // output.innerHTML = result;
       return result;
     });
