@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <notifications position="top center"/>
     <custom-header></custom-header>
     <router-view></router-view>
     <custom-footer></custom-footer>
@@ -14,6 +15,19 @@ export default {
   components: {
     'custom-header': Header,
     'custom-footer': Footer,
+  },
+  mounted() {
+    if (window.ethInitSuccess) {
+      console.log('Starting ConnectICO');
+      window.connectICO.start();
+    } else {
+      console.log('Showing notification');
+      this.$notify({
+        type: 'error',
+        title: 'Metamask is not detected',
+        text: 'In order to use the site please install the MetaMask extension!',
+      });
+    }
   },
   data() {
     return {

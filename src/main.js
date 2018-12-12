@@ -62,10 +62,6 @@ if (window.ethereum) {
   window.ethInitSuccess = false;
 }
 
-if (window.ethInitSuccess) {
-  window.connectICO.start();
-}
-
 new Vue({
   router,
   store,
