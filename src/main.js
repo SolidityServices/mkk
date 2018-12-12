@@ -56,7 +56,7 @@ if (window.ethereum) {
 }
 
 if (initSuccess) {
-  window.connectICO.start();
+  connectIco.start();
 }
 
 new Vue({

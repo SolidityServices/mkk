@@ -8,6 +8,7 @@ import Project from './views/Project.vue';
 import PoolCreator from './views/PoolCreator.vue';
 import DeployContract from './views/DeployContract.vue';
 import PoolList from './views/PoolList.vue';
+import PoolShow from './views/pool/PoolShow.vue';
 
 Vue.use(Router);
 
@@ -36,7 +37,7 @@ export default new Router({
       {
         path: 'project',
         name: 'project',
-        component: Project,
+        component: PoolShow,
       },
       {
         path: 'pool-list',
