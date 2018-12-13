@@ -763,7 +763,7 @@ export default class ConnectICO {
    * are locked from withdrawal after contribution
    * @param {boolean} whitelistPool pool has address whitelist or not
    * @param {number} transferValue Ethereum fee for creating pools in wei units, must equal
-   * flatFee + (maxAllocationFeeRate * _maxPoolAllocation)/1000 or more 
+   * flatFee + (maxAllocationFeeRate * _maxPoolAllocation)/1000 or more
    * @return address of the created pool
    */
   async createPool(
@@ -780,32 +780,30 @@ export default class ConnectICO {
     whitelistPool,
     transferValue,
   ) {
-    let instance;
-    let result;
-    PoolFactory.deployed().then((_instance) => {
-      instance = _instance;
-      return instance.createPool(saleAddress,
-        tokenAddress,
-        creatorFeeRate,
-        saleStartDate,
-        saleEndDate,
-        minContribution,
-        maxContribution,
-        minPoolGoal,
-        maxPoolAllocation,
-        withdrawTimelock,
-        whitelistPool,
-        {
-          from: this.account,
-          value: transferValue,
-        });
-    }).then((reciept) => {
-      result = reciept.logs[0].args.poolAddress;
-      console.log(reciept);
-      console.log("pool address: " + result);
-      // output.innerHTML = result;
-      return result;
-    });
+    const instance = await PoolFactory.deployed();
+    const reciept = await instance.createPool(
+      saleAddress,
+      tokenAddress,
+      creatorFeeRate,
+      saleStartDate,
+      saleEndDate,
+      minContribution,
+      maxContribution,
+      minPoolGoal,
+      maxPoolAllocation,
+      withdrawTimelock,
+      whitelistPool,
+      {
+        from: this.account,
+        value: transferValue,
+      }
+    );
+
+    const result = reciept.logs[0].args.poolAddress;
+    console.log(reciept);
+    console.log("pool address: " + result);
+
+    return result;
   }
 
   /**

@@ -171,9 +171,9 @@ export default {
         net_amount: 0,
         individual_min: 0,
         individual_max: 0,
-        fee: 2,
-        start_date: null,
-        end_date: null,
+        fee: 0,
+        start_date: new Date(),
+        end_date: new Date(),
         whitelist: false,
         receiver_address: null,
         auto_transfer: false,
@@ -181,38 +181,39 @@ export default {
         amount: false,
         min_pool_goal: 0,
         max_allocation: 0,
-        withdraw_time_lock: null,
+        withdraw_time_lock: new Date(),
       },
       blockWithdraw: 50,
     };
   },
   computed: {
-    transferValue() {
-      return (
-        window.connectICO.getFlatFee()
-        + window.connectICO.getMaxAllocationFeeRate()
-        * this.pool.max_allocation / 1000
-      );
-    },
     submitDisabled() {
       return !window.ethInitSuccess;
     },
   },
   methods: {
-    submit() {
+    async getTransferValue() {
+      return (
+        await window.connectICO.getFlatFee()
+        + await window.connectICO.getMaxAllocationFeeRate()
+        * this.pool.max_allocation / 1000
+      );
+    },
+    async submit() {
+      const transferValue = await this.getTransferValue();
       window.connectICO.createPool(
         this.pool.sale_address,
         this.pool.token_address,
         this.pool.fee,
-        this.pool.start_date,
-        this.pool.end_date,
+        this.pool.start_date ? Math.floor(this.pool.start_date.getDate() / 1000) : 0,
+        this.pool.end_date ? Math.floor(this.pool.end_date.getDate() / 1000) : 0,
         this.pool.individual_min,
         this.pool.individual_max,
         this.pool.min_pool_goal,
         this.pool.max_allocation,
-        this.pool.withdraw_time_lock,
-        this.pool.whitelist,
-        this.transferValue,
+        this.pool.withdraw_time_lock ? Math.floor(this.pool.withdraw_time_lock.getDate() / 1000) : 0,
+        this.pool.whitelist ? 1 : 0,
+        transferValue,
       );
     },
   },
