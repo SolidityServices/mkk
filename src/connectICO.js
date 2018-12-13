@@ -291,6 +291,47 @@ export default class ConnectICO {
     });
   }
 
+    /**
+   * Get all Pool Factory params
+   *
+   * Frontend page: PoolFactory info page
+   *
+   *
+   * @typedef {Object} PoolFactoryParams
+   *
+   * @property {string} kycContractAddress -
+   * @property {number} flatFee -
+   * @property {number} maxAllocationFeeRate -
+   * @property {number} maxCreatorFeeRate -
+   * @property {number} providerFeeRate -
+   *
+   * @return {PoolFactoryParams}
+   */
+
+  async getAllPoolFactoryParams() {
+    let instance;
+    const result = {
+      kycContractAddress: null,
+      flatFee: null,
+      maxAllocationFeeRate: null,
+      maxCreatorFeeRate: null,
+      providerFeeRate: null,
+    };
+      PoolFactory.deployed().then((_instance) => {
+        instance = _instance;
+        return instance.params.call({ from: this.account });
+      }).then((value) => {
+        result.kycContractAddress = value[0].toString();
+        result.flatFee = value[1].toNumber();
+        result.maxAllocationFeeRate = value[2].toNumber();
+        result.maxCreatorFeeRate = value[3].toNumber();
+        result.providerFeeRate = value[4].toNumber();
+        console.log(result);
+        // output.innerHTML = result;
+        return result;
+      });
+  }
+
   /**
    * Get the KYC contract address tied to the PoolFactory contract
    *
@@ -303,9 +344,9 @@ export default class ConnectICO {
     let result;
     PoolFactory.deployed().then((_instance) => {
       instance = _instance;
-      return instance.params.kycContractAddress.call({ from: this.account });
+      return instance.params.call({ from: this.account });
     }).then((value) => {
-      result = value.toString();
+      result = value[0].toString();
       console.log(result);
       // output.innerHTML = result;
       return result;
@@ -324,9 +365,9 @@ export default class ConnectICO {
     let result;
     PoolFactory.deployed().then((_instance) => {
       instance = _instance;
-      return instance.params.flatFee.call({ from: this.account });
+      return instance.params.call({ from: this.account });
     }).then((value) => {
-      result = value.toNumber();
+      result = value[1].toNumber();
       console.log(result);
       // output.innerHTML = result;
       return result;
@@ -345,9 +386,9 @@ export default class ConnectICO {
     let result;
     PoolFactory.deployed().then((_instance) => {
       instance = _instance;
-      return instance.params.maxAllocationFeeRate.call({ from: this.account });
+      return instance.params.call({ from: this.account });
     }).then((value) => {
-      result = value.toNumber();
+      result = value[2].toNumber();
       console.log(result);
       // output.innerHTML = result;
 
@@ -367,9 +408,23 @@ export default class ConnectICO {
     let result;
     PoolFactory.deployed().then((_instance) => {
       instance = _instance;
-      return instance.params.maxCreatorFeeRate.call({ from: this.account });
+      return instance.params.call({ from: this.account });
     }).then((value) => {
-      result = value.toNumber();
+      result = value[3].toNumber();
+      console.log(result);
+      // output.innerHTML = result;
+      return result;
+    });
+  }
+
+  async getProviderFeeRate() {
+    let instance;
+    let result;
+    PoolFactory.deployed().then((_instance) => {
+      instance = _instance;
+      return instance.params.call({ from: this.account });
+    }).then((value) => {
+      result = value[4].toNumber();
       console.log(result);
       // output.innerHTML = result;
       return result;
@@ -709,6 +764,7 @@ export default class ConnectICO {
    * @param {boolean} whitelistPool pool has address whitelist or not
    * @param {number} transferValue Ethereum fee for creating pools in wei units, must equal
    * flatFee + (maxAllocationFeeRate * _maxPoolAllocation)/1000 or more 
+   * @return address of the created pool
    */
   async createPool(
     saleAddress,
@@ -744,8 +800,9 @@ export default class ConnectICO {
           value: transferValue,
         });
     }).then((reciept) => {
-      result = reciept;
-      console.log(result);
+      result = reciept.logs[0].args.poolAddress;
+      console.log(reciept);
+      console.log("pool address: " + result);
       // output.innerHTML = result;
       return result;
     });
