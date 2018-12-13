@@ -7,6 +7,8 @@
 </template>
 
 <script>
+import Vue from 'vue';
+import ConnectICO from './connectICO';
 import Header from './components/Header.vue';
 import Footer from './components/Footer.vue';
 
@@ -14,6 +16,22 @@ export default {
   components: {
     'custom-header': Header,
     'custom-footer': Footer,
+  },
+  mounted() {
+    if (window.ethInitSuccess) {
+      console.log('Starting ConnectICO');
+      const connectIco = new ConnectICO();
+      connectIco.start();
+      window.connectICO = connectIco;
+      Vue.prototype.$connectIco = connectIco;
+    } else {
+      console.log('Showing notification');
+      this.$notify({
+        type: 'error',
+        title: 'Metamask is not detected',
+        text: 'In order to use the site please install the MetaMask extension!',
+      });
+    }
   },
   data() {
     return {

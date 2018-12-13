@@ -10,6 +10,7 @@ contract KYC is Ownable {
 
     constructor () public {
         admins[owner] = true;
+        addKYCAddress(owner, "hun");
     }
 
     function addAdmin(address[] addressList) public onlyOwner {
@@ -22,6 +23,11 @@ contract KYC is Ownable {
       for(uint i = 0; i < addressList.length; i++) {
           admins[addressList[i]] = false;
       }
+    }
+
+    function addKYCAddress(address kycAddress, bytes32 country) public onlyAdmin {
+        kycAddresses[kycAddress] = true;
+        kycCountry[kycAddress] = country;
     }
 
     function addKYCAddress(address[] addressList, bytes32[] countryList) public onlyAdmin {
