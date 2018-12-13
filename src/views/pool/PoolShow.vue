@@ -171,7 +171,7 @@
 
 <script>
 import datePicker from 'vue-bootstrap-datetimepicker';
-import Pool from '../../model/Pool';
+import Pool from '../../model/LocalPool';
 
 export default {
   components: {
