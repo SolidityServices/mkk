@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="w-100 mb-4">
+    <div class="w-100 mb-4 mb-md-5">
       <div class="container d-none d-sm-block mt-5">
         <div class="blue-36-20-bold">Pool Creator</div>
         <hr align="left" class="d-none d-sm-block blue-hr">
@@ -69,16 +69,20 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Sale start date</div>
             <div class="col-12 col-lg-6">
-              <input type="datetime-local" class="form-control input-text w-100"
-                     placeholder="2%" v-model="pool.start_date">
+              <date-picker v-model="pool.start_date"
+                           :config="datepickerOptions"
+                           class="form-control input-text w-100"
+              ></date-picker>
             </div>
           </div>
 
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Sale end date</div>
             <div class="col-12 col-lg-6">
-              <input type="datetime-local" class="form-control input-text w-100"
-                     placeholder="2%" v-model="pool.end_date">
+              <date-picker v-model="pool.end_date"
+                           :config="datepickerOptions"
+                           class="form-control input-text w-100"
+              ></date-picker>
             </div>
           </div>
 
@@ -103,18 +107,20 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 d-flex flex-row align-items-center">
               <div class="input-cb mr-3">
-                <input type="checkbox" v-model="pool.whitelist" id="whitelist" name=""/>
-                <label for="whitelist"></label>
+                <input type="checkbox" v-model="pool.whitelist" id="whitelistPool" name=""/>
+                <label for="whitelistPool"></label>
               </div>
-              <div class="blue-18-reg">Whitelist pool</div>
+              <label class="blue-18-reg mb-0" for="whitelistPool">Whitelist pool</label>
             </div>
           </div>
 
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Withdraw timelock</div>
             <div class="col-12 col-lg-6">
-              <input type="datetime-local" class="form-control input-text w-100"
-                     v-model="pool.withdraw_time_lock">
+              <date-picker v-model="pool.withdraw_time_lock"
+                           :config="datepickerOptions"
+                           class="form-control input-text w-100"
+              ></date-picker>
             </div>
           </div>
 
@@ -162,7 +168,12 @@
 </template>
 
 <script>
+import datePicker from 'vue-bootstrap-datetimepicker';
+
 export default {
+  components: {
+    datePicker,
+  },
   data() {
     return {
       pool: {
@@ -184,6 +195,11 @@ export default {
         withdraw_time_lock: new Date(),
       },
       blockWithdraw: 50,
+      datepickerOptions: {
+        format: 'DD/MM/YYYY H:mm',
+        useCurrent: false,
+        sideBySide: true,
+      },
     };
   },
   computed: {
