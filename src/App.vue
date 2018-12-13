@@ -8,7 +8,7 @@
 
 <script>
 import Vue from 'vue';
-import ConnectICO from './connectICO';
+import ConnectICO from './model/connect-ico/ConnectICO';
 import Header from './components/Header.vue';
 import Footer from './components/Footer.vue';
 
