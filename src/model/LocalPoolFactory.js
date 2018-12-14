@@ -13,7 +13,7 @@ export default class LocalPoolFactory {
 
 
   constructor(address) {
-    this.connectIco = window.connectIco;
+    this.connectIco = window.connectICO;
     this.ownerAddress = address;
     this.init();
   }

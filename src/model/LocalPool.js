@@ -26,7 +26,7 @@ export default class LocalPool {
   maxPoolAllocation;
 
   constructor(address) {
-    this.connectIco = window.connectIco;
+    this.connectIco = window.connectICO;
     this.poolAddress = address;
     this.init();
   }

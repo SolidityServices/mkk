@@ -39,6 +39,8 @@ export default class ConnectICO {
       // eslint-disable-next-line prefer-destructuring
       this.account = accounts[0];
 
+      // TODO: is this necessary?
+      this.web3.currentProvider.enable();
       this.pool = new Pool(this.web3.currentProvider, this.account, this.web3);
       this.poolFactory = new PoolFactory(this.web3.currentProvider, this.account, this.web3);
       this.KYC = new KYC(this.web3.currentProvider);

@@ -188,7 +188,7 @@ export default {
   }),
   methods: {
     async search() {
-      const poolAddress = await this.$connectIco.getPool(this.ethAddress);
+      const poolAddress = await this.$connectIco.poolFactory.getPool(this.ethAddress);
 
       if (poolAddress) {
         this.pool = new Pool(poolAddress);
