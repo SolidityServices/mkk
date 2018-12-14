@@ -206,13 +206,13 @@ export default class PoolFactory {
       pool.saleAddress,
       pool.tokenAddress,
       pool.creatorFeeRate,
-      Math.floor(pool.saleStartDate / 1000),
-      Math.floor(pool.saleEndDate / 1000),
+      Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
+      Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
       pool.minContribution,
       pool.maxContribution,
       pool.minPoolGoal,
       pool.maxPoolAllocation,
-      Math.floor(pool.withdrawTimelock / 1000),
+      pool.withdrawTimelock * 60 * 60, // convert to unix time
       pool.whitelistPool ? 1 : 0,
       {
         from: this.account,

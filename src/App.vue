@@ -25,7 +25,6 @@ export default {
       window.connectICO = connectIco;
       Vue.prototype.$connectIco = connectIco;
     } else {
-      console.log('Showing notification');
       this.$notify({
         type: 'error',
         title: 'Metamask is not detected',
@@ -33,18 +32,11 @@ export default {
       });
     }
   },
-  data() {
-    return {
-
-    };
-  },
 };
 </script>
 
 <style lang="scss">
-
 @import './scss/main';
-
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,700&subset=latin-ext');
 
 html{

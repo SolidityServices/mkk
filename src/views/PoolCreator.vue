@@ -117,10 +117,9 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Withdraw timelock</div>
             <div class="col-12 col-lg-6">
-              <date-picker v-model="pool.withdrawTimelock"
-                           :config="datepickerOptions"
-                           class="form-control input-text w-100"
-              ></date-picker>
+              <input type="number" v-validate="'required|numeric|min_value:0'"
+                     class="form-control input-text w-100" data-vv-name="Withdraw time lock"
+                     v-model="pool.withdrawTimelock">
             </div>
           </div>
 

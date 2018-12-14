@@ -67,7 +67,7 @@ export default class LocalPool {
     params.maxContribution = 0;
     params.minPoolGoal = 0;
     params.maxPoolAllocation = 0;
-    params.withdrawTimelock = new Date();
+    params.withdrawTimelock = 0;
     params.whitelistPool = false;
 
     return params;
