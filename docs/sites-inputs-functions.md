@@ -390,7 +390,60 @@ All functions on this page will need the poolAddress, before arriving to this pa
 
 All functions on this page will need the poolAddress, before arriving to this page, the user needs to select a pool from the list
 
-TO DO
+- sections from pool info page
+  + pool contract address
+  + pool balance
+  + allGrossContributions
+  + sentToSale
+  + tokensReceivedConfirmed
+  + sale address
+  + token address
+  + creator fee rate  
+  + provider fee rate
+  + sale start date
+  + sale end date
+  + min contribution
+  + max contribution
+  + min pool goal
+  + max pool allocation
+  + withdraw timelock (optional)
+  + is whitelist pool
+
+- contribute
+  + description: user contribution to pool
+  + input field type: ether
+  + desired format for contract: wei
+  + display condition: not sent to sale yet, sale hasnt ended
+  + function: Pool.contribute(poolAddress, amount)
+
+- withdraw
+  + description: withdrawal of (a parto of the) contribution
+  + input field type: ether
+  + desired format for contract: wei
+  + display condition: not sent to sale yet, sale hasnt ended
+  + function: Pool.withdraw(poolAddress, amount)
+
+- withdraw tokens
+  + description: withdraw sale tokens sent by sale to the pool
+  + input field type: no input field, just a button
+  + desired format for contract: no input field, just a button
+  + display condition: sent to sale
+  + function: Pool.withdrawToken(poolAddress)
+
+- withdraw refund
+  + description: withdraw refund (ether) sent by sale to the pool
+  + input field type: no input field, just a button
+  + desired format for contract: no input field, just a button
+  + display condition:  sent to sale
+  + function: Pool.withdrawRefund(poolAddress)
+
+- withdraw custom tokens
+  + description: withdraw any type of tokens (specified by erc-20 token contract address) sent by sale to the pool
+  + input field type: token address string
+  + desired format for contract: token address
+  + display condition:  sent to sale
+  + function: Pool.withdrawCustomToken(poolAddress, tokenAddress)
+
 
 # Pool listing page 
 
