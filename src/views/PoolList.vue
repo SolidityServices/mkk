@@ -34,9 +34,6 @@
 
       <div class="d-flex flex-row flex-wrap mb-3">
           <pool-list-item v-for="pools in filteredPools"></pool-list-item>
-          <pool-list-item></pool-list-item>
-          <pool-list-item></pool-list-item>
-          <pool-list-item></pool-list-item>
         </div>
     </div>
 
@@ -44,6 +41,7 @@
 
 <script>
 import PoolListItem from '../components/PoolListItem.vue';
+import LocalPool from '../model/LocalPool';
 
 export default {
   name: 'PoolList',
@@ -61,8 +59,13 @@ export default {
     pools: [],
     filter: '',
   }),
-  created() {
-    const pools = this.$connectIco.getAllPools();
+  async mounted() {
+    const pools = [];
+    const poolCount = await this.$connectIco.poolFactory.getPoolNumber();
+    console.log(`Pool count: ${poolCount}`);
+    for (let i = 0; i < poolCount; i += 1) {
+      pools.push(new LocalPool(await this.$connectIco.poolFactory.getPool(i)));
+    }
     if (pools && pools.length > 0) {
       this.pools = pools;
     }

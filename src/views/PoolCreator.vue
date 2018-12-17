@@ -26,7 +26,7 @@
           <div class="col-12 input-group w-100">
             <input type="text" v-validate="'required|eth-address'" data-vv-name="Sale ETH address"
                    class="form-control input-text"
-                   v-model="pool.sale_address" placeholder="Sale ETH address"/>
+                   v-model="pool.saleAddress" placeholder="Sale ETH address"/>
           </div>
         </div>
 
@@ -35,7 +35,7 @@
           <div class="col-12 input-group w-100">
             <input type="text" v-validate="'eth-address'" data-vv-name="Sale ETH address"
                    class="form-control input-text"
-                   v-model="pool.token_address" placeholder="Token ETH address"/>
+                   v-model="pool.tokenAddress" placeholder="Token ETH address"/>
           </div>
         </div>
       </div>
@@ -56,7 +56,7 @@
             <div class="col-12 col-lg-6">
               <input type="number" v-validate="'required|numeric|min_value:0|max_value:100'"
                      class="form-control input-text w-100"
-                     placeholder="2" min="0" max="100" v-model="pool.fee">
+                     placeholder="2" min="0" max="100" v-model="pool.creatorFeeRate">
             </div>
           </div>
 
@@ -69,7 +69,7 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Sale start date</div>
             <div class="col-12 col-lg-6">
-              <date-picker v-model="pool.start_date"
+              <date-picker v-model="pool.saleStartDate"
                            :config="datepickerOptions"
                            class="form-control input-text w-100"
               ></date-picker>
@@ -79,7 +79,7 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Sale end date</div>
             <div class="col-12 col-lg-6">
-              <date-picker v-model="pool.end_date"
+              <date-picker v-model="pool.saleEndDate"
                            :config="datepickerOptions"
                            class="form-control input-text w-100"
               ></date-picker>
@@ -91,7 +91,7 @@
             <div class="col-12 col-lg-6">
               <input type="number" v-validate="'required|numeric|min_value:0'"
                      class="form-control input-text w-100" data-vv-name="Minimum pool goal"
-                     v-model="pool.min_pool_goal">
+                     v-model="pool.minPoolGoal">
             </div>
           </div>
 
@@ -100,7 +100,7 @@
             <div class="col-12 col-lg-6">
               <input type="number" v-validate="'required|numeric|min_value:0'"
                      class="form-control input-text w-100" data-vv-name="Max allocation"
-                     v-model="pool.max_allocation">
+                     v-model="pool.maxPoolAllocation">
             </div>
           </div>
 
@@ -117,10 +117,9 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Withdraw timelock</div>
             <div class="col-12 col-lg-6">
-              <date-picker v-model="pool.withdraw_time_lock"
-                           :config="datepickerOptions"
-                           class="form-control input-text w-100"
-              ></date-picker>
+              <input type="number" v-validate="'required|numeric|min_value:0'"
+                     class="form-control input-text w-100" data-vv-name="Withdraw time lock"
+                     v-model="pool.withdrawTimelock">
             </div>
           </div>
 
@@ -129,7 +128,7 @@
             <div class="col-12 col-lg-6">
               <input type="number" v-validate="'numeric|min_value:0'" min="0"
                      class="form-control input-text w-100" data-vv-name="Minimum contribution"
-                     v-model="pool.individual_min"/>
+                     v-model="pool.minContribution"/>
             </div>
           </div>
 
@@ -138,7 +137,7 @@
             <div class="col-12 col-lg-6">
               <input type="number" v-validate="'numeric|min_value:0'" min="0"
                      class="form-control input-text" data-vv-name="Maximum contribution"
-                     v-model="pool.individual_max"/>
+                     v-model="pool.maxContribution"/>
             </div>
           </div>
 
@@ -169,6 +168,7 @@
 
 <script>
 import datePicker from 'vue-bootstrap-datetimepicker';
+import LocalPool from '../model/LocalPool';
 
 export default {
   components: {
@@ -176,31 +176,16 @@ export default {
   },
   data() {
     return {
-      pool: {
-        sale_address: '0x0000000000000000000000000000000000000000',
-        token_address: '0x0000000000000000000000000000000000000000',
-        net_amount: 0,
-        individual_min: 0,
-        individual_max: 0,
-        fee: 0,
-        start_date: new Date(),
-        end_date: new Date(),
-        whitelist: false,
-        receiver_address: null,
-        auto_transfer: false,
-        time: false,
-        amount: false,
-        min_pool_goal: 0,
-        max_allocation: 0,
-        withdraw_time_lock: new Date(),
-      },
-      blockWithdraw: 50,
+      pool: null,
       datepickerOptions: {
         format: 'DD/MM/YYYY H:mm',
         useCurrent: false,
         sideBySide: true,
       },
     };
+  },
+  created() {
+    this.pool = new LocalPool();
   },
   computed: {
     submitDisabled() {
@@ -209,28 +194,16 @@ export default {
   },
   methods: {
     async getTransferValue() {
+      const factoryParams = await this.$connectIco.poolFactory.getAllPoolFactoryParams();
       return (
-        await window.connectICO.getFlatFee()
-        + await window.connectICO.getMaxAllocationFeeRate()
-        * this.pool.max_allocation / 1000
+        factoryParams.flatFee
+        + factoryParams.maxAllocationFeeRate
+        * this.pool.maxAllocationFeeRate / 1000
       );
     },
     async submit() {
       const transferValue = await this.getTransferValue();
-      window.connectICO.createPool(
-        this.pool.sale_address,
-        this.pool.token_address,
-        this.pool.fee,
-        this.pool.start_date ? Math.floor(this.pool.start_date.getDate() / 1000) : 0,
-        this.pool.end_date ? Math.floor(this.pool.end_date.getDate() / 1000) : 0,
-        this.pool.individual_min,
-        this.pool.individual_max,
-        this.pool.min_pool_goal,
-        this.pool.max_allocation,
-        this.pool.withdraw_time_lock ? Math.floor(this.pool.withdraw_time_lock.getDate() / 1000) : 0,
-        this.pool.whitelist ? 1 : 0,
-        transferValue,
-      );
+      this.$connectIco.poolFactory.createPool(this.pool, transferValue);
     },
   },
 };
