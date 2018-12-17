@@ -150,14 +150,38 @@
         </div>
       </div>
 
-      <div class="d-flex flex-row ml-sm-5 mt-3">
-        <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-          <div class="col-6 orange-18-reg">ConnectICO fee:</div>
-          <div class="col-6 orange-18-reg text-right text-lg-left">0,5%</div>
+      <hr class="blue-hr-fullw my-5 w-100" v-if="calculatedFee">
+
+      <div class="d-flex flex-column ml-sm-5 mt-3" v-if="calculatedFee">
+        <div>
+          <div class="o-border d-inline"></div>
+          <div class="d-inline mt-5 blue-36-20-bold"> Transaction details
+            <hr align="left" class="blue-hr-2">
+          </div>
+        </div>
+        <div class="d-flex flex-row flex-wrap">
+          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
+            <div class="col-6 orange-18-reg">Flat fee:</div>
+            <div class="col-6 orange-18-reg text-right text-lg-left">{{ calculatedFee.flatFee }}%</div>
+          </div>
+
+          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
+            <div class="col-6 orange-18-reg">Pool fee:</div>
+            <div class="col-6 orange-18-reg text-right text-lg-left">{{ calculatedFee.poolFee }}%</div>
+          </div>
+        </div>
+        <div class="d-flex flex-row flex-wrap justify-content-center">
+          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
+            <div class="col-6 orange-18-reg">Transfer value:</div>
+            <div class="col-6 orange-18-reg text-right text-lg-left">{{ calculatedFee.transferValue }}%</div>
+          </div>
         </div>
       </div>
 
       <div class="d-flex flex-row justify-content-center my-5">
+        <button class="btn white-submit px-4 mr-3" @click="calculateFee" :disabled="submitDisabled">
+          Calculate fee
+        </button>
         <button class="btn blue-submit px-4" @click="submit" :disabled="submitDisabled">
           Submit
         </button>
@@ -182,6 +206,7 @@ export default {
         useCurrent: false,
         sideBySide: true,
       },
+      calculatedFee: null,
     };
   },
   created() {
@@ -193,17 +218,24 @@ export default {
     },
   },
   methods: {
-    async getTransferValue() {
+    async getTransferDetails() {
       const factoryParams = await this.$connectIco.poolFactory.getAllPoolFactoryParams();
-      return (
-        factoryParams.flatFee
-        + factoryParams.maxAllocationFeeRate
-        * this.pool.maxAllocationFeeRate / 1000
-      );
+      return {
+        flatFee: factoryParams.flatFee,
+        poolFee: factoryParams.maxAllocationFeeRate * this.pool.maxPoolAllocation / 1000,
+        transferValue: (
+          factoryParams.flatFee
+          + factoryParams.maxAllocationFeeRate
+          * this.pool.maxPoolAllocation / 1000
+        ),
+      };
     },
     async submit() {
-      const transferValue = await this.getTransferValue();
+      const transferValue = await this.getTransferDetails().transferValue;
       this.$connectIco.poolFactory.createPool(this.pool, transferValue);
+    },
+    async calculateFee() {
+      this.calculatedFee = await this.getTransferDetails();
     },
   },
 };
