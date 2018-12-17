@@ -1,5 +1,6 @@
 <template>
   <div id="app" class="d-flex flex-column wrapper">
+    <notifications position="top center"/>
     <custom-header></custom-header>
     <router-view class="flex-grow-1"></router-view>
     <custom-footer></custom-footer>

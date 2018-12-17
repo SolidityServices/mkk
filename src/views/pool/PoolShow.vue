@@ -22,11 +22,11 @@
         </div>
 
         <div class="d-flex flex-column col-12">
-          <div class="col-12 blue-24-16-bold py-3 pl-4"> Sale ETH address:</div>
+          <div class="col-12 blue-24-16-bold py-3 pl-4"> Pool address:</div>
           <div class="col-12 input-group w-100">
             <div class="col-12 col-lg-10 px-0">
               <input type="text" class="form-control input-text"
-                     v-model="ethAddress" placeholder="Sale ETH address"/>
+                     v-model="address" placeholder="Sale ETH address"/>
             </div>
             <div class="col-lg-2 mt-3 mt-lg-0 px-0 px-md-4">
               <button class="btn blue-submit px-4" @click="search">Search</button>
@@ -50,15 +50,17 @@
         <div class="d-flex flex-column col-12">
           <div class="col-12 blue-24-16-bold py-3 pl-4"> Sale ETH address:</div>
           <div class="col-12 input-group w-100">
-            <input type="text" class="form-control input-text" disabled
-                   v-model="pool.address" placeholder="Sale ETH address"/>
+            <input type="text" v-validate="'required|eth-address'" data-vv-name="Sale ETH address"
+                   class="form-control input-text" disabled
+                   v-model="pool.saleAddress" placeholder="Sale ETH address"/>
           </div>
         </div>
 
         <div class="d-flex flex-column col-12">
           <div class="col-12 blue-24-16-bold py-3 pl-4"> Token address (optional):</div>
           <div class="col-12 input-group w-100">
-            <input type="text" class="form-control input-text" disabled
+            <input type="text" v-validate="'eth-address'" data-vv-name="Sale ETH address"
+                   class="form-control input-text" disabled
                    v-model="pool.tokenAddress" placeholder="Token ETH address"/>
           </div>
         </div>
@@ -76,10 +78,15 @@
 
         <div class="d-flex flex-row flex-wrap">
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Creator fee (%):</div>
+            <div class="col-12 col-lg-6 blue-18-reg">Creator fee in %:</div>
             <div class="col-12 col-lg-6">
-              <input type="text" class="form-control input-text w-100" disabled
-                     placeholder="2%" min="0" max="100" v-model="pool.creatorFeeRate">
+              <input type="number" v-validate="'required|numeric|min_value:0|max_value:100'"
+                     class="form-control input-text w-100" disabled
+                     placeholder="0.12"
+                     step="0.01"
+                     min="0"
+                     max="100"
+                     v-model="pool.creatorFeeRate">
             </div>
           </div>
 
@@ -94,8 +101,7 @@
             <div class="col-12 col-lg-6">
               <date-picker v-model="pool.saleStartDate"
                            :config="datepickerOptions"
-                           class="form-control input-text w-100"
-                           disabled
+                           class="form-control input-text w-100" disabled
               ></date-picker>
             </div>
           </div>
@@ -105,32 +111,37 @@
             <div class="col-12 col-lg-6">
               <date-picker v-model="pool.saleEndDate"
                            :config="datepickerOptions"
-                           class="form-control input-text w-100"
-                           disabled
+                           class="form-control input-text w-100" disabled
               ></date-picker>
             </div>
           </div>
 
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Minimum pool goal</div>
+            <div class="col-12 col-lg-6 blue-18-reg">Minimum pool goal in ETH</div>
             <div class="col-12 col-lg-6">
-              <input type="number" class="form-control input-text w-100" disabled
+              <input type="number" v-validate="'required|numeric|min_value:0'"
+                     class="form-control input-text w-100" disabled
+                     data-vv-name="Minimum pool goal"
                      v-model="pool.minPoolGoal">
             </div>
           </div>
 
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Max allocation</div>
+            <div class="col-12 col-lg-6 blue-18-reg">Max allocation in ETH</div>
             <div class="col-12 col-lg-6">
-              <input type="number" class="form-control input-text w-100" disabled
-                     v-model="pool.maxAllocationFee">
+              <input type="number" v-validate="'required|numeric|min_value:0'"
+                     class="form-control input-text w-100" disabled
+                     data-vv-name="Max allocation"
+                     v-model="pool.maxPoolAllocation">
             </div>
           </div>
 
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 d-flex flex-row align-items-center">
               <div class="input-cb mr-3">
-                <input type="checkbox" v-model="pool.isWhiteListPool" id="whitelistPool" name="" disabled/>
+                <input type="checkbox"
+                       v-model="pool.whitelistPool"
+                       id="whitelistPool" name="" disabled/>
                 <label for="whitelistPool"></label>
               </div>
               <label class="blue-18-reg mb-0" for="whitelistPool">Whitelist pool</label>
@@ -140,32 +151,43 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Withdraw timelock</div>
             <div class="col-12 col-lg-6">
-              <date-picker v-model="pool.withdrawTimeLock"
-                           :config="datepickerOptions"
-                           class="form-control input-text w-100"
-                           disabled
-              ></date-picker>
+              <input type="number" v-validate="'required|numeric|min_value:0'"
+                     class="form-control input-text w-100" disabled
+                     data-vv-name="Withdraw time lock"
+                     v-model="pool.withdrawTimelock">
             </div>
           </div>
 
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Minimum contribution (optional)</div>
+            <div class="col-12 col-lg-6 blue-18-reg">Minimum ETH contribution (optional)</div>
             <div class="col-12 col-lg-6">
-              <input type="number" class="form-control input-text w-100" disabled
+              <input type="number" v-validate="'numeric|min_value:0'" min="0"
+                     class="form-control input-text w-100" disabled
+                     data-vv-name="Minimum contribution"
                      v-model="pool.minContribution"/>
             </div>
           </div>
 
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Maximum contribution (optional)</div>
+            <div class="col-12 col-lg-6 blue-18-reg">Maximum ETH contribution (optional)</div>
             <div class="col-12 col-lg-6">
-              <input type="number" class="form-control input-text" disabled
+              <input type="number" v-validate="'numeric|min_value:0'" min="0"
+                     class="form-control input-text" disabled
+                     data-vv-name="Maximum contribution"
                      v-model="pool.maxContribution"/>
             </div>
           </div>
+
+          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
+            <div class="col-12 col-lg-6 blue-18-reg"></div>
+            <div class="col-12 col-lg-6">
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -178,7 +200,7 @@ export default {
     datePicker,
   },
   data: () => ({
-    ethAddress: '',
+    address: '',
     pool: null,
     datepickerOptions: {
       format: 'DD/MM/YYYY H:mm',
@@ -188,10 +210,8 @@ export default {
   }),
   methods: {
     async search() {
-      const poolAddress = await this.$connectIco.poolFactory.getPool(this.ethAddress);
-
-      if (poolAddress) {
-        this.pool = new Pool(poolAddress);
+      if (await this.$connectIco.poolFactory.checkIfPoolExists(this.address)) {
+        this.pool = new Pool(this.address);
       } else {
         this.$notify({
           type: 'error',

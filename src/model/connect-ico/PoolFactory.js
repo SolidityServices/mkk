@@ -205,18 +205,18 @@ export default class PoolFactory {
     const reciept = await instance.createPool(
       pool.saleAddress,
       pool.tokenAddress,
-      pool.creatorFeeRate,
+      pool.creatorFeeRate * 100, // convert percentage to integer
       Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
       Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
-      pool.minContribution,
-      pool.maxContribution,
-      pool.minPoolGoal,
-      pool.maxPoolAllocation,
+      pool.minContribution * 1000000000000000000, // convert ether to wei
+      pool.maxContribution * 1000000000000000000, // convert ether to wei
+      pool.minPoolGoal * 1000000000000000000, // convert ether to wei
+      pool.maxPoolAllocation * 1000000000000000000, // convert ether to wei
       pool.withdrawTimelock * 60 * 60, // convert to unix time
       pool.whitelistPool ? 1 : 0,
       {
         from: this.account,
-        value: transferValue,
+        value: transferValue * 1000000000000000000, // convert ether to wei
       },
     );
 
