@@ -166,18 +166,18 @@
         <div class="d-flex flex-row flex-wrap">
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-6 orange-18-reg">Flat fee:</div>
-            <div class="col-6 orange-18-reg text-right text-lg-left">{{ calculatedFee.flatFee }}%</div>
+            <div class="col-6 orange-18-reg text-right text-lg-left">{{ calculatedFee.flatFee }}</div>
           </div>
 
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-6 orange-18-reg">Pool fee:</div>
-            <div class="col-6 orange-18-reg text-right text-lg-left">{{ calculatedFee.poolFee }}%</div>
+            <div class="col-6 orange-18-reg text-right text-lg-left">{{ calculatedFee.poolFee }}</div>
           </div>
         </div>
         <div class="d-flex flex-row flex-wrap justify-content-center">
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-6 orange-18-reg">Transfer value:</div>
-            <div class="col-6 orange-18-reg text-right text-lg-left">{{ calculatedFee.transferValue }}%</div>
+            <div class="col-6 orange-18-reg text-right text-lg-left">{{ calculatedFee.transferValue }}</div>
           </div>
         </div>
       </div>
@@ -189,6 +189,10 @@
         <button class="btn blue-submit px-4" @click="submit" :disabled="submitDisabled">
           Submit
         </button>
+      </div>
+
+      <div class="d-flex flex-row justify-content-center my-5" v-if="poolAddress">
+        <div class="orange-24-bold">{{ poolAddress }}</div>
       </div>
     </div>
   </div>
@@ -211,6 +215,7 @@ export default {
         sideBySide: true,
       },
       calculatedFee: null,
+      poolAddress: null,
     };
   },
   created() {
@@ -238,6 +243,7 @@ export default {
       const transferValue = await this.getTransferDetails().transferValue;
       const response = await this.$connectIco.poolFactory.createPool(this.pool, transferValue);
       if (response) {
+        this.poolAddress = response;
         this.$notify({
           type: 'success',
           title: 'Pool created!',
