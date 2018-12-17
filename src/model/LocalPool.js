@@ -64,10 +64,10 @@ export default class LocalPool {
     params.creatorFeeRate = 1;
     params.saleStartDate = Math.floor(new Date() / 1000);
     params.saleEndDate = Math.floor(new Date() / 1000);
-    params.minContribution = 0;
-    params.maxContribution = 0;
-    params.minPoolGoal = 0;
-    params.maxPoolAllocation = 0;
+    params.minContribution = 1000000000000;
+    params.maxContribution = 1000000000000;
+    params.minPoolGoal = 1000000000000;
+    params.maxPoolAllocation = 1000000000000;
     params.withdrawTimelock = 0;
     params.whitelistPool = false;
 
