@@ -52,11 +52,15 @@
 
         <div class="d-flex flex-row flex-wrap">
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Creator fee (%):</div>
+            <div class="col-12 col-lg-6 blue-18-reg">Creator fee in %:</div>
             <div class="col-12 col-lg-6">
               <input type="number" v-validate="'required|numeric|min_value:0|max_value:100'"
                      class="form-control input-text w-100"
-                     placeholder="2" min="0" max="100" v-model="pool.creatorFeeRate">
+                     placeholder="0.12"
+                     step="0.01"
+                     min="0"
+                     max="100"
+                     v-model="pool.creatorFeeRate">
             </div>
           </div>
 
@@ -107,7 +111,7 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 d-flex flex-row align-items-center">
               <div class="input-cb mr-3">
-                <input type="checkbox" v-model="pool.whitelist" id="whitelistPool" name=""/>
+                <input type="checkbox" v-model="pool.whitelistPool" id="whitelistPool" name=""/>
                 <label for="whitelistPool"></label>
               </div>
               <label class="blue-18-reg mb-0" for="whitelistPool">Whitelist pool</label>
