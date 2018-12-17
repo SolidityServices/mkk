@@ -22,21 +22,17 @@
         </div>
 
         <div class="d-flex flex-column col-12">
-          <div class="col-12 blue-24-16-bold py-3 pl-4"> Sale ETH address:</div>
-          <div class="col-12 input-group w-100">
-            <input type="text" v-validate="'required|eth-address'" data-vv-name="Sale ETH address"
-                   class="form-control input-text"
-                   v-model="pool.saleAddress" placeholder="Sale ETH address"/>
-          </div>
+          <div class="blue-24-16-bold py-3 pl-4"> Sale ETH address:</div>
+          <input type="text" v-validate="'required|eth-address'" data-vv-name="Sale ETH address"
+                 class="form-control input-text"
+                 v-model="pool.saleAddress" placeholder="Sale ETH address"/>
         </div>
 
         <div class="d-flex flex-column col-12">
-          <div class="col-12 blue-24-16-bold py-3 pl-4"> Token address (optional):</div>
-          <div class="col-12 input-group w-100">
-            <input type="text" v-validate="'eth-address'" data-vv-name="Sale ETH address"
-                   class="form-control input-text"
-                   v-model="pool.tokenAddress" placeholder="Token ETH address"/>
-          </div>
+          <div class="blue-24-16-bold py-3 pl-4"> Token address (optional):</div>
+          <input type="text" v-validate="'eth-address'" data-vv-name="Sale ETH address"
+                 class="form-control input-text"
+                 v-model="pool.tokenAddress" placeholder="Token ETH address"/>
         </div>
       </div>
 
