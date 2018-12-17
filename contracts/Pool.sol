@@ -163,6 +163,10 @@ contract Pool {
         return totalReward.sub(payedOut[contributor][0x0]);
     }
 
+    function tokensOwedToContributor(address contributor) public view returns (uint) {
+        return calculateERC20OwedToContributor(params.tokenAddress, contributor);
+    }
+
     function withdraw(uint amount) public {
         require(!poolStats.sentToSale, "withdraw(): Error, the pools funds were already sent to the sale");
         if(!poolStats.stopped){
