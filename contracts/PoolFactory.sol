@@ -54,7 +54,10 @@ contract PoolFactory is Ownable {
         uint _minPoolGoal,5
         uint _maxPoolAllocation,6
         uint _withdrawTimelock,7 */
-        bool _whitelistPool
+        bool _whitelistPool,
+        address[] adminlist, 
+        address[] contributorWhitelist,
+        bytes32[] countryBlacklist
     ) public payable {
         require(KYC(params.kycContractAddress).checkKYC(msg.sender), "createPool(...): Error, tx was not initiated by KYC address");
         if (params.useWhitelist) require(whitelist[msg.sender], "createPool(...): Error, tx was not initiated by whitelisted address");
@@ -66,7 +69,10 @@ contract PoolFactory is Ownable {
             [params.providerFeeRate, uints[0], uints[1], uints[2],
             uints[3], uints[4], uints[5], uints[6],
             uints[7]],
-            _whitelistPool
+            _whitelistPool,
+            adminlist, 
+            contributorWhitelist,
+            countryBlacklist
             );
         poolList.push(poolAddress);
         poolsBySale[addresses[0]].push(poolAddress);

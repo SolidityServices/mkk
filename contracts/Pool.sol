@@ -75,7 +75,15 @@ contract Pool {
         _;
     }
 
-    constructor (address[5] addresses, bytes32[3] bytes32s, uint[9] integers, bool _whitelistPool) public {
+    constructor (
+        address[5] addresses,
+        bytes32[3] bytes32s, 
+        uint[9] integers, 
+        bool _whitelistPool, 
+        address[] adminlist, 
+        address[] contributorWhitelist,
+        bytes32[] countryBlacklist
+     ) public {
         params.kycAddress = addresses[0];
         params.provider = addresses[1];
         params.creator = addresses[2];
@@ -95,6 +103,9 @@ contract Pool {
         params.withdrawTimelock = uint32(integers[8]);
         params.whitelistPool = _whitelistPool;
         admins[params.creator] = true;
+        addAdmin(adminlist);
+        addWhitelist(contributorWhitelist);
+        addCountryBlacklist(countryBlacklist);
     }
 
     function addAdmin(address[] addressList) public onlyCreator {
