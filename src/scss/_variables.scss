@@ -6,6 +6,8 @@ $white: #ffffff;
 
 // Text
 $text-9 : 9px;
+$text-10 : 10px;
+$text-12 : 12px;
 $text-14 : 14px;
 $text-16 : 16px;
 $text-18 : 18px;
@@ -18,12 +20,14 @@ $reg : 400;
 $bold : 700;
 
 // Text Stlyes
+.white-12-bold { @include font-style($white, $bold, $text-12);}
 .white-16-bold { @include font-style($white, $bold, $text-16);}
 .white-18-reg { @include font-style($white, $reg, $text-18);}
 .white-24-bold { @include font-style($white, $bold, $text-24);}
 .white-36-bold { @include font-style($white, $bold, $text-36);}
 
 .orange-14-reg { @include font-style($orange, $reg, $text-14);}
+.orange-16-bold { @include font-style($orange, $bold, $text-16);}
 .orange-18-reg { @include font-style($orange, $reg, $text-18);}
 .orange-20-reg { @include font-style($orange, $reg, $text-20);}
 .orange-18-bold { @include font-style($orange, $bold, $text-18);}
@@ -31,6 +35,8 @@ $bold : 700;
 .orange-24-16-bold { @include font-style-res($orange, $bold, $text-24, $text-16);}
 
 .blue-9-bold { @include font-style($blue, $reg, $text-9);}
+.blue-10-bold { @include font-style($blue, $bold, $text-10);}
+.blue-14-bold { @include font-style($blue, $bold, $text-14);}
 .blue-16-reg { @include font-style($blue, $reg, $text-16);}
 .blue-16-bold { @include font-style($blue, $bold, $text-16);}
 .blue-18-reg { @include font-style($blue, $reg, $text-18);}

@@ -1,0 +1,129 @@
+image: node:10-stretch
+
+stages:
+- install
+- docker
+- deploy
+
+variables:
+  CONTAINER_TAG: ${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHA}
+  IMAGE_TAG: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHA}
+  IMAGE_TAG_DEV: ${CI_REGISTRY_IMAGE}:dev-latest
+  IMAGE_TAG_MASTER: ${CI_REGISTRY_IMAGE}:latest
+  IMAGE_TAG_PRODUCTION: ${CI_REGISTRY_IMAGE}:prod-latest
+
+install_npm:
+  stage: install
+  artifacts:
+    expire_in: 20 mins
+    paths:
+    - dist/
+  variables:
+    MNEMONIC: ${MNEMONIC_DEV}
+    INFURA_APIKEY: ${INFURA_APIKEY_DEV}
+  script:
+  - cp infura.json.ci infura.json
+  - sed -i -e "s@MNEMONIC_VALUE@${MNEMONIC}@g" infura.json
+  - sed -i -e "s@INFURA_APIKEY_VALUE@${INFURA_APIKEY}@g" infura.json
+  - eval $(ssh-agent -s)
+  - ssh-add /root/gitlab_ci_key
+  - mkdir ~/.ssh || true
+  - ssh-keyscan -t rsa gitlab.codecluster.tk >> ~/.ssh/known_hosts || true
+  - npm install -g truffle
+  - npm install
+  - truffle migrate --network rinkeby
+  - npm run build
+  - echo -e "sha $CI_COMMIT_SHA\ntag ${CONTAINER_TAG}\nbuild_time $(date)"  >> dist/version
+
+###
+# Docker build
+###
+
+.docker_build_template: &docker_build_definition
+  image: docker:latest
+  stage: docker
+  cache:
+    key: ${CI_COMMIT_SHA}
+    policy: pull
+  before_script:
+  - rm -rf node_modules
+  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.codecluster.tk
+  - docker build -t ${IMAGE_TAG} .
+  - docker push ${IMAGE_TAG}
+
+build_docker_dev:
+  <<: *docker_build_definition
+  script:
+  - docker tag ${IMAGE_TAG} ${IMAGE_TAG_DEV}
+  - docker push ${IMAGE_TAG_DEV}
+  only:
+  - developer
+
+build_docker_master:
+  <<: *docker_build_definition
+  script:
+  - docker tag ${IMAGE_TAG} ${IMAGE_TAG_MASTER}
+  - docker push ${IMAGE_TAG_MASTER}
+  only:
+  - master
+
+# sast:container:
+#   image: docker:latest
+#   services:
+#     - docker:dind
+#   stage: inspect
+#   only:
+#     - master
+#     - developer
+#   allow_failure: true
+#   variables:
+#     DOCKER_DRIVER: overlay2
+#   services:
+#     - docker:dind
+#   cache:
+#     key: ${CI_COMMIT_SHA}
+#     policy: pull
+#   before_script:
+#     - docker run -d --name db arminc/clair-db:latest
+#     - docker pull arminc/clair-local-scan:v2.0.1
+#     - docker run -p 6060:6060 --link db:postgres -d --name clair arminc/clair-local-scan:v2.0.1
+#   script:
+#     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+#     - apk add -U wget ca-certificates
+#     - docker pull ${IMAGE_TAG}
+#     - wget https://github.com/arminc/clair-scanner/releases/download/v8/clair-scanner_linux_amd64
+#     - mv clair-scanner_linux_amd64 clair-scanner
+#     - chmod +x clair-scanner
+#     - ./clair-scanner -c http://docker:6060 --ip $(hostname -i) -r gl-sast-container-report.json -l clair.log ${IMAGE_TAG} || true
+#   after_script:
+#     - docker rm --force db
+#     - docker rm --force clair
+#   artifacts:
+#     paths: [gl-sast-container-report.json]
+
+deploy_developer:
+  image: kroniak/ssh-client
+  stage: deploy
+  only:
+  - developer
+  dependencies: []
+  cache:
+    key: ${CI_COMMIT_SHA}
+    policy: pull
+  before_script:
+  - echo "Deploy ${IMAGE_TAG} to developer"
+  script:
+  - eval $(ssh-agent -s)
+  - mkdir /root/.ssh || true
+  - chmod 750 /root/
+  - chmod 700 /root/.ssh
+  - ssh-keyscan -p ${SERVER_PORT_DEV} ${SERVER_IP_DEV} >> /root/.ssh/known_hosts
+  - echo "${DEV_DEPLOY_SSH_KEY}" > key
+  - chmod 600 /root/.ssh/*
+  - chmod 600 key
+  - ssh -i key gitlab-ci@${SERVER_IP_DEV} -p ${SERVER_PORT_DEV} docker -v
+  - ssh -i key gitlab-ci@${SERVER_IP_DEV} -p ${SERVER_PORT_DEV} "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY && cd config/mkk.solidity.services && echo APPLICATION_IMAGE=${IMAGE_TAG} > .env && docker-compose up -d"
+  environment:
+    name: developer
+    url: http://mkk.solidity.services
+

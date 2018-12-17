@@ -1,38 +1,30 @@
 import Vue from 'vue';
-import BootstrapVue from "bootstrap-vue";
-import VueRouter from 'vue-router';
+import BootstrapVue from 'bootstrap-vue';
+import VeeValidate, { Validator } from 'vee-validate';
+import Notifications from 'vue-notification';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-vue/dist/bootstrap-vue.css';
+import Web3 from 'web3';
 import App from './App.vue';
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap-vue/dist/bootstrap-vue.css";
 
-// components
-import Header from './Header.vue';
-import Footer from './Footer.vue';
-import PoolCreator from './PoolCreator.vue';
-import ProjectName1 from './ProjectName1.vue';
-import ProjectName2 from './ProjectName2.vue';
-import DeployContract from './DeployContract.vue';
+import router from './router';
+import store from './store';
 
-Vue.component('app-header', Header,);
-Vue.component('app-footer', Footer);
+require('./web3init');
 
-const routes = [
-  { path: '/pool-creator', component: PoolCreator},
-  { path: '/project-name1', component: ProjectName1},
-  { path: '/project-name2', component: ProjectName2},
-  { path: '/deploy-contract', component: DeployContract}
-];
+Validator.extend('eth-address', {
+  getMessage: field => `The ${field} value is not an Ethereum address.`,
+  validate: value => Web3.utils.isAddress(value),
+});
 
-const router = new VueRouter({
-  routes,
-  mode: 'history'
-})
-
+Vue.use(VeeValidate);
 Vue.use(BootstrapVue);
-Vue.use(VueRouter);
+Vue.use(Notifications);
+
+Vue.config.productionTip = false;
 
 new Vue({
-  el: '#app',
   router,
-  render: h => h(App)
-})
+  store,
+  render: h => h(App),
+}).$mount('#app');
