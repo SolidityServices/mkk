@@ -95,28 +95,26 @@ contract Pool {
 
     function addAdmin(address[] addressList) public onlyCreator {
         for(uint i = 0; i < addressList.length; i++) {
-            require(KYC(params.kycAddress).checkKYC(addressList[i]), "addAdmin(address[] addressList): Error, tx was not initiated by KYC address");
+            require(KYC(params.kycAddress).checkKYC(addressList[i]), "addAdmin(address[] addressList): Error, address is not a KYC address");
             admins[addressList[i]] = true;
         }
     }
 
     function removeAdmin(address[] addressList) public onlyCreator {
       for(uint i = 0; i < addressList.length; i++) {
-        require(KYC(params.kycAddress).checkKYC(addressList[i]), "addAdmin(address[] addressList): Error, tx was not initiated by KYC address");
         admins[addressList[i]] = false;
       }
     }
 
     function addWhitelist(address[] addressList) public onlyAdmin {
         for(uint i = 0; i < addressList.length; i++) {
-          require(KYC(params.kycAddress).checkKYC(addressList[i]), "addWhitelist(address[] addressList): Error, tx was not initiated by KYC address");
+          require(KYC(params.kycAddress).checkKYC(addressList[i]), "addWhitelist(address[] addressList): Error, address is not a KYC address");
           whitelist[addressList[i]] = true;
         }
     }
 
     function removeWhitelist(address[] addressList) public onlyAdmin {
       for(uint i = 0; i < addressList.length; i++) {
-        require(KYC(params.kycAddress).checkKYC(addressList[i]), "removeWhitelist(address[] addressList): Error, tx was not initiated by KYC address");
         whitelist[addressList[i]] = false;
       }
     }
