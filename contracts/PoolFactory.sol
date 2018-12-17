@@ -38,31 +38,38 @@ contract PoolFactory is Ownable {
     }
 
     function createPool(
-        address _saleAddress,
-        address _tokenAddress,
-        uint _creatorFeeRate,
-        uint _saleStartDate,
-        uint _saleEndDate,
-        uint _minContribution,
-        uint _maxContribution,
-        uint _minPoolGoal,
-        uint _maxPoolAllocation,
-        uint _withdrawTimelock,
+        address[2] addresses,
+        /* address _saleAddress,0
+        address _tokenAddress,1 */
+        bytes32[3] bytes32s,
+        /* bytes32 _saleParticipateFunctionSig,0
+        bytes32 _saleWithdrawFunctionSig,1
+        bytes32 _poolDescription,2 */
+        uint[8] uints,
+        /* uint _creatorFeeRate,0
+        uint _saleStartDate,1
+        uint _saleEndDate,2
+        uint _minContribution,3
+        uint _maxContribution,4
+        uint _minPoolGoal,5
+        uint _maxPoolAllocation,6
+        uint _withdrawTimelock,7 */
         bool _whitelistPool
     ) public payable {
         require(KYC(params.kycContractAddress).checkKYC(msg.sender), "createPool(...): Error, tx was not initiated by KYC address");
         if (params.useWhitelist) require(whitelist[msg.sender], "createPool(...): Error, tx was not initiated by whitelisted address");
-        require(msg.value >= SafeMath.add(params.flatFee, SafeMath.mul(params.maxAllocationFeeRate, _maxPoolAllocation) / 1000), "createPool(...): Error, not enough value for fees");
-        require(params.maxCreatorFeeRate >= _creatorFeeRate, "createPool(...): Error, pool fee rate is greater than max allowed");
+        require(msg.value >= SafeMath.add(params.flatFee, SafeMath.mul(params.maxAllocationFeeRate, uints[6]) / 1000), "createPool(...): Error, not enough value for fees");
+        require(params.maxCreatorFeeRate >= uints[0], "createPool(...): Error, pool fee rate is greater than max allowed");
         address poolAddress = new Pool(
-            [params.kycContractAddress, owner, msg.sender, _saleAddress, _tokenAddress],
-            [params.providerFeeRate, _creatorFeeRate, _saleStartDate, _saleEndDate,
-            _minContribution, _maxContribution, _minPoolGoal, _maxPoolAllocation,
-            _withdrawTimelock],
+            [params.kycContractAddress, owner, msg.sender, addresses[0], addresses[1]],
+            [bytes32s[0], bytes32s[1], bytes32s[2]],
+            [params.providerFeeRate, uints[0], uints[1], uints[2],
+            uints[3], uints[4], uints[5], uints[6],
+            uints[7]],
             _whitelistPool
             );
         poolList.push(poolAddress);
-        poolsBySale[_saleAddress].push(poolAddress);
+        poolsBySale[addresses[0]].push(poolAddress);
         poolsByCreator[msg.sender].push(poolAddress);
         pools[poolAddress] = true;
         emit poolCreated(poolAddress);

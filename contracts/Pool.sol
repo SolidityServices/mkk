@@ -16,6 +16,7 @@ contract Pool {
     struct Params{
         bytes32 saleParticipateFunctionSig;
         bytes32 saleWithdrawFunctionSig;
+        bytes32 poolDescription;
         address saleAddress; //address of token sale
         address tokenAddress; // address of erc20 token contract
         address kycAddress;
@@ -74,12 +75,15 @@ contract Pool {
         _;
     }
 
-    constructor (address[5] addresses, uint[9] integers, bool _whitelistPool) public {
+    constructor (address[5] addresses, bytes32[3] bytes32s, uint[9] integers, bool _whitelistPool) public {
         params.kycAddress = addresses[0];
         params.provider = addresses[1];
         params.creator = addresses[2];
         params.saleAddress = addresses[3];
         params.tokenAddress = addresses[4];
+        params.saleParticipateFunctionSig = bytes32s[0];
+        params.saleWithdrawFunctionSig = bytes32s[1];
+        params.poolDescription = bytes32s[2];
         params.providerFeeRate = uint16(integers[0]);
         params.creatorFeeRate = uint16(integers[1]);
         params.saleStartDate = uint32(integers[2]);
@@ -266,7 +270,7 @@ contract Pool {
     }
 
     function withdrawFromSaleFunction() public onlyAdmin{
-        require(params.saleParticipateFunctionSig.length > 0, "withdrawFromSaleFunction(): Error, no withdraw function signature given");
+        require(params.saleWithdrawFunctionSig.length > 0, "withdrawFromSaleFunction(): Error, no withdraw function signature given");
         require(poolStats.sentToSale, "withdrawFromSaleFunction(): Error, the pools funds were not sent to the sale yet");
         require(params.saleAddress.call(bytes4(keccak256(params.saleWithdrawFunctionSig))), "withdrawFromSaleFunction(): Error, transaction failed");
     }
@@ -297,8 +301,9 @@ contract Pool {
         uint256 _maxContribution, //maximum amount expected from pool participants 0: no limit
         uint256 _minPoolGoal,  //minimum amount needed for the sale
         bool _whitelistPool,
+        bytes32 _poolDescription,
         address _tokenAddress, // address of erc20 token contract
-        bool[10] toSet
+        bool[11] toSet
     ) public onlyCreator {
         if(toSet[0]){
             params.creator = _creator;
@@ -328,6 +333,9 @@ contract Pool {
             params.whitelistPool = _whitelistPool;
         }
         if(toSet[9]){
+            params.poolDescription = _poolDescription;
+        }
+        if(toSet[10]){
             require(!poolStats.tokensReceivedConfirmed, "setTokenAddress(address _tokenAddress): Error, tokens are already confirmed as received");
             params.tokenAddress = _tokenAddress;
         }
@@ -379,6 +387,7 @@ contract Pool {
         bool whitelistPool,
         bytes32 saleParticipateFunctionSig,
         bytes32 saleWithdrawFunctionSig,
+        bytes32 poolDescription,
         address saleAddress, //address of token sale
         address tokenAddress, // address of erc20 token contract
         address kycAddress,
@@ -390,6 +399,7 @@ contract Pool {
             params.whitelistPool,
             params.saleParticipateFunctionSig,
             params.saleWithdrawFunctionSig,
+            params.poolDescription,
             params.saleAddress,
             params.tokenAddress,
             params.kycAddress,
