@@ -211,10 +211,6 @@ export default {
   },
   created() {
     this.pool = new LocalPool();
-    this.$notify({
-      type: 'success',
-      title: 'Pool created!',
-    });
   },
   computed: {
     submitDisabled() {
