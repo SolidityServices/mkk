@@ -22,11 +22,11 @@
         </div>
 
         <div class="d-flex flex-column col-12">
-          <div class="col-12 blue-24-16-bold py-3 pl-4"> Sale ETH address:</div>
+          <div class="col-12 blue-24-16-bold py-3 pl-4"> Pool address:</div>
           <div class="col-12 input-group w-100">
             <div class="col-12 col-lg-10 px-0">
               <input type="text" class="form-control input-text"
-                     v-model="ethAddress" placeholder="Sale ETH address"/>
+                     v-model="address" placeholder="Sale ETH address"/>
             </div>
             <div class="col-lg-2 mt-3 mt-lg-0 px-0 px-md-4">
               <button class="btn blue-submit px-4" @click="search">Search</button>
@@ -51,7 +51,7 @@
           <div class="col-12 blue-24-16-bold py-3 pl-4"> Sale ETH address:</div>
           <div class="col-12 input-group w-100">
             <input type="text" class="form-control input-text" disabled
-                   v-model="pool.address" placeholder="Sale ETH address"/>
+                   v-model="pool.saleAddress" placeholder="Sale ETH address"/>
           </div>
         </div>
 
@@ -123,7 +123,7 @@
             <div class="col-12 col-lg-6 blue-18-reg">Max allocation</div>
             <div class="col-12 col-lg-6">
               <input type="number" class="form-control input-text w-100" disabled
-                     v-model="pool.maxAllocationFee">
+                     v-model="pool.maxPoolAllocation">
             </div>
           </div>
 
@@ -140,11 +140,9 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Withdraw timelock</div>
             <div class="col-12 col-lg-6">
-              <date-picker v-model="pool.withdrawTimeLock"
-                           :config="datepickerOptions"
-                           class="form-control input-text w-100"
-                           disabled
-              ></date-picker>
+              <input type="number" v-validate="'required|numeric|min_value:0'" disabled
+                     class="form-control input-text w-100" data-vv-name="Withdraw time lock"
+                     v-model="pool.withdrawTimelock">
             </div>
           </div>
 
@@ -178,7 +176,7 @@ export default {
     datePicker,
   },
   data: () => ({
-    ethAddress: '',
+    address: '',
     pool: null,
     datepickerOptions: {
       format: 'DD/MM/YYYY H:mm',
@@ -188,10 +186,8 @@ export default {
   }),
   methods: {
     async search() {
-      const poolAddress = await this.$connectIco.poolFactory.getPool(this.ethAddress);
-
-      if (poolAddress) {
-        this.pool = new Pool(poolAddress);
+      if (await this.$connectIco.poolFactory.checkIfPoolExists(this.address)) {
+        this.pool = new Pool(this.address);
       } else {
         this.$notify({
           type: 'error',

@@ -31,10 +31,11 @@ export default class LocalPool {
     this.init();
   }
 
-  init() {
+  async init() {
     let params = this.initParams();
     if (this.poolAddress) {
-      params = this.connectIco.pool.getPoolParams(this.poolAddress);
+      params = await this.connectIco.pool.getPoolParams(this.poolAddress);
+      console.log(params);
     }
     this.saleParticipateFunctionSig = params.saleParticipateFunctionSig;
     this.saleWithdrawFunctionSig = params.saleWithdrawFunctionSig;
@@ -46,8 +47,8 @@ export default class LocalPool {
     this.minContribution = params.minContribution;
     this.maxContribution = params.maxContribution;
     this.minPoolGoal = params.minPoolGoal;
-    this.saleStartDate = params.saleStartDate;
-    this.saleEndDate = params.saleEndDate;
+    this.saleStartDate = new Date(params.saleStartDate * 1000);
+    this.saleEndDate = new Date(params.saleEndDate * 1000);
     this.maxPoolAllocation = params.maxPoolAllocation;
     this.withdrawTimelock = params.withdrawTimelock;
     this.providerFeeRate = params.providerFeeRate;
