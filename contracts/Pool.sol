@@ -39,6 +39,7 @@ contract Pool {
         uint256 providerStash;
         bool tokensReceivedConfirmed;
         bool sentToSale;
+        bool stopped;
     }
 
     address[] public contributorList; // possible to get on frontend?
@@ -98,6 +99,7 @@ contract Pool {
             admins[addressList[i]] = true;
         }
     }
+
     function removeAdmin(address[] addressList) public onlyCreator {
       for(uint i = 0; i < addressList.length; i++) {
         require(KYC(params.kycAddress).checkKYC(addressList[i]), "addAdmin(address[] addressList): Error, tx was not initiated by KYC address");
@@ -140,6 +142,7 @@ contract Pool {
         require(params.maxPoolAllocation == 0 || msg.value.add(poolStats.allGrossContributions) <= params.maxPoolAllocation, "contribute(): Error, all contributions are higher than maximum allowed");
         require(block.timestamp < params.saleEndDate, "contribute(): Error, the sale has ended");
         require(!poolStats.sentToSale, "contribute(): Error, the pools funds were already sent to the sale");
+        require(!poolStats.stopped,  "contribute(): Error, the pool was stopped");
         contributors[msg.sender].lastContributionTime = block.timestamp;
         if(contributors[msg.sender].lastContributionTime == 0) contributorList.push(msg.sender);
         contributors[msg.sender].grossContribution = contributors[msg.sender].grossContribution.add(msg.value);
@@ -164,11 +167,13 @@ contract Pool {
 
     function withdraw(uint amount) public {
         require(!poolStats.sentToSale, "withdraw(): Error, the pools funds were already sent to the sale");
-        require(contributors[msg.sender].lastContributionTime.add(params.withdrawTimelock) > block.timestamp, "withdraw(): Error, the timelock is not over yet");
-        require(contributors[msg.sender].grossContribution >= amount, "withdraw(): Error, tx sender has not enough funds in pool");
-        require(contributors[msg.sender].grossContribution.sub(amount) >= params.minContribution || amount == 0, "withdraw(): Error, remaining contribution amount would have been less than 'minContribution'");
+        if(!poolStats.stopped){
+            require(contributors[msg.sender].lastContributionTime.add(params.withdrawTimelock) > block.timestamp, "withdraw(): Error, the timelock is not over yet");
+            require(contributors[msg.sender].grossContribution >= amount, "withdraw(): Error, tx sender has not enough funds in pool");
+            require(contributors[msg.sender].grossContribution.sub(amount) >= params.minContribution || amount == 0, "withdraw(): Error, remaining contribution amount would have been less than 'minContribution'");
+        }
         uint transferAmount;
-        if (amount == 0) {
+        if (amount == 0 || poolStats.stopped) {
             transferAmount = contributors[msg.sender].grossContribution;
         } else {
             transferAmount = amount;
@@ -195,6 +200,11 @@ contract Pool {
         ERC20Basic(_tokenAddress).transfer(recipient, amount);
     }
 
+    function stopPool() public onlyCreator {
+        require(!poolStats.sentToSale, "stopPool(): Error, the pools funds were already sent to the sale");
+        poolStats.stopped = true;
+    }
+
     function withdrawToken() public {
         sendOutToken(params.tokenAddress, msg.sender);
     }
@@ -215,6 +225,7 @@ contract Pool {
     }
 
     function sendToSale() public onlyAdmin{
+        require(!poolStats.stopped,  "sendToSale(): Error, the pool was stopped");
         require(params.saleParticipateFunctionSig.length == 0, "sendToSale(): Error, participation function signature is given, 'sendToSaleFunction()' has to be used");
         require(!poolStats.sentToSale, "sendToSale(): Error, the pools funds were already sent to the sale");
         require(now >= params.saleStartDate, "sendToSale(): Error, sale hasn't started yet");
@@ -226,6 +237,7 @@ contract Pool {
     }
 
     function sendToSaleFunction() public onlyAdmin {
+        require(!poolStats.stopped,  "sendToSaleFunction(): Error, the pool was stopped");
         require(params.saleParticipateFunctionSig.length > 0, "sendToSaleFunction(): Error, no participation function signature given");
         require(!poolStats.sentToSale, "sendToSaleFunction(): Error, the pools funds were already sent to the sale");
         require(now >= params.saleStartDate, "sendToSaleFunction(): Error, sale hasn't started yet");
