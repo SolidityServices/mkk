@@ -211,6 +211,10 @@ export default {
   },
   created() {
     this.pool = new LocalPool();
+    this.$notify({
+      type: 'success',
+      title: 'Pool created!',
+    });
   },
   computed: {
     submitDisabled() {
@@ -232,7 +236,14 @@ export default {
     },
     async submit() {
       const transferValue = await this.getTransferDetails().transferValue;
-      this.$connectIco.poolFactory.createPool(this.pool, transferValue);
+      const response = await this.$connectIco.poolFactory.createPool(this.pool, transferValue);
+      if (response) {
+        this.$notify({
+          type: 'success',
+          title: 'Pool created!',
+          text: `${response}`,
+        });
+      }
     },
     async calculateFee() {
       this.calculatedFee = await this.getTransferDetails();
