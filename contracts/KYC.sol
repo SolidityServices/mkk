@@ -5,8 +5,11 @@ import {stringUtils} from './utils/stringUtils.sol';
 
 contract KYC is Ownable {
     mapping(address => bool) public admins;
-    mapping(address => bool) public kycAddresses;
     mapping(address => bytes32) public kycCountry;
+
+    event adminsChange(address adminAddress, bool direction);
+    event kycChange(address kycAddress, bytes32 country, bool direction);
+
 
     constructor () public {
         admins[owner] = true;
@@ -16,39 +19,40 @@ contract KYC is Ownable {
     function addAdmin(address[] addressList) public onlyOwner {
         for(uint i = 0; i < addressList.length; i++) {
             admins[addressList[i]] = true;
+            emit adminsChange(addressList[i], true);
         }
     }
 
     function removeAdmin(address[] addressList) public onlyOwner {
       for(uint i = 0; i < addressList.length; i++) {
           admins[addressList[i]] = false;
+          emit adminsChange(addressList[i], false);
       }
     }
 
     function addKYCAddress(address kycAddress, bytes32 country) public onlyAdmin {
-        kycAddresses[kycAddress] = true;
         kycCountry[kycAddress] = country;
+        emit kycChange(kycAddress, country, true);
     }
 
     function addKYCAddress(address[] addressList, bytes32[] countryList) public onlyAdmin {
         require(addressList.length == countryList.length,  "addKYCAddress(address[] addressList, bytes3[] countryList): Error, addressList and countryList has different lenghts");
         for(uint i = 0; i < addressList.length; i++){
-            kycAddresses[addressList[i]] = true;
             kycCountry[addressList[i]] = countryList[i];
-
+            emit kycChange(addressList[i], countryList[i], true);
         }
     }
 
     function removeKYCAddress(address[] addressList) public onlyAdmin {
       for(uint i = 0; i < addressList.length; i++){
-          kycAddresses[addressList[i]] = false;
           delete kycCountry[addressList[i]];
+        emit kycChange(addressList[i], 0x0, false);
       }
     }
 
     //This function is not really necessary, since you already declared kycAddresses mapping as public
     function checkKYC(address addr) public view returns (bool) {
-        return kycAddresses[addr];
+        return (kycCountry[addr] != 0x0);
     }
 
     modifier onlyAdmin {

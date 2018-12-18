@@ -28,6 +28,7 @@ contract PoolFactory is Ownable {
     //creator whitelist
 
     event poolCreated(address poolAddress);
+    event whitelistChange(address whitelistAddresses, bool direction);
 
     constructor (address _kycContractAddress, uint _flatFee, uint16 _maxAllocationFeeRate, uint16 _maxCreatorFeeRate, uint16 _providerFeeRate) public {
         params.kycContractAddress = _kycContractAddress;
@@ -90,12 +91,14 @@ contract PoolFactory is Ownable {
         for(uint i = 0; i < addressList.length; i++) {
           require(KYC(params.kycContractAddress).checkKYC(addressList[i]), "addWhitelist(address[] addressList): Error, address is not a KYC address");
           whitelist[addressList[i]] = true;
+          emit whitelistChange(addressList[i], true);
         }
     }
 
     function removeWhitelist(address[] addressList) public onlyOwner {
       for(uint i = 0; i < addressList.length; i++) {
         whitelist[addressList[i]] = false;
+        emit whitelistChange(addressList[i], false);
       }
     }
 

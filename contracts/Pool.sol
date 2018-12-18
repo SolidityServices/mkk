@@ -75,6 +75,12 @@ contract Pool {
         _;
     }
 
+    event adminsChange(address adminAddress, bool direction);
+    event whitelistChange(address whitelistAddress, bool direction);
+    event countryBlacklistChange(bytes32 countryCode, bool direction);
+    event contributed(address contributor, uint amount);
+
+
     constructor (
         address[5] addresses,
         bytes32[3] bytes32s, 
@@ -112,12 +118,14 @@ contract Pool {
         for(uint i = 0; i < addressList.length; i++) {
             require(KYC(params.kycAddress).checkKYC(addressList[i]), "addAdmin(address[] addressList): Error, address is not a KYC address");
             admins[addressList[i]] = true;
+            emit adminsChange(addressList[i], true);
         }
     }
 
     function removeAdmin(address[] addressList) public onlyCreator {
       for(uint i = 0; i < addressList.length; i++) {
         admins[addressList[i]] = false;
+        emit adminsChange(addressList[i], false);
       }
     }
 
@@ -125,24 +133,28 @@ contract Pool {
         for(uint i = 0; i < addressList.length; i++) {
           require(KYC(params.kycAddress).checkKYC(addressList[i]), "addWhitelist(address[] addressList): Error, address is not a KYC address");
           whitelist[addressList[i]] = true;
+          emit whitelistChange(addressList[i], true);
         }
     }
 
     function removeWhitelist(address[] addressList) public onlyAdmin {
       for(uint i = 0; i < addressList.length; i++) {
         whitelist[addressList[i]] = false;
+        emit whitelistChange(addressList[i], false);
       }
     }
 
     function addCountryBlacklist(bytes32[] countryList) public onlyAdmin {
       for(uint i = 0; i < countryList.length; i++){
         kycCountryBlacklist[countryList[i]] = true;
+        emit countryBlacklistChange(countryList[i], true);
       }
     }
 
     function removeCountryBlacklist(bytes32[] countryList) public onlyAdmin {
       for(uint i = 0; i < countryList.length; i++){
         kycCountryBlacklist[countryList[i]] = false;
+        emit countryBlacklistChange(countryList[i], false);
       }
     }
 
@@ -160,6 +172,7 @@ contract Pool {
         if(contributors[msg.sender].lastContributionTime == 0) contributorList.push(msg.sender);
         contributors[msg.sender].grossContribution = contributors[msg.sender].grossContribution.add(msg.value);
         poolStats.allGrossContributions = poolStats.allGrossContributions.add(msg.value);
+        emit contributed(msg.sender, msg.value);
     }
 
     function calculateReward(uint toDistribute, address contributor) private view returns (uint) {
