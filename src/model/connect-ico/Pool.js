@@ -47,11 +47,69 @@ export default class Pool {
     return {
       saleParticipateFunctionSig: result2[1].toString(),
       saleWithdrawFunctionSig: result2[2].toString(),
-      saleAddress: result2[3].toString(),
-      tokenAddress: result2[4].toString(),
-      kycAddress: result2[5].toString(),
-      provider: result2[6].toString(),
-      creator: result2[7].toString(),
+      saleAddress: result2[4].toString(),
+      tokenAddress: result2[5].toString(),
+      kycAddress: result2[6].toString(),
+      provider: result2[7].toString(),
+      creator: result2[8].toString(),
+      minContribution: result1[5].toNumber(),
+      maxContribution: result1[6].toNumber(),
+      minPoolGoal: result1[7].toNumber(),
+      saleStartDate: result1[2].toNumber(),
+      saleEndDate: result1[3].toNumber(),
+      maxPoolAllocation: result1[8].toNumber(),
+      withdrawTimelock: result1[4].toNumber(),
+      providerFeeRate: result1[0].toNumber(),
+      creatorFeeRate: result1[1].toNumber(),
+      whitelistPool: result2[0],
+    };
+  }
+
+  /**
+   * Get all Pool parameters
+   *
+   * Frontend page: Pool info page (can be the same as Pool contributor page)
+   *
+   * @param {string} poolAddress address of the Pool this function iteracts with
+   *
+   * @typedef {Object} PoolParams
+   *
+   * @property {string} saleParticipateFunctionSig -
+   * @property {string} saleWithdrawFunctionSig -
+   * @property {string} poolDescription -
+   * @property {string} saleAddress -
+   * @property {string} tokenAddress -
+   * @property {string} kycAddress -
+   * @property {string} provider -
+   * @property {string} creator -
+   * @property {number} minContribution -
+   * @property {number} maxContribution -
+   * @property {number} minPoolGoal -
+   * @property {number} maxPoolAllocation -
+   * @property {number} saleStartDate -
+   * @property {number} saleEndDate -
+   * @property {number} maxPoolAllocation -
+   * @property {number} withdrawTimelock -
+   * @property {number} providerFeeRate -
+   * @property {number} creatorFeeRate -
+   * @property {boolean} whitelistPool -
+   *
+   * @return {PoolParams}
+   */
+  async getPoolParamsNew(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    const result1 = await instance.getParams1.call({ from: this.account });
+    const result2 = await instance.getParams2.call({ from: this.account });
+
+    return {
+      saleParticipateFunctionSig: result2[1].toString(),
+      saleWithdrawFunctionSig: result2[2].toString(),
+      poolDescription: result2[3].toString(),
+      saleAddress: result2[4].toString(),
+      tokenAddress: result2[5].toString(),
+      kycAddress: result2[6].toString(),
+      provider: result2[7].toString(),
+      creator: result2[8].toString(),
       minContribution: result1[5].toNumber(),
       maxContribution: result1[6].toNumber(),
       minPoolGoal: result1[7].toNumber(),
@@ -153,6 +211,38 @@ export default class Pool {
   }
 
   /**
+   * Get all Pool stats
+   *
+   * Frontend page: Pool info page (can be the same as Pool contributor page)
+   *
+   * @param {string} poolAddress address of the Pool this function iteracts with
+   *
+   * @typedef {Object} PoolStats
+   *
+   * @property {number} allGrossContributions -
+   * @property {number} creatorStash -
+   * @property {number} providerStash -
+   * @property {number} tokensReceivedConfirmed -
+   * @property {boolean} sentToSale -
+   * @property {boolean} stopped -
+   *
+   * @return {PoolStats}
+   */
+
+  async getAllPoolStatsNew(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    const result = await instance.poolStats.call({ from: this.account });
+    return {
+      allGrossContributions: result[0].toNumber(),
+      creatorStash: result[1].toNumber(),
+      providerStash: result[2].toNumber(),
+      tokensReceivedConfirmed: result[3],
+      sentToSale: result[4],
+      stopped: result[5],
+    };
+  }
+
+  /**
    * Get all ETH contributions of the pool without applying fees
    *
    * Frontend page: Pool info page (can be the same as Pool contributor page)
@@ -206,6 +296,35 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
     const result = await instance.poolStats.call({ from: this.account });
     return result[4];
+  }
+
+  /**
+   * Cehck if the pool is stopped
+   *
+   * Frontend page: Pool info page (can be the same as Pool contributor page)
+   *
+   * @param {string} poolAddress address of the Pool this function iteracts with
+   * @return {boolean} true: stopped, false: not stopped
+   */
+  async isStopped(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    const result = await instance.poolStats.call({ from: this.account });
+    return result[5];
+  }
+
+  /**
+   * Get tokens owed to a contributor
+   *
+   * Frontend page: Pool info page (can be the same as Pool contributor page)
+   *
+   * @param {string} poolAddress address of the Pool this function iteracts with
+   * @param {string} contibutorAddress address of the pool contributor
+   * @return {boolean} true: stopped, false: not stopped
+   */
+  async getTokensOwedToContributor(poolAddress, contibutorAddress) {
+    const instance = await this.pool.at(poolAddress);
+    const result = await instance.tokensOwedToContributor.call(contibutorAddress, { from: this.account });
+    return result;
   }
 
   /**
@@ -376,7 +495,7 @@ export default class Pool {
    * Frontend page: Pool admin page for pool creator
    *
    * @param {string} poolAddress address of the Pool this function iteracts with
-   * @param {string} adminAddress address of new admin
+   * @param {string[]} adminAddress address of new admin
    */
   async addAdmin(poolAddress, adminAddress) {
     const instance = await this.pool.at(poolAddress);
@@ -413,7 +532,7 @@ export default class Pool {
    * Frontend page: Pool admin page for pool creator
    *
    * @param {string} poolAddress address of the Pool this function iteracts with
-   * @param {string} adminAddress address of admin to remove
+   * @param {string[]} adminAddress address of admin to remove
    */
   async removeAdmin(poolAddress, adminAddress) {
     const instance = await this.pool.at(poolAddress);
@@ -426,7 +545,7 @@ export default class Pool {
    * Frontend page: Pool admin page for pool admins
    *
    * @param {string} poolAddress address of the Pool this function iteracts with
-   * @param {string} whitelistAddress address to add to whitelist
+   * @param {string[]} whitelistAddress address to add to whitelist
    */
   async addWhitelist(poolAddress, whitelistAddress) {
     const instance = await this.pool.at(poolAddress);
@@ -463,7 +582,7 @@ export default class Pool {
    * Frontend page: Pool admin page for pool admins
    *
    * @param {string} poolAddress address of the Pool this function iteracts with
-   * @param {string} whitelistAddress address to remove from whitelist
+   * @param {string[]} whitelistAddress address to remove from whitelist
    */
   async removeWhitelist(poolAddress, whitelistAddress) {
     const instance = await this.pool.at(poolAddress);
@@ -476,7 +595,7 @@ export default class Pool {
    * Frontend page: Pool admin page for pool admins
    *
    * @param {string} poolAddress address of the Pool this function iteracts with
-   * @param {string} countryCode 3 letter country code (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3)
+   * @param {string[]} countryCode 3 letter country code (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3)
    */
   async addCountryBlacklist(poolAddress, countryCode) {
     const instance = await this.pool.at(poolAddress);
@@ -531,8 +650,7 @@ export default class Pool {
    */
   async contribute(poolAddress, amount) {
     const instance = await this.pool.at(poolAddress);
-    // TODO: ???
-    return instance.contribute(adminAddress, { from: this.account, value: amount });
+    return instance.contribute({ from: this.account, value: amount });
   }
 
   /**
@@ -639,6 +757,18 @@ export default class Pool {
   }
 
   /**
+   * Stop pool durng contribution stage (only creator)
+   *
+   * Frontend page: Pool admin page for pool creator
+   *
+   * @param {string} poolAddress address of the Pool this function interacts with
+   */
+  async stopPool(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.stopPool({ from: this.account });
+  }
+
+  /**
    * Send pool funds to sale to predefined special function (only creator)
    *
    * Frontend page: Pool admin page for pool creator
@@ -708,8 +838,37 @@ export default class Pool {
       pool.maxContribution,
       pool.minPoolGoal,
       pool.whitelistPool ? 1 : 0,
+      '', // poolDescription
       pool.tokenAddress,
-      [true, true, true, true, true, true, true, true, true, true],
+      [true, true, true, true, true, true, true, true, true, false, true],
+      { from: this.account },
+    );
+  }
+
+  // Pool param setters
+  /**
+   * Set all pool parameters settable by creator
+   *
+   * Should be null if you dont want to change a particular parameter
+   *
+   * @param {LocalPoolNew} pool pool object
+   */
+
+  async setPoolParamsCreatorNew(pool) {
+    const instance = await this.pool.at(pool.poolAddress);
+    return instance.setParams(
+      pool.creator,
+      pool.creatorFeeRate,
+      Math.floor(pool.saleStartDate / 1000),
+      Math.floor(pool.saleEndDate / 1000),
+      Math.floor(pool.withdrawTimelock / 1000),
+      pool.minContribution,
+      pool.maxContribution,
+      pool.minPoolGoal,
+      pool.whitelistPool ? 1 : 0,
+      pool.poolDescription,
+      pool.tokenAddress,
+      [true, true, true, true, true, true, true, true, true, true, true],
       { from: this.account },
     );
   }

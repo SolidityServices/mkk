@@ -156,6 +156,36 @@ export default class PoolFactory {
   }
 
   /**
+   * Get all Pool Factory params
+   *
+   * Frontend page: PoolFactory info page
+   *
+   *
+   * @typedef {Object} PoolFactoryParams
+   *
+   * @property {string} kycContractAddress -
+   * @property {number} flatFee -
+   * @property {number} maxAllocationFeeRate -
+   * @property {number} maxCreatorFeeRate -
+   * @property {number} providerFeeRate -
+   * @property {bool} useWhitelist -
+   *
+   * @return {PoolFactoryParams}
+   */
+  async getAllPoolFactoryParamsNew() {
+    const instance = await this.poolFactory.deployed();
+    const result = await instance.params.call({ from: this.account });
+    return {
+      kycContractAddress: result[0].toString(),
+      flatFee: result[1].toNumber(),
+      maxAllocationFeeRate: result[2].toNumber(),
+      maxCreatorFeeRate: result[3].toNumber(),
+      providerFeeRate: result[4].toNumber(),
+      useWhitelist: result[5],
+    };
+  }
+
+  /**
    *
    * Set all parameters
    *
@@ -171,6 +201,29 @@ export default class PoolFactory {
       poolFactory.maxAllocationFeeRate,
       poolFactory.maxCreatorFeeRate,
       poolFactory.providerFeeRate,
+      false,
+      [true, true, true, true, true, true, false],
+      { from: this.account },
+    );
+  }
+
+  /**
+   *
+   * Set all parameters
+   *
+   * @param {LocalPoolFactoryNew} poolFactory - pool factory object
+   *
+   */
+  async setPoolFactoryParamsNew(poolFactory) {
+    const instance = await this.poolFactory.deployed();
+    return instance.setParams(
+      poolFactory.ownerAddress,
+      poolFactory.kycContractAddress,
+      poolFactory.flatFee,
+      poolFactory.maxAllocationFeeRate,
+      poolFactory.maxCreatorFeeRate,
+      poolFactory.providerFeeRate,
+      poolFactory.useWhitelist,
       [true, true, true, true, true, true],
       { from: this.account },
     );
@@ -203,17 +256,79 @@ export default class PoolFactory {
   async createPool(pool, transferValue) {
     const instance = await this.poolFactory.deployed();
     const reciept = await instance.createPool(
-      pool.saleAddress,
-      pool.tokenAddress,
-      pool.creatorFeeRate,
-      Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
-      Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
-      pool.minContribution,
-      pool.maxContribution,
-      pool.minPoolGoal,
-      pool.maxPoolAllocation,
-      pool.withdrawTimelock * 60 * 60, // convert to unix time
+      [pool.saleAddress,
+        pool.tokenAddress],
+      ['', '', ''],
+      [pool.creatorFeeRate,
+        Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
+        Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
+        pool.minContribution,
+        pool.maxContribution,
+        pool.minPoolGoal,
+        pool.maxPoolAllocation,
+        pool.withdrawTimelock * 60 * 60], // convert to unix time
       pool.whitelistPool ? 1 : 0,
+      [],
+      [],
+      [],
+      {
+        from: this.account,
+        value: transferValue,
+      },
+    );
+
+    const result = reciept.logs[0].args.poolAddress;
+    console.log(reciept);
+    console.log(`pool address: ${result}`);
+
+    return result;
+  }
+  /**
+   * Function for creating pools, needs ethereum sent to it (payable)
+   *
+   * Frontend page: Pool creation page
+   *
+   * @param {LocalPool} pool - LocalPool object
+   * @param {string} saleParticipateFunctionSig
+   * @param {string} saleWithdrawFunctionSig
+   * @param {string} poolDescription
+   * @param {string[]} adminlist
+   * @param {string[]} contributorWhitelist
+   * @param {string[]} countryBlacklist
+   * @param {number} transferValue Ethereum fee for creating pools in wei units, must equal
+   * flatFee + (maxAllocationFeeRate * _maxPoolAllocation)/1000 or more
+   * @return address of the created pool
+   */
+
+  async createPoolNew(
+    pool,
+    saleParticipateFunctionSig,
+    saleWithdrawFunctionSig,
+    poolDescription,
+    adminlist,
+    contributorWhitelist,
+    countryBlacklist,
+    transferValue,
+  ) {
+    const instance = await this.poolFactory.deployed();
+    const reciept = await instance.createPool(
+      [pool.saleAddress,
+        pool.tokenAddress],
+      [saleParticipateFunctionSig,
+        saleWithdrawFunctionSig,
+        poolDescription],
+      [pool.creatorFeeRate,
+        Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
+        Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
+        pool.minContribution,
+        pool.maxContribution,
+        pool.minPoolGoal,
+        pool.maxPoolAllocation,
+        pool.withdrawTimelock * 60 * 60], // convert to unix time
+      pool.whitelistPool ? 1 : 0,
+      adminlist,
+      contributorWhitelist,
+      countryBlacklist,
       {
         from: this.account,
         value: transferValue,
