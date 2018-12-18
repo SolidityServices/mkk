@@ -288,7 +288,7 @@ export default class PoolFactory {
    *
    * Frontend page: Pool creation page
    *
-   * @param {LocalPool} pool - LocalPool object
+   * @param {LocalPoolNew} pool - LocalPool object
    * @param {string} saleParticipateFunctionSig
    * @param {string} saleWithdrawFunctionSig
    * @param {string} poolDescription
@@ -302,9 +302,6 @@ export default class PoolFactory {
 
   async createPoolNew(
     pool,
-    saleParticipateFunctionSig,
-    saleWithdrawFunctionSig,
-    poolDescription,
     adminlist,
     contributorWhitelist,
     countryBlacklist,
@@ -314,9 +311,9 @@ export default class PoolFactory {
     const reciept = await instance.createPool(
       [pool.saleAddress,
         pool.tokenAddress],
-      [saleParticipateFunctionSig,
-        saleWithdrawFunctionSig,
-        poolDescription],
+      [pool.saleParticipateFunctionSig,
+        pool.saleWithdrawFunctionSig,
+        pool.poolDescription],
       [pool.creatorFeeRate,
         Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
         Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
