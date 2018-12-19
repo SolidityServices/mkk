@@ -109,12 +109,20 @@ contract Pool {
         params.withdrawTimelock = uint32(integers[8]);
         params.whitelistPool = _whitelistPool;
         admins[params.creator] = true;
-        addAdmin(adminlist);
-        addWhitelist(contributorWhitelist);
-        addCountryBlacklist(countryBlacklist);
+        addAdminPrivate(adminlist);
+        addWhitelistPrivate(contributorWhitelist);
+        addCountryBlacklistPrivate(countryBlacklist);
     }
 
     function addAdmin(address[] addressList) public onlyCreator {
+        for(uint i = 0; i < addressList.length; i++) {
+            require(KYC(params.kycAddress).checkKYC(addressList[i]), "addAdmin(address[] addressList): Error, address is not a KYC address");
+            admins[addressList[i]] = true;
+            emit adminsChange(addressList[i], true);
+        }
+    }
+
+    function addAdminPrivate(address[] addressList) private {
         for(uint i = 0; i < addressList.length; i++) {
             require(KYC(params.kycAddress).checkKYC(addressList[i]), "addAdmin(address[] addressList): Error, address is not a KYC address");
             admins[addressList[i]] = true;
@@ -136,6 +144,14 @@ contract Pool {
           emit whitelistChange(addressList[i], true);
         }
     }
+    
+    function addWhitelistPrivate(address[] addressList) private {
+        for(uint i = 0; i < addressList.length; i++) {
+          require(KYC(params.kycAddress).checkKYC(addressList[i]), "addWhitelist(address[] addressList): Error, address is not a KYC address");
+          whitelist[addressList[i]] = true;
+          emit whitelistChange(addressList[i], true);
+        }
+    }
 
     function removeWhitelist(address[] addressList) public onlyAdmin {
       for(uint i = 0; i < addressList.length; i++) {
@@ -145,6 +161,13 @@ contract Pool {
     }
 
     function addCountryBlacklist(bytes32[] countryList) public onlyAdmin {
+      for(uint i = 0; i < countryList.length; i++){
+        kycCountryBlacklist[countryList[i]] = true;
+        emit countryBlacklistChange(countryList[i], true);
+      }
+    }
+
+    function addCountryBlacklistPrivate(bytes32[] countryList) private {
       for(uint i = 0; i < countryList.length; i++){
         kycCountryBlacklist[countryList[i]] = true;
         emit countryBlacklistChange(countryList[i], true);
