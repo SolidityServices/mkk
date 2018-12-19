@@ -20,62 +20,6 @@ export default class Pool {
    *
    * @property {string} saleParticipateFunctionSig -
    * @property {string} saleWithdrawFunctionSig -
-   * @property {string} saleAddress -
-   * @property {string} tokenAddress -
-   * @property {string} kycAddress -
-   * @property {string} provider -
-   * @property {string} creator -
-   * @property {number} minContribution -
-   * @property {number} maxContribution -
-   * @property {number} minPoolGoal -
-   * @property {number} maxPoolAllocation -
-   * @property {number} saleStartDate -
-   * @property {number} saleEndDate -
-   * @property {number} maxPoolAllocation -
-   * @property {number} withdrawTimelock -
-   * @property {number} providerFeeRate -
-   * @property {number} creatorFeeRate -
-   * @property {boolean} whitelistPool -
-   *
-   * @return {PoolParams}
-   */
-  async getPoolParams(poolAddress) {
-    const instance = await this.pool.at(poolAddress);
-    const result1 = await instance.getParams1.call({ from: this.account });
-    const result2 = await instance.getParams2.call({ from: this.account });
-
-    return {
-      saleParticipateFunctionSig: result2[1].toString(),
-      saleWithdrawFunctionSig: result2[2].toString(),
-      saleAddress: result2[4].toString(),
-      tokenAddress: result2[5].toString(),
-      kycAddress: result2[6].toString(),
-      provider: result2[7].toString(),
-      creator: result2[8].toString(),
-      minContribution: result1[5].toNumber(),
-      maxContribution: result1[6].toNumber(),
-      minPoolGoal: result1[7].toNumber(),
-      saleStartDate: result1[2].toNumber(),
-      saleEndDate: result1[3].toNumber(),
-      maxPoolAllocation: result1[8].toNumber(),
-      withdrawTimelock: result1[4].toNumber(),
-      providerFeeRate: result1[0].toNumber(),
-      creatorFeeRate: result1[1].toNumber(),
-      whitelistPool: result2[0],
-    };
-  }
-
-  /**
-   * Get all Pool parameters
-   *
-   * Frontend page: Pool info page (can be the same as Pool contributor page)
-   *
-   * @param {string} poolAddress address of the Pool this function iteracts with
-   *
-   * @typedef {Object} PoolParams
-   *
-   * @property {string} saleParticipateFunctionSig -
-   * @property {string} saleWithdrawFunctionSig -
    * @property {string} poolDescription -
    * @property {string} saleAddress -
    * @property {string} tokenAddress -
@@ -96,7 +40,7 @@ export default class Pool {
    *
    * @return {PoolParams}
    */
-  async getPoolParamsNew(poolAddress) {
+  async getPoolParams(poolAddress) {
     const instance = await this.pool.at(poolAddress);
     const result1 = await instance.getParams1.call({ from: this.account });
     const result2 = await instance.getParams2.call({ from: this.account });
@@ -194,42 +138,12 @@ export default class Pool {
    * @property {number} providerStash -
    * @property {number} tokensReceivedConfirmed -
    * @property {boolean} sentToSale -
-   *
-   * @return {PoolStats}
-   */
-
-  async getAllPoolStats(poolAddress) {
-    const instance = await this.pool.at(poolAddress);
-    const result = await instance.poolStats.call({ from: this.account });
-    return {
-      allGrossContributions: result[0].toNumber(),
-      creatorStash: result[1].toNumber(),
-      providerStash: result[2].toNumber(),
-      tokensReceivedConfirmed: result[3],
-      sentToSale: result[4],
-    };
-  }
-
-  /**
-   * Get all Pool stats
-   *
-   * Frontend page: Pool info page (can be the same as Pool contributor page)
-   *
-   * @param {string} poolAddress address of the Pool this function iteracts with
-   *
-   * @typedef {Object} PoolStats
-   *
-   * @property {number} allGrossContributions -
-   * @property {number} creatorStash -
-   * @property {number} providerStash -
-   * @property {number} tokensReceivedConfirmed -
-   * @property {boolean} sentToSale -
    * @property {boolean} stopped -
    *
    * @return {PoolStats}
    */
 
-  async getAllPoolStatsNew(poolAddress) {
+  async getAllPoolStats(poolAddress) {
     const instance = await this.pool.at(poolAddress);
     const result = await instance.poolStats.call({ from: this.account });
     return {
@@ -838,37 +752,9 @@ export default class Pool {
       pool.maxContribution * 1000000000000000000, // convert ether to wei
       pool.minPoolGoal * 1000000000000000000, // convert ether to wei
       pool.whitelistPool ? 1 : 0,
-      '', // poolDescription
-      pool.tokenAddress,
-      [true, true, true, true, true, true, true, true, true, false, true],
-      { from: this.account },
-    );
-  }
-
-  // Pool param setters
-  /**
-   * Set all pool parameters settable by creator
-   *
-   * Should be null if you dont want to change a particular parameter
-   *
-   * @param {LocalPoolNew} pool pool object
-   */
-
-  async setPoolParamsCreatorNew(pool) {
-    const instance = await this.pool.at(pool.poolAddress);
-    return instance.setParams(
-      pool.creator,
-      pool.creatorFeeRate,
-      Math.floor(pool.saleStartDate / 1000),
-      Math.floor(pool.saleEndDate / 1000),
-      Math.floor(pool.withdrawTimelock / 1000),
-      pool.minContribution,
-      pool.maxContribution,
-      pool.minPoolGoal,
-      pool.whitelistPool ? 1 : 0,
       pool.poolDescription,
       pool.tokenAddress,
-      [true, true, true, true, true, true, true, true, true, true, true],
+      [true, true, true, true, true, true, true, true, true, false, true],
       { from: this.account },
     );
   }

@@ -140,39 +140,11 @@ export default class PoolFactory {
    * @property {number} maxAllocationFeeRate -
    * @property {number} maxCreatorFeeRate -
    * @property {number} providerFeeRate -
+   * @property {boolean} useWhitelist -
    *
    * @return {PoolFactoryParams}
    */
   async getAllPoolFactoryParams() {
-    const instance = await this.poolFactory.deployed();
-    const result = await instance.params.call({ from: this.account });
-    return {
-      kycContractAddress: result[0].toString(),
-      flatFee: result[1].toNumber(),
-      maxAllocationFeeRate: result[2].toNumber(),
-      maxCreatorFeeRate: result[3].toNumber(),
-      providerFeeRate: result[4].toNumber(),
-    };
-  }
-
-  /**
-   * Get all Pool Factory params
-   *
-   * Frontend page: PoolFactory info page
-   *
-   *
-   * @typedef {Object} PoolFactoryParams
-   *
-   * @property {string} kycContractAddress -
-   * @property {number} flatFee -
-   * @property {number} maxAllocationFeeRate -
-   * @property {number} maxCreatorFeeRate -
-   * @property {number} providerFeeRate -
-   * @property {bool} useWhitelist -
-   *
-   * @return {PoolFactoryParams}
-   */
-  async getAllPoolFactoryParamsNew() {
     const instance = await this.poolFactory.deployed();
     const result = await instance.params.call({ from: this.account });
     return {
@@ -201,34 +173,11 @@ export default class PoolFactory {
       poolFactory.maxAllocationFeeRate,
       poolFactory.maxCreatorFeeRate,
       poolFactory.providerFeeRate,
-      false,
-      [true, true, true, true, true, true, false],
-      { from: this.account },
-    );
-  }
-
-  /**
-   *
-   * Set all parameters
-   *
-   * @param {LocalPoolFactoryNew} poolFactory - pool factory object
-   *
-   */
-  async setPoolFactoryParamsNew(poolFactory) {
-    const instance = await this.poolFactory.deployed();
-    return instance.setParams(
-      poolFactory.ownerAddress,
-      poolFactory.kycContractAddress,
-      poolFactory.flatFee,
-      poolFactory.maxAllocationFeeRate,
-      poolFactory.maxCreatorFeeRate,
-      poolFactory.providerFeeRate,
       poolFactory.useWhitelist,
       [true, true, true, true, true, true],
       { from: this.account },
     );
   }
-
 
   /**
    * Returns the whole ETH balance of the PoolFactory contract
@@ -314,19 +263,25 @@ export default class PoolFactory {
   ) {
     const instance = await this.poolFactory.deployed();
     const reciept = await instance.createPool(
-      [pool.saleAddress,
-        pool.tokenAddress],
-      [pool.saleParticipateFunctionSig,
+      [
+        pool.saleAddress,
+        pool.tokenAddress,
+      ],
+      [
+        pool.saleParticipateFunctionSig,
         pool.saleWithdrawFunctionSig,
-        pool.poolDescription],
-      [pool.creatorFeeRate,
+        pool.poolDescription,
+      ],
+      [
+        pool.creatorFeeRate,
         Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
         Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
         pool.minContribution,
         pool.maxContribution,
         pool.minPoolGoal,
         pool.maxPoolAllocation,
-        pool.withdrawTimelock * 60 * 60], // convert to unix time
+        pool.withdrawTimelock * 60 * 60, // convert to unix time
+      ],
       pool.whitelistPool ? 1 : 0,
       adminlist,
       contributorWhitelist,

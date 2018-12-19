@@ -11,6 +11,7 @@ export default class LocalPoolFactory {
 
   providerFeeRate;
 
+  useWhitelist;
 
   constructor(address) {
     this.connectIco = window.connectICO;
@@ -25,5 +26,6 @@ export default class LocalPoolFactory {
     this.maxAllocationFeeRate = params.maxAllocationFeeRate;
     this.maxCreatorFeeRate = params.maxCreatorFeeRate;
     this.providerFeeRate = params.providerFeeRate;
+    this.useWhitelist = params.useWhitelist;
   }
 }
