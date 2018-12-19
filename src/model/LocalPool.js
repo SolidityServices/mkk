@@ -3,6 +3,12 @@ export default class LocalPool {
 
   poolAddress;
 
+  saleParticipateFunctionSig;
+
+  saleWithdrawFunctionSig;
+
+  poolDescription;
+
   creator;
 
   creatorFeeRate;
@@ -39,6 +45,7 @@ export default class LocalPool {
     }
     this.saleParticipateFunctionSig = params.saleParticipateFunctionSig;
     this.saleWithdrawFunctionSig = params.saleWithdrawFunctionSig;
+    this.poolDescription = params.poolDescription;
     this.saleAddress = params.saleAddress;
     this.tokenAddress = params.tokenAddress;
     this.kycAddress = params.kycAddress;
@@ -61,6 +68,9 @@ export default class LocalPool {
 
     params.saleAddress = '0x0000000000000000000000000000000000000000';
     params.tokenAddress = '0x0000000000000000000000000000000000000000';
+    params.saleParticipateFunctionSig = '';
+    params.saleWithdrawFunctionSig = '';
+    params.poolDescription = '';
     params.creatorFeeRate = 1;
     params.saleStartDate = Math.floor(new Date() / 1000);
     params.saleEndDate = Math.floor(new Date() / 1000);

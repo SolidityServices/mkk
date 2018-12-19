@@ -20,6 +20,7 @@ export default class Pool {
    *
    * @property {string} saleParticipateFunctionSig -
    * @property {string} saleWithdrawFunctionSig -
+   * @property {string} poolDescription -
    * @property {string} saleAddress -
    * @property {string} tokenAddress -
    * @property {string} kycAddress -
@@ -47,11 +48,12 @@ export default class Pool {
     return {
       saleParticipateFunctionSig: result2[1].toString(),
       saleWithdrawFunctionSig: result2[2].toString(),
-      saleAddress: result2[3].toString(),
-      tokenAddress: result2[4].toString(),
-      kycAddress: result2[5].toString(),
-      provider: result2[6].toString(),
-      creator: result2[7].toString(),
+      poolDescription: result2[3].toString(),
+      saleAddress: result2[4].toString(),
+      tokenAddress: result2[5].toString(),
+      kycAddress: result2[6].toString(),
+      provider: result2[7].toString(),
+      creator: result2[8].toString(),
       minContribution: result1[5].toNumber(),
       maxContribution: result1[6].toNumber(),
       minPoolGoal: result1[7].toNumber(),
@@ -136,6 +138,7 @@ export default class Pool {
    * @property {number} providerStash -
    * @property {number} tokensReceivedConfirmed -
    * @property {boolean} sentToSale -
+   * @property {boolean} stopped -
    *
    * @return {PoolStats}
    */
@@ -149,6 +152,7 @@ export default class Pool {
       providerStash: result[2].toNumber(),
       tokensReceivedConfirmed: result[3],
       sentToSale: result[4],
+      stopped: result[5],
     };
   }
 
@@ -206,6 +210,35 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
     const result = await instance.poolStats.call({ from: this.account });
     return result[4];
+  }
+
+  /**
+   * Cehck if the pool is stopped
+   *
+   * Frontend page: Pool info page (can be the same as Pool contributor page)
+   *
+   * @param {string} poolAddress address of the Pool this function iteracts with
+   * @return {boolean} true: stopped, false: not stopped
+   */
+  async isStopped(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    const result = await instance.poolStats.call({ from: this.account });
+    return result[5];
+  }
+
+  /**
+   * Get tokens owed to a contributor
+   *
+   * Frontend page: Pool info page (can be the same as Pool contributor page)
+   *
+   * @param {string} poolAddress address of the Pool this function iteracts with
+   * @param {string} contibutorAddress address of the pool contributor
+   * @return {boolean} true: stopped, false: not stopped
+   */
+  async getTokensOwedToContributor(poolAddress, contibutorAddress) {
+    const instance = await this.pool.at(poolAddress);
+    const result = await instance.tokensOwedToContributor.call(contibutorAddress, { from: this.account });
+    return result;
   }
 
   /**
@@ -376,7 +409,7 @@ export default class Pool {
    * Frontend page: Pool admin page for pool creator
    *
    * @param {string} poolAddress address of the Pool this function iteracts with
-   * @param {string} adminAddress address of new admin
+   * @param {string[]} adminAddress address of new admin
    */
   async addAdmin(poolAddress, adminAddress) {
     const instance = await this.pool.at(poolAddress);
@@ -413,7 +446,7 @@ export default class Pool {
    * Frontend page: Pool admin page for pool creator
    *
    * @param {string} poolAddress address of the Pool this function iteracts with
-   * @param {string} adminAddress address of admin to remove
+   * @param {string[]} adminAddress address of admin to remove
    */
   async removeAdmin(poolAddress, adminAddress) {
     const instance = await this.pool.at(poolAddress);
@@ -426,7 +459,7 @@ export default class Pool {
    * Frontend page: Pool admin page for pool admins
    *
    * @param {string} poolAddress address of the Pool this function iteracts with
-   * @param {string} whitelistAddress address to add to whitelist
+   * @param {string[]} whitelistAddress address to add to whitelist
    */
   async addWhitelist(poolAddress, whitelistAddress) {
     const instance = await this.pool.at(poolAddress);
@@ -463,7 +496,7 @@ export default class Pool {
    * Frontend page: Pool admin page for pool admins
    *
    * @param {string} poolAddress address of the Pool this function iteracts with
-   * @param {string} whitelistAddress address to remove from whitelist
+   * @param {string[]} whitelistAddress address to remove from whitelist
    */
   async removeWhitelist(poolAddress, whitelistAddress) {
     const instance = await this.pool.at(poolAddress);
@@ -476,7 +509,7 @@ export default class Pool {
    * Frontend page: Pool admin page for pool admins
    *
    * @param {string} poolAddress address of the Pool this function iteracts with
-   * @param {string} countryCode 3 letter country code (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3)
+   * @param {string[]} countryCode 3 letter country code (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3)
    */
   async addCountryBlacklist(poolAddress, countryCode) {
     const instance = await this.pool.at(poolAddress);
@@ -531,8 +564,7 @@ export default class Pool {
    */
   async contribute(poolAddress, amount) {
     const instance = await this.pool.at(poolAddress);
-    // TODO: ???
-    return instance.contribute(adminAddress, { from: this.account, value: amount });
+    return instance.contribute({ from: this.account, value: amount });
   }
 
   /**
@@ -639,6 +671,18 @@ export default class Pool {
   }
 
   /**
+   * Stop pool durng contribution stage (only creator)
+   *
+   * Frontend page: Pool admin page for pool creator
+   *
+   * @param {string} poolAddress address of the Pool this function interacts with
+   */
+  async stopPool(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.stopPool({ from: this.account });
+  }
+
+  /**
    * Send pool funds to sale to predefined special function (only creator)
    *
    * Frontend page: Pool admin page for pool creator
@@ -708,8 +752,9 @@ export default class Pool {
       pool.maxContribution * 1000000000000000000, // convert ether to wei
       pool.minPoolGoal * 1000000000000000000, // convert ether to wei
       pool.whitelistPool ? 1 : 0,
+      pool.poolDescription,
       pool.tokenAddress,
-      [true, true, true, true, true, true, true, true, true, true],
+      [true, true, true, true, true, true, true, true, true, false, true],
       { from: this.account },
     );
   }

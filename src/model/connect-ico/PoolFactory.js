@@ -140,6 +140,7 @@ export default class PoolFactory {
    * @property {number} maxAllocationFeeRate -
    * @property {number} maxCreatorFeeRate -
    * @property {number} providerFeeRate -
+   * @property {boolean} useWhitelist -
    *
    * @return {PoolFactoryParams}
    */
@@ -152,6 +153,7 @@ export default class PoolFactory {
       maxAllocationFeeRate: result[2].toNumber(),
       maxCreatorFeeRate: result[3].toNumber(),
       providerFeeRate: result[4].toNumber(),
+      useWhitelist: result[5],
     };
   }
 
@@ -171,11 +173,11 @@ export default class PoolFactory {
       poolFactory.maxAllocationFeeRate,
       poolFactory.maxCreatorFeeRate,
       poolFactory.providerFeeRate,
+      poolFactory.useWhitelist,
       [true, true, true, true, true, true],
       { from: this.account },
     );
   }
-
 
   /**
    * Returns the whole ETH balance of the PoolFactory contract
@@ -203,22 +205,93 @@ export default class PoolFactory {
   async createPool(pool, transferValue) {
     const instance = await this.poolFactory.deployed();
     const reciept = await instance.createPool(
-      pool.saleAddress,
-      pool.tokenAddress,
-      pool.creatorFeeRate * 100, // convert percentage to integer
-      Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
-      Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
-      pool.minContribution * 1000000000000000000, // convert ether to wei
-      pool.maxContribution * 1000000000000000000, // convert ether to wei
-      pool.minPoolGoal * 1000000000000000000, // convert ether to wei
-      pool.maxPoolAllocation * 1000000000000000000, // convert ether to wei
-      pool.withdrawTimelock * 60 * 60, // convert to unix time
+      [
+        pool.saleAddress,
+        pool.tokenAddress,
+      ],
+      ['', '', ''],
+      [
+        pool.creatorFeeRate * 100, // convert percentage to integer
+        Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
+        Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
+        pool.minContribution * 1000000000000000000, // convert ether to wei
+        pool.maxContribution * 1000000000000000000, // convert ether to wei
+        pool.minPoolGoal * 1000000000000000000, // convert ether to wei
+        pool.maxPoolAllocation * 1000000000000000000, // convert ether to wei
+        pool.withdrawTimelock * 60 * 60, // convert to unix time
+      ],
       pool.whitelistPool ? 1 : 0,
+      [],
+      [],
+      [],
       {
         from: this.account,
         value: transferValue * 1000000000000000000, // convert ether to wei
       },
     );
+
+    const result = reciept.logs[0].args.poolAddress;
+    console.log(reciept);
+    console.log(`pool address: ${result}`);
+
+    return result;
+  }
+
+  /**
+   * Function for creating pools, needs ethereum sent to it (payable)
+   *
+   * Frontend page: Pool creation page
+   *
+   * @param {LocalPoolNew} pool - LocalPool object
+   * @param {string} saleParticipateFunctionSig
+   * @param {string} saleWithdrawFunctionSig
+   * @param {string} poolDescription
+   * @param {string[]} adminlist
+   * @param {string[]} contributorWhitelist
+   * @param {string[]} countryBlacklist
+   * @param {number} transferValue Ethereum fee for creating pools in wei units, must equal
+   * flatFee + (maxAllocationFeeRate * _maxPoolAllocation)/1000 or more
+   * @return address of the created pool
+   */
+
+  async createPoolNew(
+    pool,
+    adminlist,
+    contributorWhitelist,
+    countryBlacklist,
+    transferValue,
+  ) {
+    const instance = await this.poolFactory.deployed();
+    const reciept = await instance.createPool(
+      [
+        pool.saleAddress,
+        pool.tokenAddress,
+      ],
+      [
+        pool.saleParticipateFunctionSig,
+        pool.saleWithdrawFunctionSig,
+        pool.poolDescription,
+      ],
+      [
+        pool.creatorFeeRate,
+        Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
+        Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
+        pool.minContribution,
+        pool.maxContribution,
+        pool.minPoolGoal,
+        pool.maxPoolAllocation,
+        pool.withdrawTimelock * 60 * 60, // convert to unix time
+      ],
+      pool.whitelistPool ? 1 : 0,
+      adminlist,
+      contributorWhitelist,
+      countryBlacklist,
+      {
+        from: this.account,
+        value: transferValue,
+      },
+    );
+
 
     const result = reciept.logs[0].args.poolAddress;
     console.log(reciept);
