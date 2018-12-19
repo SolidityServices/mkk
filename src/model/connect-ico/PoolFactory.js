@@ -337,6 +337,14 @@ export default class PoolFactory {
       },
     );
 
+
+    const result = reciept.logs[0].args.poolAddress;
+    console.log(reciept);
+    console.log(`pool address: ${result}`);
+
+    return result;
+  }
+
   /**
    * Function for owner to withdraw accumulated fees from PoolFactory
    *
