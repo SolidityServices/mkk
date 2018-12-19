@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 
 import '../node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol';
-import {stringUtils} from './utils/stringUtils.sol';
+//import {stringUtils} from './utils/stringUtils.sol';
 
 contract KYC is Ownable {
     mapping(address => bool) public admins;

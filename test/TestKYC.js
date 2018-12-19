@@ -1,3 +1,4 @@
+/* eslint-disable */
 let KYC = artifacts.require("KYC");
 
 contract('KYC contract tests', function(accounts) {
