@@ -256,24 +256,28 @@ export default class PoolFactory {
   async createPool(pool, transferValue) {
     const instance = await this.poolFactory.deployed();
     const reciept = await instance.createPool(
-      [pool.saleAddress,
-        pool.tokenAddress],
+      [
+        pool.saleAddress,
+        pool.tokenAddress,
+      ],
       ['', '', ''],
-      [pool.creatorFeeRate,
+      [
+        pool.creatorFeeRate * 100, // convert percentage to integer
         Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
         Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
-        pool.minContribution,
-        pool.maxContribution,
-        pool.minPoolGoal,
-        pool.maxPoolAllocation,
-        pool.withdrawTimelock * 60 * 60], // convert to unix time
+        pool.minContribution * 1000000000000000000, // convert ether to wei
+        pool.maxContribution * 1000000000000000000, // convert ether to wei
+        pool.minPoolGoal * 1000000000000000000, // convert ether to wei
+        pool.maxPoolAllocation * 1000000000000000000, // convert ether to wei
+        pool.withdrawTimelock * 60 * 60, // convert to unix time
+      ],
       pool.whitelistPool ? 1 : 0,
       [],
       [],
       [],
       {
         from: this.account,
-        value: transferValue,
+        value: transferValue * 1000000000000000000, // convert ether to wei
       },
     );
 
@@ -283,6 +287,7 @@ export default class PoolFactory {
 
     return result;
   }
+
   /**
    * Function for creating pools, needs ethereum sent to it (payable)
    *
@@ -331,13 +336,6 @@ export default class PoolFactory {
         value: transferValue,
       },
     );
-
-    const result = reciept.logs[0].args.poolAddress;
-    console.log(reciept);
-    console.log(`pool address: ${result}`);
-
-    return result;
-  }
 
   /**
    * Function for owner to withdraw accumulated fees from PoolFactory

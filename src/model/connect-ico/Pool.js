@@ -830,13 +830,13 @@ export default class Pool {
     const instance = await this.pool.at(pool.poolAddress);
     return instance.setParams(
       pool.creator,
-      pool.creatorFeeRate,
-      Math.floor(pool.saleStartDate / 1000),
-      Math.floor(pool.saleEndDate / 1000),
-      Math.floor(pool.withdrawTimelock / 1000),
-      pool.minContribution,
-      pool.maxContribution,
-      pool.minPoolGoal,
+      pool.creatorFeeRate * 100, // convert percentage to integer
+      Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
+      Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
+      pool.withdrawTimelock * 60 * 60, // convert to unix time
+      pool.minContribution * 1000000000000000000, // convert ether to wei
+      pool.maxContribution * 1000000000000000000, // convert ether to wei
+      pool.minPoolGoal * 1000000000000000000, // convert ether to wei
       pool.whitelistPool ? 1 : 0,
       '', // poolDescription
       pool.tokenAddress,
