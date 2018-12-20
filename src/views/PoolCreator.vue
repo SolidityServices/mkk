@@ -298,6 +298,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import moment from 'moment';
 import datePicker from 'vue-bootstrap-datetimepicker';
 import LocalPool from '../model/LocalPool';
 
@@ -344,6 +345,13 @@ export default {
     },
     async submit() {
       const transferValue = await this.getTransferDetails().transferValue;
+      if (typeof this.pool.saleStartDate === 'string') {
+        this.pool.saleStartDate = moment(this.pool.saleStartDate, this.datepickerOptions.format);
+      }
+      if (typeof this.pool.saleEndDate === 'string') {
+        this.pool.saleEndDate = moment(this.pool.saleEndDate, this.datepickerOptions.format);
+      }
+
       const response = await this.connectICO.poolFactory.createPool(this.pool, transferValue);
       if (response) {
         this.poolAddress = response;

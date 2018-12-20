@@ -80,8 +80,9 @@ export default class LocalPool {
     params.saleWithdrawFunctionSig = '';
     params.poolDescription = '';
     params.creatorFeeRate = 1;
-    params.saleStartDate = Math.floor(new Date() / 1000);
-    params.saleEndDate = Math.floor(new Date() / 1000);
+    const date = Math.floor(new Date() / 1000);
+    params.saleStartDate = date;
+    params.saleEndDate = date;
     params.minContribution = 1000000000000;
     params.maxContribution = 1000000000000;
     params.minPoolGoal = 1000000000000;

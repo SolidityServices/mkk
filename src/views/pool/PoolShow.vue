@@ -194,7 +194,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import datePicker from 'vue-bootstrap-datetimepicker';
-import Pool from '../../model/LocalPool';
+import LocalPool from '../../model/LocalPool';
 
 export default {
   components: {
@@ -223,7 +223,7 @@ export default {
   methods: {
     async search() {
       if (await this.connectICO.poolFactory.checkIfPoolExists(this.address)) {
-        this.pool = new Pool(this.address);
+        this.pool = new LocalPool(this.address);
       } else {
         this.$notify({
           type: 'error',
