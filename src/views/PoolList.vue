@@ -44,7 +44,7 @@
               </router-link>
             </div>
             <div class="col-12 col-lg-6">
-              {{pool.description}}
+              {{pool.poolDescription}}
             </div>
           </div>
         </div>
