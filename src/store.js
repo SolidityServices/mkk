@@ -19,7 +19,7 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    setConnectICO({commit}, connectICO) {
+    setConnectICO({ commit }, connectICO) {
       commit('setConnectICO', connectICO);
     },
   },
