@@ -15,7 +15,7 @@
     </div>
     <div class="d-flex flex-row flex-wrap w-80 w-lg-60 justify-content-center">
       <router-link :to="{name: 'pool-creator'}" class="custom-navbar-item">Pool Creator</router-link>
-      <router-link :to="{name: 'project'}" class="custom-navbar-item">Project</router-link>
+      <router-link :to="{name: 'project', params: {address: null}}" class="custom-navbar-item">Project</router-link>
       <router-link :to="{name: 'deploy-contract'}" class="custom-navbar-item">Deploy Contract</router-link>
       <router-link :to="{name: 'pool-list'}" class="custom-navbar-item">Pool List</router-link>
     </div>
