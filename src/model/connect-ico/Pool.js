@@ -409,11 +409,11 @@ export default class Pool {
    * Frontend page: Pool admin page for pool creator
    *
    * @param {string} poolAddress address of the Pool this function iteracts with
-   * @param {string[]} adminAddress address of new admin
+   * @param {string[]} adminAddressList address of new admin
    */
-  async addAdmin(poolAddress, adminAddress) {
+  async addAdmin(poolAddress, adminAddressList) {
     const instance = await this.pool.at(poolAddress);
-    return instance.addAdmin(adminAddress, { from: this.account });
+    return instance.addAdmin(adminAddressList, { from: this.account });
   }
 
   /** function deleted from contract
@@ -446,11 +446,11 @@ export default class Pool {
    * Frontend page: Pool admin page for pool creator
    *
    * @param {string} poolAddress address of the Pool this function iteracts with
-   * @param {string[]} adminAddress address of admin to remove
+   * @param {string[]} adminAddressList address of admin to remove
    */
-  async removeAdmin(poolAddress, adminAddress) {
+  async removeAdmin(poolAddress, adminAddressList) {
     const instance = await this.pool.at(poolAddress);
-    return instance.removeAdmin(adminAddress, { from: this.account });
+    return instance.removeAdmin(adminAddressList, { from: this.account });
   }
 
   /**
@@ -459,11 +459,11 @@ export default class Pool {
    * Frontend page: Pool admin page for pool admins
    *
    * @param {string} poolAddress address of the Pool this function iteracts with
-   * @param {string[]} whitelistAddress address to add to whitelist
+   * @param {string[]} whitelistAddressList address to add to whitelist
    */
-  async addWhitelist(poolAddress, whitelistAddress) {
+  async addWhitelist(poolAddress, whitelistAddressList) {
     const instance = await this.pool.at(poolAddress);
-    return instance.addWhitelist(whitelistAddress, { from: this.account });
+    return instance.addWhitelist(whitelistAddressList, { from: this.account });
   }
 
   /** function deleted from contract
@@ -496,11 +496,11 @@ export default class Pool {
    * Frontend page: Pool admin page for pool admins
    *
    * @param {string} poolAddress address of the Pool this function iteracts with
-   * @param {string[]} whitelistAddress address to remove from whitelist
+   * @param {string[]} whitelistAddressList address to remove from whitelist
    */
-  async removeWhitelist(poolAddress, whitelistAddress) {
+  async removeWhitelist(poolAddress, whitelistAddressList) {
     const instance = await this.pool.at(poolAddress);
-    return instance.removeWhitelist(whitelistAddress, { from: this.account });
+    return instance.removeWhitelist(whitelistAddressList, { from: this.account });
   }
 
   /**
@@ -509,11 +509,11 @@ export default class Pool {
    * Frontend page: Pool admin page for pool admins
    *
    * @param {string} poolAddress address of the Pool this function iteracts with
-   * @param {string[]} countryCode 3 letter country code (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3)
+   * @param {string[]} countryCodeList 3 letter country code (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3)
    */
-  async addCountryBlacklist(poolAddress, countryCode) {
+  async addCountryBlacklist(poolAddress, countryCodeList) {
     const instance = await this.pool.at(poolAddress);
-    return instance.addCountryBlacklist(countryCode, { from: this.account });
+    return instance.addCountryBlacklist(countryCodeList, { from: this.account });
   }
 
   /** function deleted from contract
@@ -546,11 +546,11 @@ export default class Pool {
    * Frontend page: Pool admin page for pool admins
    *
    * @param {string} poolAddress address of the Pool this function iteracts with
-   * @param {string} countryCode 3 letter country code (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3)
+   * @param {string} countryCodeList 3 letter country code (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3)
    */
-  async removeCountryBlacklist(poolAddress, countryCode) {
+  async removeCountryBlacklist(poolAddress, countryCodeList) {
     const instance = await this.pool.at(poolAddress);
-    return instance.removeCountryBlacklist(countryCode, { from: this.account });
+    return instance.removeCountryBlacklist(countryCodeList, { from: this.account });
   }
 
   /**
