@@ -38,6 +38,42 @@
 
       <hr class="blue-hr-fullw my-5 w-100">
 
+      <div class="d-flex flex-column ml-sm-5 mt-3">
+        <div class="d-flex flex-row flex-wrap">
+          <div>
+            <div class="o-border d-inline"></div>
+            <div class="d-inline mt-5 blue-36-20-bold"> Function signatures
+              <hr align="left" class="blue-hr-2">
+            </div>
+          </div>
+          <div class="mx-3 mt-sm-3">
+            <button class="btn white-submit px-4 mr-3" @click="showFuncSig = !showFuncSig">{{ showFuncSig ? 'Hide' : 'Show'}}</button>
+          </div>
+        </div>
+        <div class="d-flex flex-row flex-wrap" v-if="showFuncSig">
+          <div class="col-12 d-flex flex-row align-items-center mt-3 flex-wrap">
+            <div class="col-12 col-lg-4 blue-18-reg">Sale Participate Function Sig:</div>
+            <div class="col-12 col-lg-8">
+              <input type="text"
+                     class="form-control input-text"
+                     v-model="pool.saleWithdrawFunctionSig" placeholder="pay()"/>
+            </div>
+          </div>
+
+          <div class="col-12 d-flex flex-row align-items-center mt-3 flex-wrap">
+            <div class="col-12 col-lg-4 blue-18-reg">Sale Withdraw Function Sig:</div>
+            <div class="col-12 col-lg-8">
+              <input type="text"
+                     class="form-control input-text"
+                     v-model="pool.saleWithdrawFunctionSig" placeholder="withdraw()"/>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <hr class="blue-hr-fullw my-5 w-100">
+
       <div class="d-flex flex-column ml-sm-5">
         <div>
           <div class="o-border d-inline"></div>
@@ -48,9 +84,29 @@
 
         <div class="d-flex flex-row flex-wrap">
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
+            <div class="col-12 col-lg-6 blue-18-reg">Description:</div>
+            <div class="col-12 col-lg-6">
+              <textarea
+                class="form-control input-text w-100"
+                rows="4"
+                v-model="pool.poolDescription"
+                v-validate="'required'"
+                data-vv-name="Description"
+              />
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
+            <div class="col-12 col-lg-6 blue-18-reg"></div>
+            <div class="col-12 col-lg-6"></div>
+          </div>
+
+
+          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Creator fee in %:</div>
             <div class="col-12 col-lg-6">
               <input type="number" v-validate="'required|numeric|min_value:0|max_value:100'"
+                     data-vv-name="Creator fee"
                      class="form-control input-text w-100"
                      placeholder="0.12"
                      step="0.01"
@@ -146,13 +202,55 @@
           </div>
 
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg"></div>
+            <div class="col-12 col-lg-6 blue-18-reg">Country blacklist:</div>
             <div class="col-12 col-lg-6">
+              <b-form-select
+                multiple
+                v-model="pool.countryBlackList"
+                class="form-control input-dd"
+                :options="[]"
+              />
             </div>
           </div>
 
+          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
+            <div class="col-12 col-lg-6 blue-18-reg">Selected countries:</div>
+            <div class="col-12 col-lg-6">{{pool.countryBlackList.join(', ')}}</div>
+          </div>
+
+
+          <div class="col-12 d-flex flex-column mt-3 flex-wrap">
+            <div class="col-12 col-lg-4 blue-18-reg d-flex flex-row mt-2">
+              <span>Admin addresses: </span>
+              <span class="ml-2"><i class="fa fa-plus" @click="addAddress(pool.adminAddresses)"></i></span>
+            </div>
+            <div class="d-flex flex-column col-12 col-lg-8">
+              <div class="d-flex flex-row mt-3" v-for="(adminAddress, index) in pool.adminAddresses" :key="index">
+                <input type="text" v-validate="'required|eth-address'" data-vv-name="Admin address"
+                       class="form-control input-text w-100"
+                       v-model="pool.adminAddresses[index]" placeholder="Admin address"/>
+                  <i class="fa fa-minus ml-2 mt-2 orange-18-reg" @click="removeAddress(pool.adminAddresses, index)"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 d-flex flex-column mt-3 flex-wrap">
+            <div class="col-12 col-lg-4 blue-18-reg d-flex flex-row mt-2">
+              <span>Whitelist addresses: </span>
+              <span class="ml-2"><i class="fa fa-plus" @click="addAddress(pool.whiteListAddresses)"></i></span>
+            </div>
+            <div class="d-flex flex-column col-12 col-lg-8">
+              <div class="d-flex flex-row mt-3" v-for="(whiteListAddress, index) in pool.whiteListAddresses" :key="index">
+                <input type="text" v-validate="'required|eth-address'" data-vv-name="Whitelist address"
+                       class="form-control input-text w-100"
+                       v-model="pool.whiteListAddresses[index]" placeholder="Whitelist address"/>
+                  <i class="fa fa-minus ml-2 mt-2 orange-18-reg" @click="removeAddress(pool.whiteListAddresses, index)"></i>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
 
       <hr class="blue-hr-fullw my-5 w-100" v-if="calculatedFee">
 
@@ -217,6 +315,7 @@ export default {
       },
       calculatedFee: null,
       poolAddress: null,
+      showFuncSig: false,
     };
   },
   created() {
@@ -257,6 +356,12 @@ export default {
     },
     async calculateFee() {
       this.calculatedFee = await this.getTransferDetails();
+    },
+    removeAddress(object, index) {
+      object.splice(index, 1);
+    },
+    addAddress(object) {
+      object.push('');
     },
   },
 };
