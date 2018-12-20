@@ -192,6 +192,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import datePicker from 'vue-bootstrap-datetimepicker';
 import Pool from '../../model/LocalPool';
 
@@ -208,9 +209,14 @@ export default {
       sideBySide: true,
     },
   }),
+  computed: {
+    ...mapGetters([
+      'connectICO',
+    ]),
+  },
   methods: {
     async search() {
-      if (await this.$connectIco.poolFactory.checkIfPoolExists(this.address)) {
+      if (await this.connectICO.poolFactory.checkIfPoolExists(this.address)) {
         this.pool = new Pool(this.address);
       } else {
         this.$notify({

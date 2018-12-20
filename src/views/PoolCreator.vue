@@ -199,6 +199,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import datePicker from 'vue-bootstrap-datetimepicker';
 import LocalPool from '../model/LocalPool';
 
@@ -225,10 +226,13 @@ export default {
     submitDisabled() {
       return !window.ethInitSuccess;
     },
+    ...mapGetters([
+      'connectICO',
+    ]),
   },
   methods: {
     async getTransferDetails() {
-      const factoryParams = await this.$connectIco.poolFactory.getAllPoolFactoryParams();
+      const factoryParams = await this.connectICO.poolFactory.getAllPoolFactoryParams();
       return {
         flatFee: factoryParams.flatFee,
         poolFee: factoryParams.maxAllocationFeeRate * this.pool.maxPoolAllocation / 1000,
@@ -241,7 +245,7 @@ export default {
     },
     async submit() {
       const transferValue = await this.getTransferDetails().transferValue;
-      const response = await this.$connectIco.poolFactory.createPool(this.pool, transferValue);
+      const response = await this.connectICO.poolFactory.createPool(this.pool, transferValue);
       if (response) {
         this.poolAddress = response;
         this.$notify({

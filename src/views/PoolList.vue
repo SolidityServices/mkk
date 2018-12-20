@@ -40,6 +40,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import PoolListItem from '../components/PoolListItem.vue';
 import LocalPool from '../model/LocalPool';
 
@@ -61,16 +62,19 @@ export default {
   }),
   async mounted() {
     const pools = [];
-    const poolCount = await this.$connectIco.poolFactory.getPoolNumber();
+    const poolCount = await this.connectICO.poolFactory.getPoolNumber();
     console.log(`Pool count: ${poolCount}`);
     for (let i = 0; i < poolCount; i += 1) {
-      pools.push(new LocalPool(await this.$connectIco.poolFactory.getPool(i)));
+      pools.push(new LocalPool(await this.connectICO.poolFactory.getPool(i)));
     }
     if (pools && pools.length > 0) {
       this.pools = pools;
     }
   },
   computed: {
+    ...mapGetters([
+      'connectICO',
+    ]),
     filteredPools() {
       if (this.filter === '') {
         return this.pools;
