@@ -37,7 +37,8 @@ export default new Router({
       {
         path: 'project/:address',
         name: 'project',
-        component: PoolShow,
+        component: Project,
+        // component: PoolShow,
       },
       {
         path: 'pool-list',

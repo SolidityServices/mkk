@@ -46,9 +46,9 @@ export default class Pool {
     const result2 = await instance.getParams2.call({ from: this.account });
 
     return {
-      saleParticipateFunctionSig: result2[1].toString(),
-      saleWithdrawFunctionSig: result2[2].toString(),
-      poolDescription: result2[3].toString(),
+      saleParticipateFunctionSig: this.web3.utils.hexToUtf8(result2[1]),
+      saleWithdrawFunctionSig: this.web3.utils.hexToUtf8(result2[2]),
+      poolDescription: this.web3.utils.hexToUtf8(result2[3]),
       saleAddress: result2[4].toString(),
       tokenAddress: result2[5].toString(),
       kycAddress: result2[6].toString(),
@@ -564,7 +564,10 @@ export default class Pool {
    */
   async contribute(poolAddress, amount) {
     const instance = await this.pool.at(poolAddress);
-    return instance.contribute({ from: this.account, value: amount });
+    return instance.contribute({
+      from: this.account,
+      value: amount * 1000000000000000000, // convert ether to wei,
+    });
   }
 
   /**
@@ -577,7 +580,7 @@ export default class Pool {
    */
   async withdraw(poolAddress, amount) {
     const instance = await this.pool.at(poolAddress);
-    return instance.withdraw(amount, { from: this.account });
+    return instance.withdraw(amount * 1000000000000000000, { from: this.account });
   }
 
   /**

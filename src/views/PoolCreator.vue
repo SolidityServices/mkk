@@ -308,75 +308,83 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex';
-  import datePicker from 'vue-bootstrap-datetimepicker';
-  import LocalPool from '../model/LocalPool';
+import { mapGetters } from 'vuex';
+import moment from 'moment';
+import datePicker from 'vue-bootstrap-datetimepicker';
+import LocalPool from '../model/LocalPool';
 
-  export default {
-    components: {
-      datePicker,
+export default {
+  components: {
+    datePicker,
+  },
+  data() {
+    return {
+      pool: null,
+      datepickerOptions: {
+        format: 'DD/MM/YYYY H:mm',
+        useCurrent: false,
+        sideBySide: true,
+      },
+      calculatedFee: null,
+      poolAddress: null,
+      showFuncSig: false,
+    };
+  },
+  created() {
+    this.pool = new LocalPool();
+  },
+  computed: {
+    submitDisabled() {
+      return !window.ethInitSuccess;
     },
-    data() {
+    ...mapGetters([
+      'connectICO',
+      'countries',
+    ]),
+  },
+  methods: {
+    async getTransferDetails() {
+      const factoryParams = await this.connectICO.poolFactory.getAllPoolFactoryParams();
       return {
-        pool: null,
-        datepickerOptions: {
-          format: 'DD/MM/YYYY H:mm',
-          useCurrent: false,
-          sideBySide: true,
-        },
-        calculatedFee: null,
-        poolAddress: null,
-        showFuncSig: false,
+        flatFee: factoryParams.flatFee,
+        poolFee: factoryParams.maxAllocationFeeRate * this.pool.maxPoolAllocation / 1000,
+        transferValue: (
+          factoryParams.flatFee
+          + factoryParams.maxAllocationFeeRate
+          * this.pool.maxPoolAllocation / 1000
+        ),
       };
     },
-    created() {
-      this.pool = new LocalPool();
+    async submit() {
+      const transferValue = await this.getTransferDetails().transferValue;
+      if (typeof this.pool.saleStartDate === 'string') {
+        this.pool.saleStartDate = moment(this.pool.saleStartDate, this.datepickerOptions.format);
+      }
+      if (typeof this.pool.saleEndDate === 'string') {
+        this.pool.saleEndDate = moment(this.pool.saleEndDate, this.datepickerOptions.format);
+      }
+
+      const response = await this.connectICO.poolFactory.createPool(this.pool, transferValue);
+      if (response) {
+        this.poolAddress = response;
+        this.$notify({
+          type: 'success',
+          title: 'Pool created!',
+          text: `${response}`,
+        });
+      }
     },
-    computed: {
-      submitDisabled() {
-        return !window.ethInitSuccess;
-      },
-      ...mapGetters([
-        'connectICO',
-        'countries'
-      ]),
+    async calculateFee() {
+      this.calculatedFee = await this.getTransferDetails();
     },
-    methods: {
-      async getTransferDetails() {
-        const factoryParams = await this.connectICO.poolFactory.getAllPoolFactoryParams();
-        return {
-          flatFee: factoryParams.flatFee,
-          poolFee: factoryParams.maxAllocationFeeRate * this.pool.maxPoolAllocation / 1000,
-          transferValue: (
-            factoryParams.flatFee
-            + factoryParams.maxAllocationFeeRate
-            * this.pool.maxPoolAllocation / 1000
-          ),
-        };
-      },
-      async submit() {
-        const transferValue = await this.getTransferDetails().transferValue;
-        const response = await this.connectICO.poolFactory.createPool(this.pool, transferValue);
-        if (response) {
-          this.poolAddress = response;
-          this.$notify({
-            type: 'success',
-            title: 'Pool created!',
-            text: `${response}`,
-          });
-        }
-      },
-      async calculateFee() {
-        this.calculatedFee = await this.getTransferDetails();
-      },
-      removeAddress(object, index) {
-        object.splice(index, 1);
-      },
-      addAddress(object) {
-        object.push('');
-      },
+    removeAddress(object, index) {
+      object.splice(index, 1);
     },
-  };
+    addAddress(object) {
+      object.push('');
+    },
+  },
+};
 </script>
 
 <style lang="scss">
