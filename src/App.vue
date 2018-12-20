@@ -2,14 +2,13 @@
   <div id="app" class="d-flex flex-column wrapper">
     <notifications position="top center"/>
     <custom-header></custom-header>
-    <router-view class="flex-grow-1"></router-view>
+    <router-view class="flex-grow-1" v-if="connectICOLoaded"></router-view>
     <custom-footer></custom-footer>
   </div>
 </template>
 
 <script>
-import Vue from 'vue';
-import ConnectICO from './model/connect-ico/ConnectICO';
+import { mapGetters } from 'vuex';
 import Header from './components/Header.vue';
 import Footer from './components/Footer.vue';
 
@@ -18,20 +17,23 @@ export default {
     'custom-header': Header,
     'custom-footer': Footer,
   },
+  beforeCreate() {
+    this.$store.dispatch('setConnectICO');
+  },
   mounted() {
-    if (window.ethInitSuccess) {
-      console.log('Starting ConnectICO');
-      const connectIco = new ConnectICO();
-      connectIco.start();
-      window.connectICO = connectIco;
-      Vue.prototype.$connectIco = connectIco;
-    } else {
+    // TODO: move to web3init
+    if (!window.ethInitSuccess) {
       this.$notify({
         type: 'error',
         title: 'Metamask is not detected',
         text: 'In order to use the site please install the MetaMask extension!',
       });
     }
+  },
+  computed: {
+    ...mapGetters([
+      'connectICOLoaded',
+    ]),
   },
 };
 </script>

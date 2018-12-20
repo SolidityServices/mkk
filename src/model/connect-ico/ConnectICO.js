@@ -8,15 +8,16 @@ export default class ConnectICO {
   constructor() {
     this.account = null;
     this.web3 = window.web3;
+    this.loaded = false;
   }
 
-  start() {
+  async start() {
     // Bootstrap the abstractions for Use.
     console.log(this.web3.currentProvider);
 
     // set the initial this.account balance so it can be displayed.
     this.web3.eth.getAccounts((err, accounts) => {
-      if (err != null) {
+      if (err) {
         Vue.notify({
           type: 'error',
           title: 'Error',
@@ -39,14 +40,13 @@ export default class ConnectICO {
       // eslint-disable-next-line prefer-destructuring
       this.account = accounts[0];
 
-      // TODO: is this necessary?
-      this.web3.currentProvider.enable();
       this.pool = new Pool(this.web3.currentProvider, this.account, this.web3);
       this.poolFactory = new PoolFactory(this.web3.currentProvider, this.account, this.web3);
       this.KYC = new KYC(this.web3.currentProvider);
       this.tokenPushRegistry = new TokenPushRegistry(this.web3.currentProvider);
 
       console.log('Application initialized');
+      this.loaded = true;
     });
   }
 }
