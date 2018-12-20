@@ -7,7 +7,8 @@
       </div>
 
       <div class="d-sm-none mobile-back d-flex flex-row">
-        <div class="d-flex justify-content-center align-items-center ml-3"><img src="../assets/chevron-left.png" alt=""></div>
+        <div class="d-flex justify-content-center align-items-center ml-3"><img src="../assets/chevron-left.png" alt="">
+        </div>
         <div class="white-16-bold ml-2">Pool Creator</div>
       </div>
     </div>
@@ -47,7 +48,9 @@
             </div>
           </div>
           <div class="mx-3 mt-sm-3">
-            <button class="btn white-submit px-4 mr-3" @click="showFuncSig = !showFuncSig">{{ showFuncSig ? 'Hide' : 'Show'}}</button>
+            <button class="btn white-submit px-4 mr-3" @click="showFuncSig = !showFuncSig">{{ showFuncSig ? 'Hide' :
+              'Show'}}
+            </button>
           </div>
         </div>
         <div class="d-flex flex-row flex-wrap" v-if="showFuncSig">
@@ -208,7 +211,9 @@
                 multiple
                 v-model="pool.countryBlackList"
                 class="form-control input-dd"
-                :options="[]"
+                value-field="alpha3Code"
+                text-field="name"
+                :options="countries"
               />
             </div>
           </div>
@@ -220,31 +225,37 @@
 
 
           <div class="col-12 d-flex flex-column mt-3 flex-wrap">
-            <div class="col-12 col-lg-4 blue-18-reg d-flex flex-row mt-2">
-              <span>Admin addresses: </span>
-              <span class="ml-2"><i class="fa fa-plus" @click="addAddress(pool.adminAddresses)"></i></span>
-            </div>
-            <div class="d-flex flex-column col-12 col-lg-8">
-              <div class="d-flex flex-row mt-3" v-for="(adminAddress, index) in pool.adminAddresses" :key="index">
-                <input type="text" v-validate="'required|eth-address'" data-vv-name="Admin address"
-                       class="form-control input-text w-100"
-                       v-model="pool.adminAddresses[index]" placeholder="Admin address"/>
-                  <i class="fa fa-minus ml-2 mt-2 orange-18-reg" @click="removeAddress(pool.adminAddresses, index)"></i>
+            <div class="row mx-0">
+              <div class="col-12 col-lg-4 blue-18-reg d-flex flex-row mt-2">
+                <span>Admin addresses: </span>
+                <span class="ml-2"><i class="fa fa-plus" @click="addAddress(pool.adminAddresses)"></i></span>
+              </div>
+              <div class="col-12 col-lg-8 d-flex flex-column">
+                <div class="d-flex flex-row align-items-center mt-3 flex-shrink-0"
+                     v-for="(adminAddress, index) in pool.adminAddresses" :key="index">
+                  <input type="text" v-validate="'required|eth-address'" data-vv-name="Admin address"
+                         class="form-control input-text w-100"
+                         v-model="pool.adminAddresses[index]" placeholder="Admin address"/>
+                  <i class="fa fa-minus ml-2 orange-18-reg" @click="removeAddress(pool.adminAddresses, index)"></i>
+                </div>
               </div>
             </div>
           </div>
 
           <div class="col-12 d-flex flex-column mt-3 flex-wrap">
-            <div class="col-12 col-lg-4 blue-18-reg d-flex flex-row mt-2">
-              <span>Whitelist addresses: </span>
-              <span class="ml-2"><i class="fa fa-plus" @click="addAddress(pool.whiteListAddresses)"></i></span>
-            </div>
-            <div class="d-flex flex-column col-12 col-lg-8">
-              <div class="d-flex flex-row mt-3" v-for="(whiteListAddress, index) in pool.whiteListAddresses" :key="index">
-                <input type="text" v-validate="'required|eth-address'" data-vv-name="Whitelist address"
-                       class="form-control input-text w-100"
-                       v-model="pool.whiteListAddresses[index]" placeholder="Whitelist address"/>
-                  <i class="fa fa-minus ml-2 mt-2 orange-18-reg" @click="removeAddress(pool.whiteListAddresses, index)"></i>
+            <div class="row mx-0">
+              <div class="col-12 col-lg-4 blue-18-reg d-flex flex-row mt-2">
+                <span>Whitelist addresses: </span>
+                <span class="ml-2"><i class="fa fa-plus" @click="addAddress(pool.whiteListAddresses)"></i></span>
+              </div>
+              <div class="d-flex flex-column col-12 col-lg-8">
+                <div class="d-flex flex-row align-items-center mt-3 flex-shrink-0"
+                     v-for="(whiteListAddress, index) in pool.whiteListAddresses" :key="index">
+                  <input type="text" v-validate="'required|eth-address'" data-vv-name="Whitelist address"
+                         class="form-control input-text w-100"
+                         v-model="pool.whiteListAddresses[index]" placeholder="Whitelist address"/>
+                  <i class="fa fa-minus ml-2 orange-18-reg" @click="removeAddress(pool.whiteListAddresses, index)"></i>
+                </div>
               </div>
             </div>
           </div>
@@ -297,74 +308,75 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-import datePicker from 'vue-bootstrap-datetimepicker';
-import LocalPool from '../model/LocalPool';
+  import {mapGetters} from 'vuex';
+  import datePicker from 'vue-bootstrap-datetimepicker';
+  import LocalPool from '../model/LocalPool';
 
-export default {
-  components: {
-    datePicker,
-  },
-  data() {
-    return {
-      pool: null,
-      datepickerOptions: {
-        format: 'DD/MM/YYYY H:mm',
-        useCurrent: false,
-        sideBySide: true,
-      },
-      calculatedFee: null,
-      poolAddress: null,
-      showFuncSig: false,
-    };
-  },
-  created() {
-    this.pool = new LocalPool();
-  },
-  computed: {
-    submitDisabled() {
-      return !window.ethInitSuccess;
+  export default {
+    components: {
+      datePicker,
     },
-    ...mapGetters([
-      'connectICO',
-    ]),
-  },
-  methods: {
-    async getTransferDetails() {
-      const factoryParams = await this.connectICO.poolFactory.getAllPoolFactoryParams();
+    data() {
       return {
-        flatFee: factoryParams.flatFee,
-        poolFee: factoryParams.maxAllocationFeeRate * this.pool.maxPoolAllocation / 1000,
-        transferValue: (
-          factoryParams.flatFee
-          + factoryParams.maxAllocationFeeRate
-          * this.pool.maxPoolAllocation / 1000
-        ),
+        pool: null,
+        datepickerOptions: {
+          format: 'DD/MM/YYYY H:mm',
+          useCurrent: false,
+          sideBySide: true,
+        },
+        calculatedFee: null,
+        poolAddress: null,
+        showFuncSig: false,
       };
     },
-    async submit() {
-      const transferValue = await this.getTransferDetails().transferValue;
-      const response = await this.connectICO.poolFactory.createPool(this.pool, transferValue);
-      if (response) {
-        this.poolAddress = response;
-        this.$notify({
-          type: 'success',
-          title: 'Pool created!',
-          text: `${response}`,
-        });
-      }
+    created() {
+      this.pool = new LocalPool();
     },
-    async calculateFee() {
-      this.calculatedFee = await this.getTransferDetails();
+    computed: {
+      submitDisabled() {
+        return !window.ethInitSuccess;
+      },
+      ...mapGetters([
+        'connectICO',
+        'countries'
+      ]),
     },
-    removeAddress(object, index) {
-      object.splice(index, 1);
+    methods: {
+      async getTransferDetails() {
+        const factoryParams = await this.connectICO.poolFactory.getAllPoolFactoryParams();
+        return {
+          flatFee: factoryParams.flatFee,
+          poolFee: factoryParams.maxAllocationFeeRate * this.pool.maxPoolAllocation / 1000,
+          transferValue: (
+            factoryParams.flatFee
+            + factoryParams.maxAllocationFeeRate
+            * this.pool.maxPoolAllocation / 1000
+          ),
+        };
+      },
+      async submit() {
+        const transferValue = await this.getTransferDetails().transferValue;
+        const response = await this.connectICO.poolFactory.createPool(this.pool, transferValue);
+        if (response) {
+          this.poolAddress = response;
+          this.$notify({
+            type: 'success',
+            title: 'Pool created!',
+            text: `${response}`,
+          });
+        }
+      },
+      async calculateFee() {
+        this.calculatedFee = await this.getTransferDetails();
+      },
+      removeAddress(object, index) {
+        object.splice(index, 1);
+      },
+      addAddress(object) {
+        object.push('');
+      },
     },
-    addAddress(object) {
-      object.push('');
-    },
-  },
-};
+  };
 </script>
 
 <style lang="scss">
