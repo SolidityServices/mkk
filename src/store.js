@@ -7,6 +7,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     connectICO: null,
+    countries: require('./countries'),
   },
   mutations: {
     async setConnectICO(state) {
@@ -18,11 +19,14 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    setConnectICO({ commit }, connectICO) {
+    setConnectICO({commit}, connectICO) {
       commit('setConnectICO', connectICO);
     },
   },
   getters: {
+    countries(state) {
+      return state.countries;
+    },
     connectICO(state) {
       return state.connectICO;
     },

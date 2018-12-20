@@ -211,7 +211,9 @@
                 multiple
                 v-model="pool.countryBlackList"
                 class="form-control input-dd"
-                :options="[]"
+                value-field="alpha3Code"
+                text-field="name"
+                :options="countries"
               />
             </div>
           </div>
@@ -336,6 +338,7 @@
       },
       ...mapGetters([
         'connectICO',
+        'countries'
       ]),
     },
     methods: {
