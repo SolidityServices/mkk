@@ -230,12 +230,34 @@ export default {
       }
     },
     async contribute() {
-      const response = await this.connectICO.pool.contribute(this.address, this.amount);
-      console.log(response);
+      try {
+        await this.connectICO.pool.contribute(this.address, this.amount);
+        this.$notify({
+          type: 'success',
+          title: 'Successful deposit!',
+          text: `${this.amount} ETH`,
+        });
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
     },
     async withdraw() {
-      const response = await this.connectICO.pool.withdraw(this.address, this.amount);
-      console.log(response);
+      try {
+        await this.connectICO.pool.withdraw(this.address, this.amount);
+        this.$notify({
+          type: 'success',
+          title: 'Successful withdraw!',
+          text: `${this.amount} ETH`,
+        });
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
     },
   },
   mounted() {
