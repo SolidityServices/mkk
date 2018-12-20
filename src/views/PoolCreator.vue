@@ -364,13 +364,20 @@ export default {
         this.pool.saleEndDate = moment(this.pool.saleEndDate, this.datepickerOptions.format);
       }
 
-      const response = await this.connectICO.poolFactory.createPool(this.pool, transferValue);
-      if (response) {
-        this.poolAddress = response;
+      try {
+        const response = await this.connectICO.poolFactory.createPool(this.pool, transferValue);
+        if (response) {
+          this.poolAddress = response;
+          this.$notify({
+            type: 'success',
+            title: 'Pool created!',
+            text: `${response}`,
+          });
+        }
+      } catch (e) {
         this.$notify({
-          type: 'success',
-          title: 'Pool created!',
-          text: `${response}`,
+          type: 'error',
+          text: e.message,
         });
       }
     },
