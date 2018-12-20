@@ -267,11 +267,11 @@ All functions on this page will need the poolAddress, before arriving to this pa
   + description:
   + function: `sendToSale(poolAddress)`
 
-- stop sale
+- stop pool
   + description:
   + input field type: none 
   + desired format for contract: none
-  + function: `stopSale(poolAddress)`
+  + function: `stopPool(poolAddress)`
 
 - send to sale function
   + description: send to sale using pre determined function signature (only possible if function signature is presented, not yet implemented)
