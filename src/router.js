@@ -35,7 +35,7 @@ export default new Router({
         component: DeployContract,
       },
       {
-        path: 'project',
+        path: 'project/:address',
         name: 'project',
         component: PoolShow,
       },

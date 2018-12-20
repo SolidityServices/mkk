@@ -209,6 +209,12 @@ export default {
       sideBySide: true,
     },
   }),
+  mounted() {
+    if (this.$route.params.address) {
+      this.address = this.$route.params.address;
+      this.search();
+    }
+  },
   computed: {
     ...mapGetters([
       'connectICO',

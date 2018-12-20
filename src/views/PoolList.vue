@@ -33,22 +33,32 @@
         </div>
 
       <div class="d-flex flex-row flex-wrap mb-3">
-          <pool-list-item v-for="pools in filteredPools"></pool-list-item>
+        <div class="d-flex flex-column w-100 mb-3" v-for="pool in filteredPools" :key="pool.poolAddress">
+          <div class="d-flex flex-row mb-3">
+            <hr class="blue-hr-fullw w-100">
+          </div>
+          <div class="d-flex flex-row flex-wrap">
+            <div class="col-12 col-lg-6 border-right">
+              <router-link :to="{name: 'project', params: {address: pool.poolAddress}}">
+                {{pool.poolAddress}}
+              </router-link>
+            </div>
+            <div class="col-12 col-lg-6">
+              {{pool.description}}
+            </div>
+          </div>
         </div>
+      </div>
     </div>
 
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
-import PoolListItem from '../components/PoolListItem.vue';
 import LocalPool from '../model/LocalPool';
 
 export default {
   name: 'PoolList',
-  components: {
-    'pool-list-item': PoolListItem,
-  },
   data: () => ({
     selectedOption: null,
     options: [
@@ -63,7 +73,6 @@ export default {
   async mounted() {
     const pools = [];
     const poolCount = await this.connectICO.poolFactory.getPoolNumber();
-    console.log(`Pool count: ${poolCount}`);
     for (let i = 0; i < poolCount; i += 1) {
       pools.push(new LocalPool(await this.connectICO.poolFactory.getPool(i)));
     }

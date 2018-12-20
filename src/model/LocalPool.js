@@ -41,7 +41,6 @@ export default class LocalPool {
     let params = this.initParams();
     if (this.poolAddress) {
       params = await this.connectIco.pool.getPoolParams(this.poolAddress);
-      console.log(params);
     }
     this.saleParticipateFunctionSig = params.saleParticipateFunctionSig;
     this.saleWithdrawFunctionSig = params.saleWithdrawFunctionSig;
