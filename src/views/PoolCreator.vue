@@ -224,12 +224,12 @@
               <span>Admin addresses: </span>
               <span class="ml-2"><i class="fa fa-plus" @click="addAddress(pool.adminAddresses)"></i></span>
             </div>
-            <div class="d-flex flex-column col-12 col-lg-8">
-              <div class="d-flex flex-row mt-3" v-for="(adminAddress, index) in pool.adminAddresses" :key="index">
+            <div class="col-12 col-lg-8 d-flex flex-column">
+              <div class="d-flex flex-row align-items-center mt-3 flex-shrink-0" v-for="(adminAddress, index) in pool.adminAddresses" :key="index">
                 <input type="text" v-validate="'required|eth-address'" data-vv-name="Admin address"
                        class="form-control input-text w-100"
                        v-model="pool.adminAddresses[index]" placeholder="Admin address"/>
-                  <i class="fa fa-minus ml-2 mt-2 orange-18-reg" @click="removeAddress(pool.adminAddresses, index)"></i>
+                  <i class="fa fa-minus ml-2 orange-18-reg" @click="removeAddress(pool.adminAddresses, index)"></i>
               </div>
             </div>
           </div>
@@ -240,11 +240,11 @@
               <span class="ml-2"><i class="fa fa-plus" @click="addAddress(pool.whiteListAddresses)"></i></span>
             </div>
             <div class="d-flex flex-column col-12 col-lg-8">
-              <div class="d-flex flex-row mt-3" v-for="(whiteListAddress, index) in pool.whiteListAddresses" :key="index">
+              <div class="d-flex flex-row align-items-center mt-3 flex-shrink-0" v-for="(whiteListAddress, index) in pool.whiteListAddresses" :key="index">
                 <input type="text" v-validate="'required|eth-address'" data-vv-name="Whitelist address"
                        class="form-control input-text w-100"
                        v-model="pool.whiteListAddresses[index]" placeholder="Whitelist address"/>
-                  <i class="fa fa-minus ml-2 mt-2 orange-18-reg" @click="removeAddress(pool.whiteListAddresses, index)"></i>
+                  <i class="fa fa-minus ml-2 orange-18-reg" @click="removeAddress(pool.whiteListAddresses, index)"></i>
               </div>
             </div>
           </div>
