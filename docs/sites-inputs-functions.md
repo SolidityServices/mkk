@@ -57,6 +57,21 @@
   + input field type: text input field
   + desired format for contract: same as input, if left empty: "0x0000000000000000000000000000000000000000"
 
+- pool description
+  + description:
+  + input field type: text input field - max 32 ascii characters
+  + desired format for contract: same
+
+- custom send to sale function
+  + description:
+  + input field type: text input field - max 32 ascii characters
+  + desired format for contract: same
+
+- custom withdraw function
+  + description:
+  + input field type: text input field - max 32 ascii characters
+  + desired format for contract: same
+
 - creator fee rate
   + description: Fee percentage collected for the pool creator
   + input field type: number input field, percentage value with two decimal accuracy e.g 12.34%, allowed range: 0-100
@@ -106,6 +121,21 @@
   + description: Amount of ether creator needs to send
   + input field type: no input field, calculated value: `(PoolFactory.params.flatFee + PoolFactory.params.maxAllocationFee * maxPoolAllocation / 1000)` - connectICO.js: `getFlatFee()`, `getMaxAllocationFeeRate()`
   + desired format for contract: converted to wei units: https://etherconverter.online/ 1 ether = 1000000000000000000 wei
+
+- admin addresses
+  + description: 
+  + input field type: text box, expecting ethereum addresses delimited with commas
+  + desired format for contract: array of strings
+
+- whitelist addresses
+  + description:
+  + input field type: text box, expecting ethereum addresses delimited with commas
+  + desired format for contract: array of strings
+
+- country blacklist
+  + description:
+  + input field type: text box, expecting 3 letter country codes (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) delimited with commas
+  + desired format for contract: array of strings converted to upper case
 
 ## Function
 
@@ -199,17 +229,37 @@ All functions on this page will need the poolAddress, before arriving to this pa
 
 `setPoolParamsCreator()`
 
-### Manage whitelist
+### Manage adminlist/whitelist/country blacklist
 
-- add whitelist address
-  + input field type: text input field
-  + desired format for contract: same as input
-  + function: `addWhitelist(poolAddress, whitelistAddress)`
+- add whitelist addresses
+  + input field type: text box, expecting ethereum addresses delimited with commas
+  + desired format for contract: array of strings
+  + function: `addWhitelist(poolAddress, whitelistAddressList)`
 
-- remove whitelist address
-  + input field type: text input field
-  + desired format for contract: same as input
-  + function: `removeWhitelist(poolAddress, whitelistAddress)`
+- remove whitelist addresses
+  + input field type: text box, expecting ethereum addresses delimited with commas
+  + desired format for contract: array of strings
+  + function: `removeWhitelist(poolAddress, whitelistAddressList)`
+
+- add admin addresses (only creator)
+  + input field type: text box, expecting ethereum addresses delimited with commas
+  + desired format for contract: array of strings
+  + function: `addAdmin(poolAddress, adminAddressList)`
+
+- remove admin addresses (only creator)
+  + input field type: text box, expecting ethereum addresses delimited with commas
+  + desired format for contract: array of strings
+  + function: `removeAdmin(poolAddress, adminAddressList)`
+
+- add country to country blacklist
+  + input field type: text box, expecting 3 letter country codes (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) delimited with commas
+  + desired format for contract: array of strings converted to upper case
+  + function: `addCountryBlacklist(poolAddress, countryCodeList)`
+
+- remove country from country blacklist
+  + input field type: text box, expecting 3 letter country codes (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) delimited with commas
+  + desired format for contract: array of strings converted to upper case
+  + function: `removeCountryBlacklist(poolAddress, countryCodeList)`
 
 ### Pool operations
 
@@ -217,11 +267,17 @@ All functions on this page will need the poolAddress, before arriving to this pa
   + description:
   + function: `sendToSale(poolAddress)`
 
+- stop sale
+  + description:
+  + input field type: none 
+  + desired format for contract: none
+  + function: `stopSale(poolAddress)`
+
 - send to sale function
   + description: send to sale using pre determined function signature (only possible if function signature is presented, not yet implemented)
   + input field type: none 
   + desired format for contract: none
-  + function: not yet implemented
+  + function: `sendToSaleFunction(poolAddress)`
   
 - confirm tokens received
   + description: confirmation for tokens received from the sale
@@ -233,7 +289,7 @@ All functions on this page will need the poolAddress, before arriving to this pa
   + description: withdraw from sale using pre determined function signature (only possible if function signature is presented, not yet implemented)
   + input field type: none 
   + desired format for contract: none
-  + function: not yet implemented
+  + function: `withdrawFromSaleFunction(poolAddress)`
   
 - creator withdraw
   + description: Withdrawal of accumulated fees in the pool
