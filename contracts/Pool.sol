@@ -80,7 +80,6 @@ contract Pool {
     event countryBlacklistChange(bytes32 countryCode, bool direction);
     event contributed(address indexed contributor, uint amount);
 
-
     constructor (
         address[5] addresses,
         bytes32[3] bytes32s, 

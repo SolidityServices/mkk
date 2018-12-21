@@ -18,10 +18,7 @@ contract PoolFactory is Ownable {
 
     Params public params;
 
-    address[] public poolList;
     mapping (address => bool) public pools;
-    mapping (address => address[]) private poolsBySale;
-    mapping (address => address[]) private poolsByCreator;
     mapping (address => bool) public whitelist;
 
 
@@ -75,9 +72,6 @@ contract PoolFactory is Ownable {
             contributorWhitelist,
             countryBlacklist
             );
-        poolList.push(poolAddress);
-        poolsBySale[addresses[0]].push(poolAddress);
-        poolsByCreator[msg.sender].push(poolAddress);
         pools[poolAddress] = true;
         emit poolCreated(poolAddress, msg.sender, addresses[0]);
     }
@@ -138,26 +132,6 @@ contract PoolFactory is Ownable {
 
     function () public payable {
         revert("Error: fallback function");
-    }
-
-    function getPoolNumber() public view returns (uint){
-        return poolList.length;
-    }
-
-    function getPoolNumberBySale(address saleAddress) public view returns (uint){
-        return poolsBySale[saleAddress].length;
-    }
-
-    function getPoolBySale(address saleAddress, uint index) public view returns (address){
-        return poolsBySale[saleAddress][index];
-    }
-
-    function getPoolNumberByCreator(address creatorAddress) public view returns (uint){
-        return poolsByCreator[creatorAddress].length;
-    }
-
-    function getPoolByCreator(address creatorAddress, uint index) public view returns (address){
-        return poolsByCreator[creatorAddress][index];
     }
 
 }

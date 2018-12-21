@@ -35,7 +35,7 @@ contract KYC is Ownable {
         emit kycChange(kycAddress, country, true);
     }
 
-    function addKYCAddress(address[] addressList, bytes32[] countryList) public onlyAdmin {
+    function addKYCAddresses(address[] addressList, bytes32[] countryList) public onlyAdmin {
         require(addressList.length == countryList.length,  "addKYCAddress(address[] addressList, bytes3[] countryList): Error, addressList and countryList has different lenghts");
         for(uint i = 0; i < addressList.length; i++){
             kycCountry[addressList[i]] = countryList[i];
