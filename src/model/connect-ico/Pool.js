@@ -120,8 +120,8 @@ export default class Pool {
    */
   async getPoolBalance(poolAddress) {
     const instance = await this.pool.at(poolAddress);
-    const result = this.web3.eth.getBalance(instance.address);
-    return result.toString();
+    const result = await this.web3.eth.getBalance(instance.address);
+    return this.web3.utils.fromWei(result, 'ether');
   }
 
   /**
@@ -757,7 +757,7 @@ export default class Pool {
       pool.whitelistPool ? 1 : 0,
       pool.poolDescription,
       pool.tokenAddress,
-      [true, true, true, true, true, true, true, true, true, false, true],
+      [true, true, true, true, true, true, true, true, true, true, true],
       { from: this.account },
     );
   }
