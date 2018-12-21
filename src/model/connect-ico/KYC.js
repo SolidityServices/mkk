@@ -11,4 +11,34 @@ export default class KYC {
     const instance = await this.kyc.deployed();
     return instance.address;
   }
+
+  /**
+   * Add a new pool admin address (only creator)
+   *   *
+   * @param {string[]} adminAddressList address of new admin
+   */
+  async addAdmin(adminAddressList) {
+    const instance = await this.kyc.deployed();
+    return instance.addAdmin(adminAddressList, { from: this.account });
+  }
+
+  /**
+   * Remove admin by address (only owner)
+   *   *
+   * @param {string[]} adminAddressList address of admin to remove
+   */
+  async removeAdmin(adminAddressList) {
+    const instance = await this.kyc.deployed();
+    return instance.removeAdmin(adminAddressList, { from: this.account });
+  }
+
+  async addKYCAddress(kycAddress, country) {
+    const instance = await this.kyc.deployed();
+    return instance.addKYCAddress(kycAddress, country, { from: this.account });
+  }
+
+  async removeKYCAddress(kycAddress, country) {
+    const instance = await this.kyc.deployed();
+    return instance.removeKYCAddress(kycAddress, country, { from: this.account });
+  }
 }
