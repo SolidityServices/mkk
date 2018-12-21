@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div class="d-flex flex-row mt-4 flex-wrap">
+        <div class="d-flex flex-row mt-4 flex-wrap" v-if="false">
             <div class="d-flex px-3 mb-3"
                  v-for="option in options"
                  :key="option.value"
@@ -49,6 +49,10 @@
           </div>
         </div>
       </div>
+
+      <div class="d-flex flex-row justify-content-center" v-if="poolCount && poolCount > itemsPerPage">
+        <b-pagination size="md" :total-rows="poolCount" v-model="currentPage" :per-page="itemsPerPage"></b-pagination>
+      </div>
     </div>
 
 </template>
@@ -69,16 +73,26 @@ export default {
     ],
     pools: [],
     filter: '',
+    currentPage: 1,
+    itemsPerPage: 10,
+    poolCount: null,
   }),
-  async mounted() {
-    const pools = [];
-    const poolCount = await this.connectICO.poolFactory.getPoolNumber();
-    for (let i = 0; i < poolCount; i += 1) {
-      pools.push(new LocalPool(await this.connectICO.poolFactory.getPool(i)));
-    }
-    if (pools && pools.length > 0) {
+  async created() {
+    this.poolCount = await this.connectICO.poolFactory.getPoolNumber();
+    this.fetchPools();
+  },
+  methods: {
+    async fetchPools() {
+      const pools = [];
+      const minIndex = (this.currentPage - 1) * this.itemsPerPage;
+      const maxIndex = this.currentPage * this.itemsPerPage > this.poolCount ? this.poolCount : this.currentPage * this.itemsPerPage;
+
+      for (let i = minIndex; i < maxIndex; i += 1) {
+        pools.push(new LocalPool(await this.connectICO.poolFactory.getPool(i)));
+      }
+
       this.pools = pools;
-    }
+    },
   },
   computed: {
     ...mapGetters([
@@ -90,6 +104,13 @@ export default {
       }
 
       return this.pools.filter(item => item.name.contains(this.filter));
+    },
+  },
+  watch: {
+    currentPage(oldVal, newVal) {
+      if (oldVal !== newVal) {
+        this.fetchPools();
+      }
     },
   },
 };
