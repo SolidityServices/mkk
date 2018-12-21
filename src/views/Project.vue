@@ -8,6 +8,9 @@
         <div class="my-auto pl-3"><img src="../assets/chevron-left.png" alt=""></div>
         <div class="white-16-bold my-auto">Project Name</div>
       </div>
+      <router-link class="btn white-submit px-4 mr-3" :to="{name: 'project.edit', params: {address: pool.poolAddress}}">
+        Edit pool
+      </router-link>
 
       <div class="row">
         <div class="col-1"></div>

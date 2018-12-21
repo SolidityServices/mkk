@@ -13,7 +13,7 @@
       </div>
     </div>
 
-    <div class="container d-flex flex-column">
+    <div class="container d-flex flex-column mb-5">
       <div class="d-flex flex-column ml-sm-5">
         <div>
           <div class="o-border d-inline"></div>
@@ -61,7 +61,7 @@
             <div class="col-12 col-lg-8">
               <input type="text"
                      class="form-control input-text"
-                     :disabled="disabled"
+                     :disabled="true"
                      v-model="pool.saleWithdrawFunctionSig" placeholder="pay()"/>
             </div>
           </div>
@@ -71,7 +71,7 @@
             <div class="col-12 col-lg-8">
               <input type="text"
                      class="form-control input-text"
-                     :disabled="disabled"
+                     :disabled="true"
                      v-model="pool.saleWithdrawFunctionSig" placeholder="withdraw()"/>
             </div>
           </div>
@@ -222,12 +222,18 @@
             </div>
           </div>
 
+          <div class="d-flex flex-row justify-content-center my-5 w-100" v-if="!disabled">
+            <button class="btn blue-submit px-4" @click="submit" :disabled="submitDisabled">
+              Update
+            </button>
+          </div>
+
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap" v-if="!disabled">
             <div class="col-12 col-lg-6 blue-18-reg">Country blacklist:</div>
             <div class="col-12 col-lg-6">
               <b-form-select
                 multiple
-                v-model="pool.countryBlackList"
+                v-model="selectedCountries"
                 class="form-control input-dd"
                 :disabled="disabled"
                 value-field="alpha3Code"
@@ -237,96 +243,69 @@
             </div>
           </div>
 
-          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Blacklisted countries:</div>
-            <div class="col-12 col-lg-6">{{pool.countryBlackList.join(', ')}}</div>
+          <div class="col-12 col-md-6 d-flex flex-column mt-3 flex-wrap" v-if="!disabled">
+            <div class="d-flex flex-row flex-wrap" v-if="!disabled">
+              <div class="col-12 col-lg-6 blue-18-reg">Selected countries:</div>
+              <div class="col-12 col-lg-6">{{ selectedCountriesText }}</div>
+            </div>
+          </div>
+
+          <div class="w-100 d-flex flex-row align-items-center mt-3 flex-wrap justify-content-center" v-if="!disabled">
+            <button class="btn white-submit px-4 mr-3" @click="addCountryToBlacklist">
+              Add country
+            </button>
+            <button class="btn white-submit px-4 mr-3" @click="removeCountryFromBlacklist">
+              Remove country
+            </button>
           </div>
 
 
-          <div class="col-12 d-flex flex-column mt-3 flex-wrap">
-            <div class="row mx-0">
-              <div class="col-12 col-lg-4 blue-18-reg d-flex flex-row mt-2">
-                <span>Admin addresses: </span>
-                <span class="ml-2" v-if="!disabled">
-                  <i class="fa fa-plus" @click="addAddress(pool.adminAddresses)"></i>
-                </span>
+          <div class="col-12 d-flex flex-column mt-3 flex-wrap" v-if="!disabled && isCreator">
+            <div class="row mx-0 mt-3">
+              <div class="col-12 col-lg-3 blue-18-reg d-flex flex-row">
+                <span>Admin address: </span>
               </div>
-              <div class="col-12 col-lg-8 d-flex flex-column">
-                <div class="d-flex flex-row align-items-center mt-3 flex-shrink-0"
-                     v-for="(adminAddress, index) in pool.adminAddresses" :key="index">
-                  <input type="text" v-validate="'required|eth-address'" data-vv-name="Admin address"
-                         class="form-control input-text w-100"
-                         :disabled="disabled"
-                         v-model="pool.adminAddresses[index]" placeholder="Admin address"/>
-                  <i class="fa fa-minus ml-2 orange-18-reg" @click="removeAddress(pool.adminAddresses, index)" v-if="!disabled"></i>
-                </div>
+              <div class="col-12 col-lg-9 d-flex flex-row">
+                <input type="text" v-validate="'required|eth-address'" data-vv-name="Admin address"
+                       class="form-control input-text w-100"
+                       v-model="newAdminAddress" placeholder="Admin address"/>
               </div>
             </div>
           </div>
 
-          <div class="col-12 d-flex flex-column mt-3 flex-wrap">
-            <div class="row mx-0">
-              <div class="col-12 col-lg-4 blue-18-reg d-flex flex-row mt-2">
+          <div class="w-100 d-flex flex-row align-items-center mt-2 flex-wrap justify-content-center" v-if="!disabled && isCreator">
+            <button class="btn white-submit px-4 mr-3" @click="addAdminAddress">
+              Add address
+            </button>
+            <button class="btn white-submit px-4 mr-3" @click="removeAdminAddress">
+              Remove address
+            </button>
+          </div>
+
+          <div class="col-12 d-flex flex-column mt-3 flex-wrap" v-if="!disabled">
+            <div class="row mx-0 mt-3">
+              <div class="col-12 col-lg-3 blue-18-reg d-flex flex-row">
                 <span>Whitelist addresses: </span>
-                <span class="ml-2" v-if="!disabled">
-                  <i class="fa fa-plus" @click="addAddress(pool.whiteListAddresses)"></i>
-                </span>
               </div>
-              <div class="d-flex flex-column col-12 col-lg-8">
-                <div class="d-flex flex-row align-items-center mt-3 flex-shrink-0"
-                     v-for="(whiteListAddress, index) in pool.whiteListAddresses" :key="index">
-                  <input type="text" v-validate="'required|eth-address'" data-vv-name="Whitelist address"
-                         class="form-control input-text w-100"
-                         :disabled="disabled"
-                         v-model="pool.whiteListAddresses[index]" placeholder="Whitelist address"/>
-                  <i class="fa fa-minus ml-2 orange-18-reg" @click="removeAddress(pool.whiteListAddresses, index)" v-if="!disabled"></i>
-                </div>
+              <div class="d-flex flex-row col-12 col-lg-9">
+                <input type="text" v-validate="'required|eth-address'" data-vv-name="Whitelist address"
+                       class="form-control input-text w-100"
+                       :disabled="disabled"
+                       v-model="newWhitelistAddress" placeholder="Whitelist address"/>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-
-      <hr class="blue-hr-fullw my-5 w-100" v-if="calculatedFee">
-
-      <div class="d-flex flex-column ml-sm-5 mt-3" v-if="calculatedFee">
-        <div>
-          <div class="o-border d-inline"></div>
-          <div class="d-inline mt-5 blue-36-20-bold"> Transaction details
-            <hr align="left" class="blue-hr-2">
-          </div>
-        </div>
-        <div class="d-flex flex-row flex-wrap">
-          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-6 orange-18-reg">Flat fee:</div>
-            <div class="col-6 orange-18-reg text-right text-lg-left">{{ calculatedFee.flatFee }}</div>
+          <div class="w-100 d-flex flex-row align-items-center mt-2 flex-wrap justify-content-center" v-if="!disabled">
+            <button class="btn white-submit px-4 mr-3" @click="addWhitelistAddress">
+              Add address
+            </button>
+            <button class="btn white-submit px-4 mr-3" @click="removeWhitelistAddress">
+              Remove address
+            </button>
           </div>
 
-          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-6 orange-18-reg">Pool fee:</div>
-            <div class="col-6 orange-18-reg text-right text-lg-left">{{ calculatedFee.poolFee }}</div>
-          </div>
         </div>
-        <div class="d-flex flex-row flex-wrap justify-content-center">
-          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-6 orange-18-reg">Transfer value:</div>
-            <div class="col-6 orange-18-reg text-right text-lg-left">{{ calculatedFee.transferValue }}</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="d-flex flex-row justify-content-center my-5" v-if="!disabled">
-        <button class="btn white-submit px-4 mr-3" @click="calculateFee" :disabled="submitDisabled">
-          Calculate fee
-        </button>
-        <button class="btn blue-submit px-4" @click="submit" :disabled="submitDisabled">
-          Submit
-        </button>
-      </div>
-
-      <div class="d-flex flex-row justify-content-center my-5" v-if="poolAddress">
-        <div class="orange-24-bold">{{ poolAddress }}</div>
       </div>
     </div>
   </div>
@@ -351,6 +330,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isCreator: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -359,9 +342,11 @@ export default {
         useCurrent: false,
         sideBySide: true,
       },
-      calculatedFee: null,
       poolAddress: null,
       showFuncSig: false,
+      selectedCountries: [],
+      newAdminAddress: '',
+      newWhitelistAddress: '',
     };
   },
   computed: {
@@ -372,6 +357,12 @@ export default {
       'connectICO',
       'countries',
     ]),
+    selectedCountriesText() {
+      return this.selectedCountries ? this.selectedCountries.join(', ') : '';
+    },
+    countryBlackListText() {
+      return this.pool.countryBlackList ? this.pool.countryBlackList.join(', ') : '';
+    },
   },
   methods: {
     async getTransferDetails() {
@@ -387,7 +378,6 @@ export default {
       };
     },
     async submit() {
-      const transferValue = await this.getTransferDetails().transferValue;
       if (typeof this.pool.saleStartDate === 'string') {
         this.pool.saleStartDate = moment(this.pool.saleStartDate, this.datepickerOptions.format);
       }
@@ -396,7 +386,7 @@ export default {
       }
 
       try {
-        const response = await this.connectICO.poolFactory.createPool(this.pool, transferValue);
+        const response = await this.connectICO.pool.setPoolParamsCreator(this.pool);
         if (response) {
           this.poolAddress = response;
           this.$notify({
@@ -412,14 +402,65 @@ export default {
         });
       }
     },
-    async calculateFee() {
-      this.calculatedFee = await this.getTransferDetails();
+    async addCountryToBlacklist() {
+      try {
+        await this.connectICO.pool.addCountryBlacklist(this.pool.poolAddress, this.selectedCountries);
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
     },
-    removeAddress(object, index) {
-      object.splice(index, 1);
+    async removeCountryFromBlacklist() {
+      try {
+        await this.connectICO.pool.removeCountryBlacklist(this.pool.poolAddress, this.selectedCountries);
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
     },
-    addAddress(object) {
-      object.push('');
+    async addAdminAddress() {
+      try {
+        await this.connectICO.pool.addAdmin(this.pool.poolAddress, [this.newAdminAddress]);
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
+    },
+    async removeAdminAddress() {
+      try {
+        await this.connectICO.pool.removeAdmin(this.pool.poolAddress, [this.newAdminAddress]);
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
+    },
+    async addWhitelistAddress() {
+      try {
+        await this.connectICO.pool.addWhitelist(this.pool.poolAddress, [this.newAdminAddress]);
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
+    },
+    async removeWhitelistAddress() {
+      try {
+        await this.connectICO.pool.removeWhitelist(this.pool.poolAddress, [this.newAdminAddress]);
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
     },
   },
 };

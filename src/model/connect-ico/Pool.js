@@ -757,7 +757,7 @@ export default class Pool {
       pool.whitelistPool ? 1 : 0,
       pool.poolDescription,
       pool.tokenAddress,
-      [true, true, true, true, true, true, true, true, true, false, true],
+      [true, true, true, true, true, true, true, true, true, true, true],
       { from: this.account },
     );
   }
