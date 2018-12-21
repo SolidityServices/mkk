@@ -78,7 +78,7 @@ contract Pool {
     event adminsChange(address adminAddress, bool direction);
     event whitelistChange(address whitelistAddress, bool direction);
     event countryBlacklistChange(bytes32 countryCode, bool direction);
-    event contributed(address contributor, uint amount);
+    event contributed(address indexed contributor, uint amount);
 
 
     constructor (

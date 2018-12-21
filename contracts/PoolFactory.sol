@@ -27,7 +27,7 @@ contract PoolFactory is Ownable {
 
     //creator whitelist
 
-    event poolCreated(address poolAddress);
+    event poolCreated(address poolAddress, address indexed poolCreator, address indexed poolsBySale);
     event whitelistChange(address whitelistAddresses, bool direction);
 
     constructor (address _kycContractAddress, uint _flatFee, uint16 _maxAllocationFeeRate, uint16 _maxCreatorFeeRate, uint16 _providerFeeRate) public {
@@ -79,7 +79,7 @@ contract PoolFactory is Ownable {
         poolsBySale[addresses[0]].push(poolAddress);
         poolsByCreator[msg.sender].push(poolAddress);
         pools[poolAddress] = true;
-        emit poolCreated(poolAddress);
+        emit poolCreated(poolAddress, msg.sender, addresses[0]);
     }
 
     function wtihdraw() public onlyOwner{
