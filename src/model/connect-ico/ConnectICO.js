@@ -42,7 +42,7 @@ export default class ConnectICO {
 
       this.pool = new Pool(this.web3.currentProvider, this.account, this.web3);
       this.poolFactory = new PoolFactory(this.web3.currentProvider, this.account, this.web3);
-      this.KYC = new KYC(this.web3.currentProvider);
+      this.KYC = new KYC(this.web3.currentProvider, this.account, this.web3);
       this.tokenPushRegistry = new TokenPushRegistry(this.web3.currentProvider);
 
       console.log('Application initialized');
