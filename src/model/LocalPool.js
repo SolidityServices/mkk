@@ -47,6 +47,7 @@ export default class LocalPool {
     let params = this.initParams();
     if (this.poolAddress) {
       params = await this.connectIco.pool.getPoolParams(this.poolAddress);
+      params.balance = await this.connectIco.pool.getPoolBalance(this.poolAddress);
     }
     this.saleParticipateFunctionSig = params.saleParticipateFunctionSig;
     this.saleWithdrawFunctionSig = params.saleWithdrawFunctionSig;
@@ -66,9 +67,10 @@ export default class LocalPool {
     this.providerFeeRate = params.providerFeeRate !== 0 ? params.providerFeeRate / 100 : 0;
     this.creatorFeeRate = params.creatorFeeRate !== 0 ? params.creatorFeeRate / 100 : 0;
     this.whitelistPool = params.whitelistPool;
-    this.adminAddresses = params.adminAddresses;
-    this.whiteListAddresses = params.whiteListAddresses;
-    this.countryBlackList = params.countryBlackList;
+    this.adminAddresses = params.adminAddresses ? params.adminAddresses : [];
+    this.whiteListAddresses = params.whiteListAddresses ? params.whiteListAddresses : [];
+    this.countryBlackList = params.countryBlackList ? params.countryBlackList : [];
+    this.balance = params.balance;
   }
 
   initParams() {

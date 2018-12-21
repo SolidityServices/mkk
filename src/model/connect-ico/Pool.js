@@ -120,8 +120,8 @@ export default class Pool {
    */
   async getPoolBalance(poolAddress) {
     const instance = await this.pool.at(poolAddress);
-    const result = this.web3.eth.getBalance(instance.address);
-    return result.toString();
+    const result = await this.web3.eth.getBalance(instance.address);
+    return this.web3.utils.fromWei(result, 'ether');
   }
 
   /**
