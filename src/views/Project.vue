@@ -8,7 +8,7 @@
         <div class="my-auto pl-3"><img src="../assets/chevron-left.png" alt=""></div>
         <div class="white-16-bold my-auto">Project Name</div>
       </div>
-      <router-link class="btn white-submit px-4 mr-3" :to="{name: 'project.edit', params: {address: pool.poolAddress}}">
+      <router-link class="btn blue-submit px-4 mr-3" :to="{name: 'project.edit', params: {address: pool.poolAddress}}">
         Edit pool
       </router-link>
 
@@ -171,12 +171,27 @@
           </div>
           <div class="row mt-5">
             <div class="d-flex row justify-content-center w-100 py-5">
-              <div class="col-12 col-lg-6 text-center text-lg-right">
+              <div class="text-center text-lg-right mx-2">
                 <button class="btn px-4 blue-submit" @click="contribute">Deposit ETH</button>
               </div>
-              <div class="col-12 col-lg-6 text-center text-lg-left">
-                <button class="btn px-4 white-submit" @click="withdraw">Withdraw ETH</button>
+
+              <div class="text-center text-lg-left mx-2">
+                <button class="btn px-4 blue-submit" @click="withdraw">Withdraw ETH</button>
               </div>
+
+              <div class="text-center text-lg-left mx-2">
+                <button class="btn px-4 white-submit" @click="withdrawTokens">Withdraw tokens</button>
+              </div>
+
+              <div class="text-center text-lg-left mx-2">
+                <button class="btn px-4 white-submit" @click="withdrawRefund">Withdraw refund</button>
+              </div>
+            </div>
+            <div class="d-flex flex-row justify-content-center col-12 col-lg-6 mx-auto pb-5">
+              <input type="text" v-validate="'required|eth-address'" data-vv-name="Custom token"
+                     class="form-control input-text w-100 mx-2"
+                     v-model="customToken" placeholder="Custom token"/>
+              <button class="btn px-4 blue-submit text-lg-center mx-2" @click="withdrawCustomToken">Withdraw custom token</button>
             </div>
           </div>
 
@@ -203,6 +218,7 @@ export default {
     sliderTotalFilled: 20,
     amount: 0.000001,
     showAdvancedDetails: false,
+    customToken: '',
   }),
   components: {
     RangeSlider,
@@ -247,6 +263,48 @@ export default {
           type: 'success',
           title: 'Successful withdraw!',
           text: `${this.amount} ETH`,
+        });
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
+    },
+    async withdrawTokens() {
+      try {
+        await this.connectICO.pool.withdrawToken(this.address);
+        this.$notify({
+          type: 'success',
+          text: 'Tokens successfully withdrawn!',
+        });
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
+    },
+    async withdrawRefund() {
+      try {
+        await this.connectICO.pool.withdrawRefund(this.address);
+        this.$notify({
+          type: 'success',
+          text: 'Refund successfully withdrawn!',
+        });
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
+    },
+    async withdrawCustomToken() {
+      try {
+        await this.connectICO.pool.withdrawCustomToken(this.address, this.customToken);
+        this.$notify({
+          type: 'success',
+          text: 'Token successfully withdrawn!',
         });
       } catch (e) {
         this.$notify({

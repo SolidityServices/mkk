@@ -1,19 +1,19 @@
 <template>
   <div class="d-flex flex-column">
     <div class="d-flex flex-row justify-content-center pt-3">
-      <button class="btn white-submit px-4 mx-3" @click="sendFundsToSale">
+      <button class="btn blue-submit px-4 mx-3" @click="sendFundsToSale">
         Send funds to sale
       </button>
 
-      <button class="btn white-submit px-4 mx-3" @click="stopPool">
+      <button class="btn blue-submit px-4 mx-3" @click="stopPool">
         Stop pool
       </button>
 
-      <button class="btn white-submit px-4 mx-3" @click="confirmTokensReceived">
+      <button class="btn blue-submit px-4 mx-3" @click="confirmTokensReceived">
         Confirms token received
       </button>
 
-      <button class="btn white-submit px-4 mx-3" @click="creatorWithdraw">
+      <button class="btn blue-submit px-4 mx-3" @click="creatorWithdraw">
         Creator withdraw
       </button>
 
@@ -24,7 +24,7 @@
              class="form-control input-text"
              v-model="recipientAddress" placeholder="Recipient address"/>
 
-      <button class="btn white-submit px-4 mx-3" @click="pushOutTokens">
+      <button class="btn blue-submit px-4 mx-3" @click="pushOutTokens">
         Push out tokens
       </button>
     </div>
