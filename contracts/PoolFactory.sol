@@ -24,7 +24,7 @@ contract PoolFactory is Ownable {
 
     //creator whitelist
 
-    event poolCreated(address poolAddress, address indexed poolCreator, address indexed poolsBySale);
+    event poolCreated(address poolAddress, address indexed poolCreator, address indexed poolSale);
     event whitelistChange(address whitelistAddresses, bool direction);
 
     constructor (address _kycContractAddress, uint _flatFee, uint16 _maxAllocationFeeRate, uint16 _maxCreatorFeeRate, uint16 _providerFeeRate) public {

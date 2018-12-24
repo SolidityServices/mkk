@@ -252,4 +252,34 @@ export default class PoolFactory {
     const result = await instance.withdraw({ from: this.account });
     return result.toString();
   }
+
+  async getPoolsCreatedFromEvents(creatorAddress, saleAddress) {
+    const instance = await this.poolFactory.deployed();
+    const filter = {};
+    if (creatorAddress) filter.poolCreator = creatorAddress;
+    if (saleAddress) filter.poolSale = saleAddress;
+    const poolCreatedEvent = instance.poolCreated(filter, { fromBlock: 0, toBlock: 'latest' });
+    const result = [];
+    await poolCreatedEvent.get((error, logs) => {
+      logs.forEach((item) => {
+        result.push(item.args.poolAddress);
+      });
+    });
+    return result;
+  }
+
+  async getAllPools() {
+    const result = await this.getPoolsCreatedFromEvents(null, null);
+    return result;
+  }
+
+  async getAllPoolsByCreator(creatorAddress) {
+    const result = await this.getPoolsCreatedFromEvents(creatorAddress, null);
+    return result;
+  }
+
+  async getAllPoolsBySale(saleAddress) {
+    const result = await this.getPoolsCreatedFromEvents(null, saleAddress);
+    return result;
+  }
 }
