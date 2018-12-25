@@ -900,6 +900,26 @@ export default class Pool {
     return resultUTF8;
   }
 
+  async getAllContributions(poolAddress) {
+    const result = await this.getContributionsFromEvents(poolAddress, null);
+    return result;
+  }
+
+  async getContributionsByContributor(poolAddress, contributorAddress) {
+    const result = await this.getContributionsFromEvents(poolAddress, contributorAddress);
+    return result;
+  }
+
+  async getContributionsFromEvents(poolAddress, contributorAddress) {
+    const instance = await this.pool.at(poolAddress);
+    const filter = {};
+    if (contributorAddress) filter.contributor = contributorAddress;
+    const contributedEvent = instance.contributed(filter, { fromBlock: 0, toBlock: 'latest' });
+    const rawLogs = await ContractEventUtils.promosifyEventGet(contributedEvent);
+    const result = rawLogs.map(item => ({ contributor: item.args.poolAddress, amount: item.args.amount }));
+    return result;
+  }
+
   // eslint-disable-next-line class-methods-use-this
   getActiveListItems(logs) {
     const mostRecentEvents = {};
