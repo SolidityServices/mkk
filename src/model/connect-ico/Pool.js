@@ -1,5 +1,6 @@
 import TruffleContract from 'truffle-contract';
 import poolArtifact from '../../../build/contracts/Pool.json';
+import * as ContractEventUtils from './ContractEventUtils';
 
 export default class Pool {
   constructor(provider, account, web3) {
@@ -872,5 +873,54 @@ export default class Pool {
       [false, false, true],
       { from: this.account },
     );
+  }
+
+  async getAdmins(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    const adminsChangeEvent = instance.adminsChange({ fromBlock: 0, toBlock: 'latest' });
+    const rawLogs = await ContractEventUtils.promosifyEventGet(adminsChangeEvent);
+    const result = this.getActiveListItems(rawLogs);
+    return result;
+  }
+
+  async getWhitelist(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    const whitelistChangeEvent = instance.whitelistChange({ fromBlock: 0, toBlock: 'latest' });
+    const rawLogs = await ContractEventUtils.promosifyEventGet(whitelistChangeEvent);
+    const result = this.getActiveListItems(rawLogs);
+    return result;
+  }
+
+  async getKycCountryBlacklist(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    const countryBlacklistChangeEvent = instance.countryBlacklistChange({}, { fromBlock: 0, toBlock: 'latest' });
+    const rawLogs = await ContractEventUtils.promosifyEventGet(countryBlacklistChangeEvent);
+    const hexResult = this.getActiveListItems(rawLogs);
+    const resultUTF8 = await hexResult.map(item => this.web3.utils.hexToUtf8(item));
+    return resultUTF8;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  getActiveListItems(logs) {
+    const mostRecentEvents = {};
+    const activeItems = [];
+    logs.forEach((item) => {
+      if (!mostRecentEvents[item.args.listItem]) {
+        mostRecentEvents[item.args.listItem] = {
+          isActive: item.args.isActive,
+          blockNumber: item.blockNumber,
+        };
+      } else if (mostRecentEvents[item.args.listItem].blockNumber < item.blockNumber) {
+        mostRecentEvents[item.args.listItem] = {
+          isActive: item.args.isActive,
+          blockNumber: item.blockNumber,
+        };
+      }
+    });
+    const allItems = Object.keys(mostRecentEvents);
+    allItems.forEach((item) => {
+      if (mostRecentEvents[item].isActive) activeItems.push(item);
+    });
+    return activeItems;
   }
 }

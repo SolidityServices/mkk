@@ -1,5 +1,6 @@
 import TruffleContract from 'truffle-contract';
 import poolFactoryArtifact from '../../../build/contracts/PoolFactory.json';
+import * as ContractEventUtils from './ContractEventUtils';
 
 export default class PoolFactory {
   constructor(provider, account, web3) {
@@ -253,21 +254,6 @@ export default class PoolFactory {
     return result.toString();
   }
 
-  async getPoolsCreatedFromEvents(creatorAddress, saleAddress) {
-    const instance = await this.poolFactory.deployed();
-    const filter = {};
-    if (creatorAddress) filter.poolCreator = creatorAddress;
-    if (saleAddress) filter.poolSale = saleAddress;
-    const poolCreatedEvent = instance.poolCreated(filter, { fromBlock: 0, toBlock: 'latest' });
-    const result = [];
-    await poolCreatedEvent.get((error, logs) => {
-      logs.forEach((item) => {
-        result.push(item.args.poolAddress);
-      });
-    });
-    return result;
-  }
-
   async getAllPools() {
     const result = await this.getPoolsCreatedFromEvents(null, null);
     return result;
@@ -280,6 +266,17 @@ export default class PoolFactory {
 
   async getAllPoolsBySale(saleAddress) {
     const result = await this.getPoolsCreatedFromEvents(null, saleAddress);
+    return result;
+  }
+
+  async getPoolsCreatedFromEvents(creatorAddress, saleAddress) {
+    const instance = await this.poolFactory.deployed();
+    const filter = {};
+    if (creatorAddress) filter.poolCreator = creatorAddress;
+    if (saleAddress) filter.poolSale = saleAddress;
+    const poolCreatedEvent = instance.poolCreated(filter, { fromBlock: 0, toBlock: 'latest' });
+    const rawLogs = await ContractEventUtils.promosifyEventGet(poolCreatedEvent);
+    const result = rawLogs.map(item => item.args.poolAddress);
     return result;
   }
 }
