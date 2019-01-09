@@ -221,9 +221,10 @@ contract Pool {
     function withdraw(uint amount) public {
         require(!poolStats.sentToSale, "withdraw(): Error, the pools funds were already sent to the sale");
         if(!poolStats.stopped){
-            require(contributors[msg.sender].lastContributionTime.add(params.withdrawTimelock) > block.timestamp, "withdraw(): Error, the timelock is not over yet");
+            require(contributors[msg.sender].lastContributionTime.add(params.withdrawTimelock) <= block.timestamp, "withdraw(): Error, the timelock is not over yet");
             require(contributors[msg.sender].grossContribution >= amount, "withdraw(): Error, tx sender has not enough funds in pool");
-            require(contributors[msg.sender].grossContribution.sub(amount) >= params.minContribution || amount == 0, "withdraw(): Error, remaining contribution amount would have been less than 'minContribution'");
+            require(contributors[msg.sender].grossContribution.sub(amount) >= params.minContribution, "withdraw(): Error, remaining contribution amount would have been less than 'minContribution'");
+            if(amount == 0) require(params.minContribution == 0, "withdraw(): Error, remaining contribution amount would have been less than 'minContribution'");
         }
         uint transferAmount;
         if (amount == 0 || poolStats.stopped) {
@@ -279,14 +280,14 @@ contract Pool {
 
     function sendToSale() public onlyAdmin{
         require(!poolStats.stopped,  "sendToSale(): Error, the pool was stopped");
-        require(params.saleParticipateFunctionSig.length == 0, "sendToSale(): Error, participation function signature is given, 'sendToSaleFunction()' has to be used");
+        //require(params.saleParticipateFunctionSig.length == 0, "sendToSale(): Error, participation function signature is given, 'sendToSaleFunction()' has to be used");
         require(!poolStats.sentToSale, "sendToSale(): Error, the pools funds were already sent to the sale");
         require(now >= params.saleStartDate, "sendToSale(): Error, sale hasn't started yet");
         require(block.timestamp < params.saleEndDate, "sendToSale(): Error, the sale has ended");
         require(calculateNetContribution() >= params.minPoolGoal, "sendToSale(): Not enough funds collected for sale");
         takeFees();
         poolStats.sentToSale = true;
-        params.saleAddress.transfer(calculateNetContribution());
+        require(params.saleAddress.call.value(calculateNetContribution())(), "Error, transaction failed");
     }
 
     function sendToSaleFunction() public onlyAdmin {
