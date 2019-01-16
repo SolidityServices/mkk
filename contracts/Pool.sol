@@ -280,26 +280,39 @@ contract Pool {
 
     function sendToSale() public onlyAdmin{
         require(!poolStats.stopped,  "sendToSale(): Error, the pool was stopped");
-        require(params.saleParticipateCalldata.length == 0, "sendToSale(): Error, participation function signature is given, 'sendToSaleFunction()' has to be used");
+        require(params.saleParticipateCalldata.length == 0, "sendToSale(): Error, participation function signature is given, 'sendToSaleWithCalldata()' has to be used");
         require(!poolStats.sentToSale, "sendToSale(): Error, the pools funds were already sent to the sale");
         require(now >= params.saleStartDate, "sendToSale(): Error, sale hasn't started yet");
         require(block.timestamp < params.saleEndDate, "sendToSale(): Error, the sale has ended");
         require(calculateNetContribution() >= params.minPoolGoal, "sendToSale(): Not enough funds collected for sale");
         takeFees();
-        poolStats.sentToSale = true;
         params.saleAddress.transfer(calculateNetContribution());
+        poolStats.sentToSale = true;
     }
 
-    function sendToSaleFunction() public onlyAdmin {
-        require(!poolStats.stopped,  "sendToSaleFunction(): Error, the pool was stopped");
-        require(params.saleParticipateCalldata != 0x0, "sendToSaleFunction(): Error, no participation function signature given");
-        require(!poolStats.sentToSale, "sendToSaleFunction(): Error, the pools funds were already sent to the sale");
-        require(now >= params.saleStartDate, "sendToSaleFunction(): Error, sale hasn't started yet");
-        require(block.timestamp < params.saleEndDate, "sendToSaleFunction(): Error, the sale has ended");
-        require(calculateNetContribution() >= params.minPoolGoal, "sendToSaleFunction():: Not enough funds collected for sale");
+    function sendToSaleWithCalldata() public onlyAdmin {
+        require(!poolStats.stopped,  "sendToSaleWithCalldata(): Error, the pool was stopped");
+        require(params.saleParticipateCalldata != 0x0, "sendToSaleWithCalldata(): Error, no participation function signature given");
+        require(!poolStats.sentToSale, "sendToSaleWithCalldata(): Error, the pools funds were already sent to the sale");
+        require(now >= params.saleStartDate, "sendToSaleWithCalldata(): Error, sale hasn't started yet");
+        require(block.timestamp < params.saleEndDate, "sendToSaleWithCalldata(): Error, the sale has ended");
+        require(calculateNetContribution() >= params.minPoolGoal, "sendToSaleWithCalldata():: Not enough funds collected for sale");
         takeFees();
-        poolStats.sentToSale = true;
         require(params.saleAddress.call.value(calculateNetContribution())(bytes4(keccak256(params.saleParticipateCalldata))), "Error, transaction failed");
+        poolStats.sentToSale = true;
+    }
+
+    function sendToSaleWithCalldataParameter(bytes32 calldata) public onlyAdmin {
+        require(!params.strictlyTrustlessPool, "sendToSaleWithCalldataParameter(bytes32 calldata): Error, pool is 'strictlyTrustlessPool'");
+        require(!poolStats.stopped,  "sendToSaleWithCalldata(): Error, the pool was stopped");
+        require(calldata != 0x0, "sendToSaleWithCalldata(): Error, no participation function signature given");
+        require(!poolStats.sentToSale, "sendToSaleWithCalldata(): Error, the pools funds were already sent to the sale");
+        require(now >= params.saleStartDate, "sendToSaleWithCalldata(): Error, sale hasn't started yet");
+        require(block.timestamp < params.saleEndDate, "sendToSaleWithCalldata(): Error, the sale has ended");
+        require(calculateNetContribution() >= params.minPoolGoal, "sendToSaleWithCalldata():: Not enough funds collected for sale");
+        takeFees();
+        require(params.saleAddress.call.value(calculateNetContribution())(bytes4(keccak256(calldata))), "Error, transaction failed");
+        poolStats.sentToSale = true;
     }
 
 
@@ -317,10 +330,17 @@ contract Pool {
         return (value / 1000).mul(feePerThousand);
     }
 
-    function withdrawFromSaleFunction() public onlyAdmin{
-        require(params.saleWithdrawCalldata != 0x0, "withdrawFromSaleFunction(): Error, no withdraw function signature given");
-        require(poolStats.sentToSale, "withdrawFromSaleFunction(): Error, the pools funds were not sent to the sale yet");
-        require(params.saleAddress.call(bytes4(keccak256(params.saleWithdrawCalldata))), "withdrawFromSaleFunction(): Error, transaction failed");
+    function withdrawFromSaleWithCalldata() public onlyAdmin{
+        require(params.saleWithdrawCalldata != 0x0, "withdrawFromSaleWithCalldata(): Error, no withdraw function signature given");
+        require(poolStats.sentToSale, "withdrawFromSaleWithCalldata(): Error, the pools funds were not sent to the sale yet");
+        require(params.saleAddress.call(bytes4(keccak256(params.saleWithdrawCalldata))), "withdrawFromSaleWithCalldata(): Error, transaction failed");
+    }
+
+    function withdrawFromSaleWithCalldataParameter(bytes32 calldata) public onlyAdmin{
+        require(!params.strictlyTrustlessPool, "withdrawFromSaleWithCalldataParameter(bytes32 calldata): Error, pool is 'strictlyTrustlessPool'");
+        require(params.saleWithdrawCalldata != 0x0, "withdrawFromSaleWithCalldata(): Error, no withdraw function signature given");
+        require(poolStats.sentToSale, "withdrawFromSaleWithCalldata(): Error, the pools funds were not sent to the sale yet");
+        require(params.saleAddress.call(bytes4(keccak256(params.saleWithdrawCalldata))), "withdrawFromSaleWithCalldata(): Error, transaction failed");
     }
 
     function () public payable {
