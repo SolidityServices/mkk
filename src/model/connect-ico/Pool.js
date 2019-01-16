@@ -1,6 +1,7 @@
 import TruffleContract from 'truffle-contract';
 import poolArtifact from '../../../build/contracts/Pool.json';
-import * as ContractEventUtils from './ContractEventUtils';
+import ContractEventUtils from './ContractEventUtils';
+import SolidityFunctionSignatureUtils from './SolidityFunctionSignatureUtils';
 
 export default class Pool {
   constructor(provider, account, web3) {
@@ -8,6 +9,7 @@ export default class Pool {
     this.pool.setProvider(provider);
     this.account = account;
     this.web3 = web3;
+    this.SolidityFunctionSignatureUtils = SolidityFunctionSignatureUtils;
   }
 
   /**

@@ -40,8 +40,8 @@ contract PoolFactory is Ownable {
         /* address _saleAddress,0
         address _tokenAddress,1 */
         bytes32[3] bytes32s,
-        /* bytes32 _saleParticipateFunctionSig,0
-        bytes32 _saleWithdrawFunctionSig,1
+        /* bytes32 saleParticipateCalldata,0
+        bytes32 _saleWithdrawCalldata,1
         bytes32 _poolDescription,2 */
         uint[8] uints,
         /* uint _creatorFeeRate,0
@@ -52,7 +52,9 @@ contract PoolFactory is Ownable {
         uint _minPoolGoal,5
         uint _maxPoolAllocation,6
         uint _withdrawTimelock,7 */
-        bool _whitelistPool,
+        bool[2] bools,
+        /*bool _whitelistPool,0
+        bool _strictlyTrustlessPool,1 */
         address[] adminlist, 
         address[] contributorWhitelist,
         bytes32[] countryBlacklist
@@ -63,11 +65,11 @@ contract PoolFactory is Ownable {
         require(params.maxCreatorFeeRate >= uints[0], "createPool(...): Error, pool fee rate is greater than max allowed");
         address poolAddress = new Pool(
             [params.kycContractAddress, owner, msg.sender, addresses[0], addresses[1]],
-            [bytes32s[0], bytes32s[1], bytes32s[2]],
+            bytes32s,
             [params.providerFeeRate, uints[0], uints[1], uints[2],
             uints[3], uints[4], uints[5], uints[6],
             uints[7]],
-            _whitelistPool,
+            bools,
             adminlist, 
             contributorWhitelist,
             countryBlacklist

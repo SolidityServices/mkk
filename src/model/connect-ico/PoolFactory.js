@@ -1,6 +1,6 @@
 import TruffleContract from 'truffle-contract';
 import poolFactoryArtifact from '../../../build/contracts/PoolFactory.json';
-import * as ContractEventUtils from './ContractEventUtils';
+import ContractEventUtils from './ContractEventUtils';
 
 export default class PoolFactory {
   constructor(provider, account, web3) {
