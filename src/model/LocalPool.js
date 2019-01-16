@@ -27,6 +27,8 @@ export default class LocalPool {
 
   whitelistPool;
 
+  strictlyTrustlessPool;
+
   tokenAddress;
 
   maxPoolAllocation;
@@ -67,12 +69,14 @@ export default class LocalPool {
     this.providerFeeRate = params.providerFeeRate !== 0 ? params.providerFeeRate / 100 : 0;
     this.creatorFeeRate = params.creatorFeeRate !== 0 ? params.creatorFeeRate / 100 : 0;
     this.whitelistPool = params.whitelistPool;
+    this.strictlyTrustlessPool = params.strictlyTrustlessPool;
     this.adminAddresses = params.adminAddresses ? params.adminAddresses : [];
     this.whiteListAddresses = params.whiteListAddresses ? params.whiteListAddresses : [];
     this.countryBlackList = params.countryBlackList ? params.countryBlackList : [];
     this.balance = params.balance;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   initParams() {
     const params = {};
 
@@ -91,6 +95,7 @@ export default class LocalPool {
     params.maxPoolAllocation = 1000000000000;
     params.withdrawTimelock = 0;
     params.whitelistPool = false;
+    params.strictlyTrustlessPool = false;
     params.adminAddresses = [];
     params.whiteListAddresses = [];
     params.countryBlackList = [];
@@ -98,6 +103,7 @@ export default class LocalPool {
     return params;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   convertWeiToEther(value) {
     if (!value || value === 0) {
       return value;

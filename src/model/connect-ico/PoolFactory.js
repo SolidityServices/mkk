@@ -225,7 +225,10 @@ export default class PoolFactory {
         pool.maxPoolAllocation * 1000000000000000000, // convert ether to wei
         pool.withdrawTimelock * 60 * 60, // convert to unix time
       ],
-      pool.whitelistPool ? 1 : 0,
+      [
+        pool.whitelistPool ? 1 : 0,
+        pool.strictlyTrustlessPool ? 1 : 0,
+      ],
       pool.adminAddresses,
       pool.whiteListAddresses,
       pool.countryBlackList,

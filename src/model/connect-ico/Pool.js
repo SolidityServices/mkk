@@ -40,6 +40,7 @@ export default class Pool {
    * @property {number} providerFeeRate -
    * @property {number} creatorFeeRate -
    * @property {boolean} whitelistPool -
+   * @property {boolean} strictlyTrustlessPool -
    *
    * @return {PoolParams}
    */
@@ -49,14 +50,14 @@ export default class Pool {
     const result2 = await instance.getParams2.call({ from: this.account });
 
     return {
-      saleParticipateFunctionSig: this.web3.utils.hexToUtf8(result2[1]),
-      saleWithdrawFunctionSig: this.web3.utils.hexToUtf8(result2[2]),
-      poolDescription: this.web3.utils.hexToUtf8(result2[3]),
-      saleAddress: result2[4].toString(),
-      tokenAddress: result2[5].toString(),
-      kycAddress: result2[6].toString(),
-      provider: result2[7].toString(),
-      creator: result2[8].toString(),
+      saleParticipateFunctionSig: this.web3.utils.hexToUtf8(result2[2]),
+      saleWithdrawFunctionSig: this.web3.utils.hexToUtf8(result2[3]),
+      poolDescription: this.web3.utils.hexToUtf8(result2[4]),
+      saleAddress: result2[5].toString(),
+      tokenAddress: result2[6].toString(),
+      kycAddress: result2[7].toString(),
+      provider: result2[8].toString(),
+      creator: result2[9].toString(),
       minContribution: result1[5].toNumber(),
       maxContribution: result1[6].toNumber(),
       minPoolGoal: result1[7].toNumber(),
@@ -67,6 +68,7 @@ export default class Pool {
       providerFeeRate: result1[0].toNumber(),
       creatorFeeRate: result1[1].toNumber(),
       whitelistPool: result2[0],
+      strictlyTrustlessPool: result2[1],
     };
   }
 
