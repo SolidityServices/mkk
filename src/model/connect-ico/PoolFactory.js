@@ -1,6 +1,7 @@
 import TruffleContract from 'truffle-contract';
 import poolFactoryArtifact from '../../../build/contracts/PoolFactory.json';
 import ContractEventUtils from './ContractEventUtils';
+import SolidityFunctionSignatureUtils from './SolidityFunctionSignatureUtils';
 
 export default class PoolFactory {
   constructor(provider, account, web3) {
@@ -211,8 +212,8 @@ export default class PoolFactory {
         pool.tokenAddress,
       ],
       [
-        pool.saleParticipateFunctionSig,
-        pool.saleWithdrawFunctionSig,
+        this.functionSigToCalldata(pool.saleParticipateFunctionSig),
+        this.functionSigToCalldata(pool.saleWithdrawFunctionSig),
         pool.poolDescription,
       ],
       [
@@ -281,5 +282,11 @@ export default class PoolFactory {
     const rawLogs = await ContractEventUtils.promosifyEventGet(poolCreatedEvent);
     const result = rawLogs.map(item => item.args.poolAddress);
     return result;
+  }
+
+  async functionSigToCalldata(functionSig) {
+    const { abiJson, params } = SolidityFunctionSignatureUtils.encodeFunctionSignatureWithParameters(functionSig);
+    const calldata = this.web3.eth.abi.encodeFunctionCall(abiJson, params);
+    return calldata;
   }
 }

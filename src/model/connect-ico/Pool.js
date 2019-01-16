@@ -9,7 +9,6 @@ export default class Pool {
     this.pool.setProvider(provider);
     this.account = account;
     this.web3 = web3;
-    this.SolidityFunctionSignatureUtils = SolidityFunctionSignatureUtils;
   }
 
   /**
@@ -697,9 +696,9 @@ export default class Pool {
    *
    * @param {string} poolAddress address of the Pool this function iteracts with
    */
-  async sendToSaleFunction(poolAddress) {
+  async sendToSaleWithCalldata(poolAddress) {
     const instance = await this.pool.at(poolAddress);
-    return instance.sendToSaleFunction({ from: this.account });
+    return instance.sendToSaleWithCalldata({ from: this.account });
   }
 
   /**
@@ -709,9 +708,35 @@ export default class Pool {
    *
    * @param {string} poolAddress address of the Pool this function iteracts with
    */
-  async withdrawFromSaleFunction(poolAddress) {
+  async withdrawFromSaleWithCalldata(poolAddress) {
     const instance = await this.pool.at(poolAddress);
-    return instance.withdrawFromSaleFunction({ from: this.account });
+    return instance.withdrawFromSaleWithCalldata({ from: this.account });
+  }
+
+  /**
+   * Send pool funds to sale to special function given as parameter(only creator)
+   *
+   * Frontend page: Pool admin page for pool creator
+   *
+   * @param {string} poolAddress address of the Pool this function iteracts with
+   * @param {string} functionSignature -
+   */
+  async sendToSaleWithCalldataParameter(poolAddress, functionSignature) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.sendToSaleWithCalldataParameter(this.functionSigToCalldata(functionSignature), { from: this.account });
+  }
+
+  /**
+   * Whitdraw tokens from sale with special function  given as parameter(only creator)
+   *
+   * Frontend page: Pool admin page for pool creator
+   *
+   * @param {string} poolAddress address of the Pool this function iteracts with
+   * @param {string} functionSignature
+   */
+  async withdrawFromSaleWithCalldataParameter(poolAddress, functionSignature) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.withdrawFromSaleWithCalldataParameter(this.functionSigToCalldata(functionSignature), { from: this.account });
   }
 
   /**
@@ -879,6 +904,16 @@ export default class Pool {
     );
   }
 
+  async setsaleParticipateCalldata(poolAddress, functionSignature) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.setsaleParticipateCalldata(this.functionSigToCalldata(functionSignature), { from: this.account });
+  }
+
+  async setSaleWithdrawCalldata(poolAddress, functionSignature) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.setSaleWithdrawCalldata(this.functionSigToCalldata(functionSignature), { from: this.account });
+  }
+
   async getAdmins(poolAddress) {
     const instance = await this.pool.at(poolAddress);
     const adminsChangeEvent = instance.adminsChange({ fromBlock: 0, toBlock: 'latest' });
@@ -946,5 +981,11 @@ export default class Pool {
       if (mostRecentEvents[item].isActive) activeItems.push(item);
     });
     return activeItems;
+  }
+
+  async functionSigToCalldata(functionSig) {
+    const { abiJson, params } = SolidityFunctionSignatureUtils.encodeFunctionSignatureWithParameters(functionSig);
+    const calldata = this.web3.eth.abi.encodeFunctionCall(abiJson, params);
+    return calldata;
   }
 }
