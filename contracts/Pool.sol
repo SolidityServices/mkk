@@ -426,7 +426,7 @@ contract Pool {
         }
     }
 
-    function setsaleParticipateCalldata(bytes32 calldata) public onlyAdmin{
+    function setSaleParticipateCalldata(bytes32 calldata) public onlyAdmin{
         require(!params.strictlyTrustlessPool, "setsaleParticipateCalldata(bytes32 calldata): Error, pool is 'strictlyTrustlessPool'");
         params.saleParticipateCalldata = calldata;
     }

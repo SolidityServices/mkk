@@ -181,6 +181,21 @@ export default class PoolFactory {
     );
   }
 
+  async setPoolFactoryParamsCalldata(poolFactory) {
+    const instance = await this.poolFactory.deployed();
+    return instance.setParams.request(
+      poolFactory.ownerAddress,
+      poolFactory.kycContractAddress,
+      poolFactory.flatFee,
+      poolFactory.maxAllocationFeeRate,
+      poolFactory.maxCreatorFeeRate,
+      poolFactory.providerFeeRate,
+      poolFactory.useWhitelist,
+      [true, true, true, true, true, true],
+      { from: this.account },
+    ).params[0].data;
+  }
+
   /**
    * Returns the whole ETH balance of the PoolFactory contract
    *
@@ -246,6 +261,48 @@ export default class PoolFactory {
     return result;
   }
 
+  async createPoolCalldata(pool, transferValue) {
+    const instance = await this.poolFactory.deployed();
+    const reciept = await instance.createPool.request(
+      [
+        pool.saleAddress,
+        pool.tokenAddress,
+      ],
+      [
+        this.functionSigToCalldata(pool.saleParticipateFunctionSig),
+        this.functionSigToCalldata(pool.saleWithdrawFunctionSig),
+        pool.poolDescription,
+      ],
+      [
+        pool.creatorFeeRate * 100, // convert percentage to integer
+        Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
+        Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
+        pool.minContribution * 1000000000000000000, // convert ether to wei
+        pool.maxContribution * 1000000000000000000, // convert ether to wei
+        pool.minPoolGoal * 1000000000000000000, // convert ether to wei
+        pool.maxPoolAllocation * 1000000000000000000, // convert ether to wei
+        pool.withdrawTimelock * 60 * 60, // convert to unix time
+      ],
+      [
+        pool.whitelistPool ? 1 : 0,
+        pool.strictlyTrustlessPool ? 1 : 0,
+      ],
+      pool.adminAddresses,
+      pool.whiteListAddresses,
+      pool.countryBlackList,
+      {
+        from: this.account,
+        value: transferValue * 1000000000000000000, // convert ether to wei
+      },
+    ).params[0].data;
+
+    const result = reciept.logs[0].args.poolAddress;
+    console.log(reciept);
+    console.log(`pool address: ${result}`);
+
+    return result;
+  }
+
   /**
    * Function for owner to withdraw accumulated fees from PoolFactory
    *
@@ -256,6 +313,11 @@ export default class PoolFactory {
     const instance = await this.poolFactory.deployed();
     const result = await instance.withdraw({ from: this.account });
     return result.toString();
+  }
+
+  async withdrawCalldata() { // onlyOwner
+    const instance = await this.poolFactory.deployed();
+    return instance.withdraw.request({ from: this.account }).params[0].data;
   }
 
   async getAllPools() {

@@ -420,6 +420,11 @@ export default class Pool {
     return instance.addAdmin(adminAddressList, { from: this.account });
   }
 
+  async addAdminCalldata(poolAddress, adminAddressList) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.addAdmin.request(adminAddressList, { from: this.account }).params[0].data;
+  }
+
   /** function deleted from contract
    * Add list of new admin addresses (only creator)
    *
@@ -457,6 +462,11 @@ export default class Pool {
     return instance.removeAdmin(adminAddressList, { from: this.account });
   }
 
+  async removeAdminCalldata(poolAddress, adminAddressList) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.removeAdmin.request(adminAddressList, { from: this.account }).params[0].data;
+  }
+
   /**
    * Add address to pool whiteslist (only admin)
    *
@@ -468,6 +478,11 @@ export default class Pool {
   async addWhitelist(poolAddress, whitelistAddressList) {
     const instance = await this.pool.at(poolAddress);
     return instance.addWhitelist(whitelistAddressList, { from: this.account });
+  }
+
+  async addWhitelistCalldata(poolAddress, whitelistAddressList) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.addWhitelist.request(whitelistAddressList, { from: this.account }).params[0].data;
   }
 
   /** function deleted from contract
@@ -507,6 +522,11 @@ export default class Pool {
     return instance.removeWhitelist(whitelistAddressList, { from: this.account });
   }
 
+  async removeWhitelistCalldata(poolAddress, whitelistAddressList) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.removeWhitelist.request(whitelistAddressList, { from: this.account }).params[0].data;
+  }
+
   /**
    * Add country code to country blacklist (only admin)
    *
@@ -518,6 +538,11 @@ export default class Pool {
   async addCountryBlacklist(poolAddress, countryCodeList) {
     const instance = await this.pool.at(poolAddress);
     return instance.addCountryBlacklist(countryCodeList, { from: this.account });
+  }
+
+  async addCountryBlacklistCalldata(poolAddress, countryCodeList) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.addCountryBlacklist.request(countryCodeList, { from: this.account }).params[0].data;
   }
 
   /** function deleted from contract
@@ -557,6 +582,11 @@ export default class Pool {
     return instance.removeCountryBlacklist(countryCodeList, { from: this.account });
   }
 
+  async removeCountryBlacklistCalldata(poolAddress, countryCodeList) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.removeCountryBlacklist.request(countryCodeList, { from: this.account }).params[0].data;
+  }
+
   /**
    * Contribute to pool payable - tx has to have ETH value
    *
@@ -574,6 +604,14 @@ export default class Pool {
     });
   }
 
+  async contributeCalldata(poolAddress, amount) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.contribute.request({
+      from: this.account,
+      value: amount * 1000000000000000000, // convert ether to wei,
+    }).params[0].data;
+  }
+
   /**
    * Withdraw funds from the token before being sent to sale
    *
@@ -585,6 +623,11 @@ export default class Pool {
   async withdraw(poolAddress, amount) {
     const instance = await this.pool.at(poolAddress);
     return instance.withdraw(amount * 1000000000000000000, { from: this.account });
+  }
+
+  async withdrawCalldata(poolAddress, amount) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.withdraw.request(amount * 1000000000000000000, { from: this.account }).params[0].data;
   }
 
   /**
@@ -600,6 +643,11 @@ export default class Pool {
     return instance.withdrawRefund({ from: this.account });
   }
 
+  async withdrawRefundCalldata(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.withdrawRefund.request({ from: this.account }).params[0].data;
+  }
+
   /**
    * Withdraw main erc20 token from the pool (specified by tokenAddress)
    *
@@ -611,6 +659,11 @@ export default class Pool {
   async withdrawToken(poolAddress) {
     const instance = await this.pool.at(poolAddress);
     return instance.withdrawToken({ from: this.account });
+  }
+
+  async withdrawTokenCalldata(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.withdrawToken.request({ from: this.account }).params[0].data;
   }
 
   /**
@@ -626,6 +679,11 @@ export default class Pool {
     return instance.withdrawCustomToken(tokenAddress, { from: this.account });
   }
 
+  async withdrawCustomTokenCalldata(poolAddress, tokenAddress) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.withdrawCustomToken.request(tokenAddress, { from: this.account }).params[0].data;
+  }
+
   /**
    * Push out pool main tokens to participants (only admin, mostly for token push server)
    *
@@ -638,6 +696,11 @@ export default class Pool {
   async pushOutToken(poolAddress, recipientAddress) {
     const instance = await this.pool.at(poolAddress);
     return instance.pushOutToken(recipientAddress, { from: this.account });
+  }
+
+  async pushOutTokenCalldata(poolAddress, recipientAddress) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.pushOutToken.request(recipientAddress, { from: this.account }).params[0].data;
   }
 
   /**
@@ -665,6 +728,11 @@ export default class Pool {
     return instance.confirmTokensReceived(tokensExpected, { from: this.account });
   }
 
+  async confirmTokensReceivedCalldata(poolAddress, tokensExpected) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.confirmTokensReceived.request(tokensExpected, { from: this.account }).params[0].data;
+  }
+
   /**
    * Send pool funds to sale (only creator)
    *
@@ -675,6 +743,11 @@ export default class Pool {
   async sendToSale(poolAddress) {
     const instance = await this.pool.at(poolAddress);
     return instance.sendToSale({ from: this.account });
+  }
+
+  async sendToSaleCalldata(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.sendToSale.request({ from: this.account }).params[0].data;
   }
 
   /**
@@ -689,6 +762,11 @@ export default class Pool {
     return instance.stopPool({ from: this.account });
   }
 
+  async stopPoolCalldata(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.stopPool.request({ from: this.account }).params[0].data;
+  }
+
   /**
    * Send pool funds to sale to predefined special function (only creator)
    *
@@ -701,6 +779,11 @@ export default class Pool {
     return instance.sendToSaleWithCalldata({ from: this.account });
   }
 
+  async sendToSaleWithCalldataCalldata(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.sendToSaleWithCalldata.request({ from: this.account }).params[0].data;
+  }
+
   /**
    * Whitdraw tokens from sale with predefined special function (only creator)
    *
@@ -711,6 +794,11 @@ export default class Pool {
   async withdrawFromSaleWithCalldata(poolAddress) {
     const instance = await this.pool.at(poolAddress);
     return instance.withdrawFromSaleWithCalldata({ from: this.account });
+  }
+
+  async withdrawFromSaleWithCalldataCalldata(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.withdrawFromSaleWithCalldata.request({ from: this.account }).params[0].data;
   }
 
   /**
@@ -726,6 +814,11 @@ export default class Pool {
     return instance.sendToSaleWithCalldataParameter(this.functionSigToCalldata(functionSignature), { from: this.account });
   }
 
+  async sendToSaleWithCalldataParameterCalldata(poolAddress, functionSignature) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.sendToSaleWithCalldataParameter.request(this.functionSigToCalldata(functionSignature), { from: this.account }).params[0].data;
+  }
+
   /**
    * Whitdraw tokens from sale with special function  given as parameter(only creator)
    *
@@ -737,6 +830,11 @@ export default class Pool {
   async withdrawFromSaleWithCalldataParameter(poolAddress, functionSignature) {
     const instance = await this.pool.at(poolAddress);
     return instance.withdrawFromSaleWithCalldataParameter(this.functionSigToCalldata(functionSignature), { from: this.account });
+  }
+
+  async withdrawFromSaleWithCalldataParameterCalldata(poolAddress, functionSignature) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.withdrawFromSaleWithCalldataParameter.request(this.functionSigToCalldata(functionSignature), { from: this.account }).params[0].data;
   }
 
   /**
@@ -751,6 +849,10 @@ export default class Pool {
     return instance.providerWithdraw({ from: this.account });
   }
 
+  async poviderWithdrawCalldata(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.providerWithdraw.request({ from: this.account }).params[0].data;
+  }
 
   /**
    * Withdraw creator fee from the stash (only creator)
@@ -762,6 +864,11 @@ export default class Pool {
   async creatorWithdraw(poolAddress) {
     const instance = await this.pool.at(poolAddress);
     return instance.creatorWithdraw({ from: this.account });
+  }
+
+  async creatorWithdrawCalldata(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.creatorWithdraw.request({ from: this.account }).params[0].data;
   }
 
   // Pool param setters
@@ -790,6 +897,25 @@ export default class Pool {
       [true, true, true, true, true, true, true, true, true, true, true],
       { from: this.account },
     );
+  }
+
+  async setPoolParamsCreatorCalldata(pool) {
+    const instance = await this.pool.at(pool.poolAddress);
+    return instance.setParams.request(
+      pool.creator,
+      pool.creatorFeeRate * 100, // convert percentage to integer
+      Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
+      Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
+      pool.withdrawTimelock * 60 * 60, // convert to unix time
+      pool.minContribution * 1000000000000000000, // convert ether to wei
+      pool.maxContribution * 1000000000000000000, // convert ether to wei
+      pool.minPoolGoal * 1000000000000000000, // convert ether to wei
+      pool.whitelistPool ? 1 : 0,
+      pool.poolDescription,
+      pool.tokenAddress,
+      [true, true, true, true, true, true, true, true, true, true, true],
+      { from: this.account },
+    ).params[0].data;
   }
 
   /**
@@ -847,6 +973,51 @@ export default class Pool {
     );
   }
 
+  async setPoolParamsProviderCalldata(
+    poolAddress,
+    _provider,
+    _providerFeeRate,
+    _maxPoolAllocation,
+  ) {
+    let provider;
+    let providerFeeRate;
+    let maxPoolAllocation;
+    const toUpdate = [];
+
+    if (!_provider) {
+      provider = 0x0;
+      toUpdate.push(false);
+    } else {
+      provider = _provider;
+      toUpdate.push(true);
+    }
+
+    if (!_providerFeeRate) {
+      providerFeeRate = 0;
+      toUpdate.push(false);
+    } else {
+      providerFeeRate = _providerFeeRate;
+      toUpdate.push(true);
+    }
+
+    if (!_maxPoolAllocation) {
+      maxPoolAllocation = 0;
+      toUpdate.push(false);
+    } else {
+      maxPoolAllocation = _maxPoolAllocation;
+      toUpdate.push(true);
+    }
+
+    const instance = await this.pool.at(poolAddress);
+    return instance.setParams.request(
+      provider,
+      providerFeeRate,
+      maxPoolAllocation,
+      toUpdate,
+      { from: this.account },
+    ).params[0].data;
+  }
+
   /**
    * Set provider address (only provider)
    *
@@ -864,6 +1035,17 @@ export default class Pool {
       [true, false, false],
       { from: this.account },
     );
+  }
+
+  async setProviderCalldata(poolAddress, providerAddress) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.setParams.request(
+      providerAddress,
+      0,
+      0,
+      [true, false, false],
+      { from: this.account },
+    ).params[0].data;
   }
 
   /**
@@ -885,6 +1067,17 @@ export default class Pool {
     );
   }
 
+  async setProviderFeeRateCalldata(poolAddress, providerFeeRate) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.setParams.request(
+      0x0,
+      providerFeeRate,
+      0,
+      [false, true, false],
+      { from: this.account },
+    ).params[0].data;
+  }
+
   /**
    * Set new maximum amount of ETH allowed to be raised by the pool for the sale (only creator)
    *
@@ -904,14 +1097,35 @@ export default class Pool {
     );
   }
 
-  async setsaleParticipateCalldata(poolAddress, functionSignature) {
+  async setMaxPoolAllocationCalldata(poolAddress, maxPoolAllocation) {
     const instance = await this.pool.at(poolAddress);
-    return instance.setsaleParticipateCalldata(this.functionSigToCalldata(functionSignature), { from: this.account });
+    return instance.setParams.request(
+      0x0,
+      0,
+      maxPoolAllocation,
+      [false, false, true],
+      { from: this.account },
+    ).params[0].data;
+  }
+
+  async setSaleParticipateCalldata(poolAddress, functionSignature) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.setSaleParticipateCalldata(this.functionSigToCalldata(functionSignature), { from: this.account });
+  }
+
+  async setSaleParticipateCalldataCalldata(poolAddress, functionSignature) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.setSaleParticipateCalldata.request(this.functionSigToCalldata(functionSignature), { from: this.account }).params[0].data;
   }
 
   async setSaleWithdrawCalldata(poolAddress, functionSignature) {
     const instance = await this.pool.at(poolAddress);
     return instance.setSaleWithdrawCalldata(this.functionSigToCalldata(functionSignature), { from: this.account });
+  }
+
+  async setSaleWithdrawCalldataCalldata(poolAddress, functionSignature) {
+    const instance = await this.pool.at(poolAddress);
+    return instance.setSaleWithdrawCalldata.request(this.functionSigToCalldata(functionSignature), { from: this.account }).params[0].data;
   }
 
   async getAdmins(poolAddress) {
