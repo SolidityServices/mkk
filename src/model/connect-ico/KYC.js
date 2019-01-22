@@ -39,9 +39,9 @@ export default class KYC {
     return instance.addKYCAddress(kycAddress, country, { from: this.account });
   }
 
-  async addKYCAddresses(kycAddress, country) {
+  async addKYCAddresses(kycAddresses, country) {
     const instance = await this.kyc.deployed();
-    return instance.addKYCAddress(kycAddress, country, { from: this.account });
+    return instance.addKYCAddresses(kycAddresses, country, { from: this.account });
   }
 
   async removeKYCAddress(kycAddress, country) {
