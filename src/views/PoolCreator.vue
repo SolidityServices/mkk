@@ -131,6 +131,7 @@
               <date-picker v-model="pool.saleStartDate"
                            :config="datepickerOptions"
                            class="form-control input-text w-100"
+                           @dp-change="saleStartDateChanged"
               ></date-picker>
             </div>
           </div>
@@ -324,6 +325,7 @@ export default {
         format: 'DD/MM/YYYY H:mm',
         useCurrent: false,
         sideBySide: true,
+        minDate: moment().startOf('day'),
       },
       calculatedFee: null,
       poolAddress: null,
@@ -389,6 +391,9 @@ export default {
     },
     addAddress(object) {
       object.push('');
+    },
+    saleStartDateChanged(event) {
+      this.pool.saleEndDate = moment(event.date.add(7, 'days'), this.datepickerOptions.format);
     },
   },
 };
