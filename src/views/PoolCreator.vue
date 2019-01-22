@@ -59,7 +59,7 @@
             <div class="col-12 col-lg-8">
               <input type="text"
                      class="form-control input-text"
-                     v-model="pool.saleWithdrawFunctionSig" placeholder="pay()"/>
+                     v-model="pool.saleWithdrawFunctionSig"/>
             </div>
           </div>
 
@@ -68,7 +68,7 @@
             <div class="col-12 col-lg-8">
               <input type="text"
                      class="form-control input-text"
-                     v-model="pool.saleWithdrawFunctionSig" placeholder="withdraw()"/>
+                     v-model="pool.saleWithdrawFunctionSig"/>
             </div>
           </div>
 

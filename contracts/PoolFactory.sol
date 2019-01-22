@@ -78,7 +78,7 @@ contract PoolFactory is Ownable {
         emit poolCreated(poolAddress, msg.sender, addresses[0]);
     }
 
-    function wtihdraw() public onlyOwner{
+    function withdraw() public onlyOwner{
         owner.transfer(address(this).balance);
     }
 

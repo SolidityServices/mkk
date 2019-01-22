@@ -83,10 +83,10 @@ contract Pool {
 
     constructor (
         address[5] addresses,
-        bytes32[3] bytes32s, 
-        uint[9] integers, 
-        bool[2] bools, 
-        address[] adminlist, 
+        bytes32[3] bytes32s,
+        uint[9] integers,
+        bool[2] bools,
+        address[] adminlist,
         address[] contributorWhitelist,
         bytes32[] countryBlacklist
      ) public {
@@ -145,7 +145,7 @@ contract Pool {
           emit whitelistChange(addressList[i], true);
         }
     }
-    
+
     function addWhitelistPrivate(address[] addressList) private {
         for(uint i = 0; i < addressList.length; i++) {
           require(KYC(params.kycAddress).checkKYC(addressList[i]), "addWhitelist(address[] addressList): Error, address is not a KYC address");
@@ -222,9 +222,10 @@ contract Pool {
     function withdraw(uint amount) public {
         require(!poolStats.sentToSale, "withdraw(): Error, the pools funds were already sent to the sale");
         if(!poolStats.stopped){
-            require(contributors[msg.sender].lastContributionTime.add(params.withdrawTimelock) > block.timestamp, "withdraw(): Error, the timelock is not over yet");
+            require(contributors[msg.sender].lastContributionTime.add(params.withdrawTimelock) <= block.timestamp, "withdraw(): Error, the timelock is not over yet");
             require(contributors[msg.sender].grossContribution >= amount, "withdraw(): Error, tx sender has not enough funds in pool");
-            require(contributors[msg.sender].grossContribution.sub(amount) >= params.minContribution || amount == 0, "withdraw(): Error, remaining contribution amount would have been less than 'minContribution'");
+            require(contributors[msg.sender].grossContribution.sub(amount) >= params.minContribution, "withdraw(): Error, remaining contribution amount would have been less than 'minContribution'");
+            if(amount == 0) require(params.minContribution == 0, "withdraw(): Error, remaining contribution amount would have been less than 'minContribution'");
         }
         uint transferAmount;
         if (amount == 0 || poolStats.stopped) {
