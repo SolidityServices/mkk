@@ -26,14 +26,14 @@
           <div class="blue-24-16-bold py-3 pl-4"> Sale ETH address:</div>
           <input type="text" v-validate="'required|eth-address'" data-vv-name="Sale ETH address"
                  class="form-control input-text"
-                 v-model="pool.saleAddress" placeholder="Sale ETH address"/>
+                 v-model="pool.saleAddress" placeholder="0x0000000000000000000000000000000000000000"/>
         </div>
 
         <div class="d-flex flex-column col-12">
           <div class="blue-24-16-bold py-3 pl-4"> Token address (optional):</div>
           <input type="text" v-validate="'eth-address'" data-vv-name="Sale ETH address"
                  class="form-control input-text"
-                 v-model="pool.tokenAddress" placeholder="Token ETH address"/>
+                 v-model="pool.tokenAddress" placeholder="0x0000000000000000000000000000000000000000"/>
         </div>
       </div>
 
@@ -59,7 +59,7 @@
             <div class="col-12 col-lg-8">
               <input type="text"
                      class="form-control input-text"
-                     v-model="pool.saleWithdrawFunctionSig" placeholder="pay()"/>
+                     v-model="pool.saleWithdrawFunctionSig"/>
             </div>
           </div>
 
@@ -68,7 +68,7 @@
             <div class="col-12 col-lg-8">
               <input type="text"
                      class="form-control input-text"
-                     v-model="pool.saleWithdrawFunctionSig" placeholder="withdraw()"/>
+                     v-model="pool.saleWithdrawFunctionSig"/>
             </div>
           </div>
 

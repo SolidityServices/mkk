@@ -76,8 +76,8 @@ export default class LocalPool {
   initParams() {
     const params = {};
 
-    params.saleAddress = '0x0000000000000000000000000000000000000000';
-    params.tokenAddress = '0x0000000000000000000000000000000000000000';
+    params.saleAddress = '';
+    params.tokenAddress = '';
     params.saleParticipateFunctionSig = '';
     params.saleWithdrawFunctionSig = '';
     params.poolDescription = '';
