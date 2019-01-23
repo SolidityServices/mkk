@@ -302,7 +302,16 @@
       </div>
 
       <div class="d-flex flex-row justify-content-center my-5" v-if="poolAddress">
-        <div class="orange-24-bold">{{ poolAddress }}</div>
+        <div class="card">
+          <div class="card-header">
+            Created pool address
+          </div>
+          <div class="card-body orange-24-bold">
+            <a :href="`https://etherscan.io/address/${poolAddress}`">
+              {{ poolAddress }}
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
