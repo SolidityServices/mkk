@@ -873,4 +873,23 @@ export default class Pool {
       { from: this.account },
     );
   }
+
+  /**
+   * Set new maximum amount of ETH allowed to be raised by the pool for the sale (only creator)
+   *
+   * Frontend page: Pool admin page for pool creator
+   *
+   * @param {string} poolAddress address of the Pool this function iteracts with
+   */
+  async deletePool(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    // TODO: change to proper method
+    return instance.setParams(
+      0x0,
+      0,
+      0.0,
+      [false, false, true],
+      { from: this.account },
+    );
+  }
 }
