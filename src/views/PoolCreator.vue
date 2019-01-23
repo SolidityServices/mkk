@@ -108,7 +108,7 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Creator fee in %:</div>
             <div class="col-12 col-lg-6">
-              <input type="number" v-validate="'required|numeric|min_value:0|max_value:100'"
+              <input type="number" v-validate="'required|decimal|min_value:0|max_value:100'"
                      data-vv-name="Creator fee"
                      class="form-control input-text w-100"
                      placeholder="0.12"
@@ -149,7 +149,7 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Minimum pool goal in ETH</div>
             <div class="col-12 col-lg-6">
-              <input type="number" v-validate="'required|numeric|min_value:0'"
+              <input type="number" v-validate="'required|decimal|min_value:0'"
                      step="0.000001"
                      class="form-control input-text w-100" data-vv-name="Minimum pool goal"
                      v-model="pool.minPoolGoal">
@@ -159,7 +159,7 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Max allocation in ETH</div>
             <div class="col-12 col-lg-6">
-              <input type="number" v-validate="'required|numeric|min_value:0'"
+              <input type="number" v-validate="'required|decimal|min_value:0'"
                      step="0.000001"
                      class="form-control input-text w-100" data-vv-name="Max allocation"
                      v-model="pool.maxPoolAllocation">
@@ -188,7 +188,7 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Minimum ETH contribution (optional)</div>
             <div class="col-12 col-lg-6">
-              <input type="number" v-validate="'numeric|min_value:0'" min="0"
+              <input type="number" v-validate="'decimal|min_value:0'" min="0"
                      step="0.000001"
                      class="form-control input-text w-100" data-vv-name="Minimum contribution"
                      v-model="pool.minContribution"/>
@@ -198,7 +198,7 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Maximum ETH contribution (optional)</div>
             <div class="col-12 col-lg-6">
-              <input type="number" v-validate="'numeric|min_value:0'" min="0"
+              <input type="number" v-validate="'decimal|min_value:0'" min="0"
                      step="0.000001"
                      class="form-control input-text" data-vv-name="Maximum contribution"
                      v-model="pool.maxContribution"/>
@@ -358,6 +358,18 @@ export default {
       };
     },
     async submit() {
+      const validationResponse = await this.$validator.validateAll();
+      if (!validationResponse) {
+        this.errors.items.forEach((item) => {
+          this.$notify({
+            type: 'error',
+            title: `${item.field}`,
+            text: `${item.msg}`,
+          });
+        });
+        return;
+      }
+
       const transferValue = await this.getTransferDetails().transferValue;
       if (typeof this.pool.saleStartDate === 'string') {
         this.pool.saleStartDate = moment(this.pool.saleStartDate, this.datepickerOptions.format);
