@@ -1,7 +1,7 @@
 import TruffleContract from 'truffle-contract';
 import poolFactoryArtifact from '../../../build/contracts/PoolFactory.json';
-import ContractEventUtils from './ContractEventUtils';
-import SolidityFunctionSignatureUtils from './SolidityFunctionSignatureUtils';
+import encodeFunctionSignatureWithParameters
+  from '../../utils/encodeFunctionSignatureWithParameters';
 
 export default class PoolFactory {
   constructor(provider, account, web3) {
@@ -28,78 +28,6 @@ export default class PoolFactory {
     const instance = await this.poolFactory.deployed();
     const result = await instance.poolList.call(index, { from: this.account });
     return result.toString();
-  }
-
-  /**
-   * Returns the number of pools created by the pool factory
-   *
-   * Frontend page: Pool listing page
-   *
-   * @return {number} number of pools
-   */
-  async getPoolNumber() {
-    const instance = await this.poolFactory.deployed();
-    const result = await instance.getPoolNumber.call({ from: this.account });
-    return result.toNumber();
-  }
-
-  /**
-   * Returns one item of pool list for a sale address by its index
-   *
-   * Frontend page: Pool listing page
-   *
-   * @param {number} index
-   * @param {string} saleAddress
-   * @return {string} pool address
-   */
-  async getPoolBySale(saleAddress, index) {
-    const instance = await this.poolFactory.deployed();
-    const result = await instance.getPoolBySale.call(saleAddress, index, { from: this.account });
-    return result.toString();
-  }
-
-  /**
-   * Retuns the number of pools created by the pool factory for one sale
-   *
-   * Frontend page: Pool listing page
-   *
-   * @param {string} saleAddress
-   * @return {number} number of pools
-   */
-  async getPoolNumberBySale(saleAddress) {
-    const instance = await this.poolFactory.deployed();
-    const result = await instance.getPoolNumberBySale.call(saleAddress, { from: this.account });
-    return result.toNumber();
-  }
-
-  /**
-   * Returns one item of pool list for a sale address by its index
-   *
-   * Frontend page: Pool listing page
-   *
-   * @param {number} index
-   * @param {string} creatorAddress
-   * @return {string} pool address
-   */
-  async getPoolByCreator(creatorAddress, index) {
-    const instance = await this.poolFactory.deployed();
-    const result = await instance.getPoolByCreator.call(creatorAddress, index, { from: this.account });
-    return result.toString();
-  }
-
-  /**
-   * Retuns the number of pools created by the pool factory by the given creator
-   *
-   * Frontend page: Pool listing page
-   *
-   * @param {string} creatorAddress
-   * @return {number} number of pools
-   */
-
-  async getPoolNumberByCreator(creatorAddress) {
-    const instance = await this.poolFactory.deployed();
-    const result = await instance.getPoolNumberByCreator.call(creatorAddress, { from: this.account });
-    return result.toNumber();
   }
 
   /**
@@ -149,6 +77,7 @@ export default class PoolFactory {
   async getAllPoolFactoryParams() {
     const instance = await this.poolFactory.deployed();
     const result = await instance.params.call({ from: this.account });
+    console.log(result);
     return {
       kycContractAddress: result[0].toString(),
       flatFee: result[1].toNumber(),
@@ -227,8 +156,8 @@ export default class PoolFactory {
         pool.tokenAddress,
       ],
       [
-        this.functionSigToCalldata(pool.saleParticipateFunctionSig),
-        this.functionSigToCalldata(pool.saleWithdrawFunctionSig),
+        await this.functionSigToCalldata(pool.saleParticipateFunctionSig),
+        await this.functionSigToCalldata(pool.saleWithdrawFunctionSig),
         pool.poolDescription,
       ],
       [
@@ -269,8 +198,8 @@ export default class PoolFactory {
         pool.tokenAddress,
       ],
       [
-        this.functionSigToCalldata(pool.saleParticipateFunctionSig),
-        this.functionSigToCalldata(pool.saleWithdrawFunctionSig),
+        await this.functionSigToCalldata(pool.saleParticipateFunctionSig),
+        await this.functionSigToCalldata(pool.saleWithdrawFunctionSig),
         pool.poolDescription,
       ],
       [
@@ -320,35 +249,39 @@ export default class PoolFactory {
     return instance.withdraw.request({ from: this.account }).params[0].data;
   }
 
-  async getAllPools() {
-    const result = await this.getPoolsCreatedFromEvents(null, null);
-    return result;
+  async getPools() {
+    return this.getPoolsCreatedFromEvents(null, null);
   }
 
   async getAllPoolsByCreator(creatorAddress) {
-    const result = await this.getPoolsCreatedFromEvents(creatorAddress, null);
-    return result;
+    return this.getPoolsCreatedFromEvents(creatorAddress, null);
   }
 
   async getAllPoolsBySale(saleAddress) {
-    const result = await this.getPoolsCreatedFromEvents(null, saleAddress);
-    return result;
+    return this.getPoolsCreatedFromEvents(null, saleAddress);
   }
 
   async getPoolsCreatedFromEvents(creatorAddress, saleAddress) {
     const instance = await this.poolFactory.deployed();
+
     const filter = {};
     if (creatorAddress) filter.poolCreator = creatorAddress;
     if (saleAddress) filter.poolSale = saleAddress;
-    const poolCreatedEvent = instance.poolCreated(filter, { fromBlock: 0, toBlock: 'latest' });
-    const rawLogs = await ContractEventUtils.promosifyEventGet(poolCreatedEvent);
-    const result = rawLogs.map(item => item.args.poolAddress);
-    return result;
+
+    return new Promise((resolve, reject) => {
+      instance.poolCreated({ filter, fromBlock: 0, toBlock: 'latest' }, (error, event) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(event);
+        }
+      });
+    });
   }
 
   async functionSigToCalldata(functionSig) {
-    const { abiJson, params } = SolidityFunctionSignatureUtils.encodeFunctionSignatureWithParameters(functionSig);
-    const calldata = this.web3.eth.abi.encodeFunctionCall(abiJson, params);
-    return calldata;
+    const encodedFuncSignature = await encodeFunctionSignatureWithParameters(functionSig);
+    console.log(encodedFuncSignature);
+    return this.web3.eth.abi.encodeFunctionCall(encodedFuncSignature.abiJson, encodedFuncSignature.params);
   }
 }

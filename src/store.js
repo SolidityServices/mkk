@@ -4,10 +4,13 @@ import ConnectICO from './model/connect-ico/ConnectICO';
 
 Vue.use(Vuex);
 
+const countries = require('./countries');
+
 export default new Vuex.Store({
   state: {
     connectICO: null,
-    countries: require('./countries'),
+    countries,
+    pools: [],
   },
   mutations: {
     async setConnectICO(state) {
@@ -17,10 +20,16 @@ export default new Vuex.Store({
       state.connectICO = connectIco;
       window.connectICO = connectIco;
     },
+    fetchPools(state, pools) {
+      state.pools = pools;
+    },
   },
   actions: {
     setConnectICO({ commit }, connectICO) {
       commit('setConnectICO', connectICO);
+    },
+    fetchPools({ commit }, pools) {
+      commit('fetchPools', pools);
     },
   },
   getters: {
@@ -35,6 +44,9 @@ export default new Vuex.Store({
         return state.connectICO.loaded;
       }
       return false;
+    },
+    pools(state) {
+      return state.pools;
     },
   },
 });

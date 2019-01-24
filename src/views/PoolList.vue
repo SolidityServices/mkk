@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import LocalPool from '../model/LocalPool';
 
 export default {
@@ -71,32 +71,39 @@ export default {
       { text: 'Closed', value: 'closed' },
       { text: 'Waiting for token', value: 'waiting' },
     ],
-    pools: [],
     filter: '',
     currentPage: 1,
     itemsPerPage: 10,
     poolCount: null,
   }),
   async created() {
-    this.poolCount = await this.connectICO.poolFactory.getPoolNumber();
-    this.fetchPools();
+    this.initPools();
   },
   methods: {
-    async fetchPools() {
-      const pools = [];
-      const minIndex = (this.currentPage - 1) * this.itemsPerPage;
-      const maxIndex = this.currentPage * this.itemsPerPage > this.poolCount ? this.poolCount : this.currentPage * this.itemsPerPage;
+    ...mapActions(['fetchPools']),
+    async initPools() {
+      // const minIndex = (this.currentPage - 1) * this.itemsPerPage;
+      // const maxIndex = this.currentPage * this.itemsPerPage > this.poolCount ? this.poolCount : this.currentPage * this.itemsPerPage;
+      //
+      // for (let i = minIndex; i < maxIndex; i += 1) {
+      //   pools.push(new LocalPool(await this.connectICO.poolFactory.getPool(i)));
+      // }
 
-      for (let i = minIndex; i < maxIndex; i += 1) {
-        pools.push(new LocalPool(await this.connectICO.poolFactory.getPool(i)));
-      }
+      const pools = await this.connectICO.poolFactory.getPools();
+      const poolObjects = [];
+      pools.forEach((pool) => {
+        poolObjects.push(new LocalPool(pool));
+      });
 
-      this.pools = pools;
+      this.poolCount = pools.length;
+
+      this.fetchPools(poolObjects);
     },
   },
   computed: {
     ...mapGetters([
       'connectICO',
+      'pools',
     ]),
     filteredPools() {
       if (this.filter === '') {

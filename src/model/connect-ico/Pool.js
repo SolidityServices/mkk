@@ -1,7 +1,7 @@
 import TruffleContract from 'truffle-contract';
 import poolArtifact from '../../../build/contracts/Pool.json';
-import ContractEventUtils from './ContractEventUtils';
-import SolidityFunctionSignatureUtils from './SolidityFunctionSignatureUtils';
+import encodeFunctionSignatureWithParameters
+  from '../../utils/encodeFunctionSignatureWithParameters';
 
 export default class Pool {
   constructor(provider, account, web3) {
@@ -241,8 +241,7 @@ export default class Pool {
    */
   async getTokensOwedToContributor(poolAddress, contibutorAddress) {
     const instance = await this.pool.at(poolAddress);
-    const result = await instance.tokensOwedToContributor.call(contibutorAddress, { from: this.account });
-    return result;
+    return instance.tokensOwedToContributor.call(contibutorAddress, { from: this.account });
   }
 
   /**
@@ -1130,47 +1129,74 @@ export default class Pool {
 
   async getAdmins(poolAddress) {
     const instance = await this.pool.at(poolAddress);
-    const adminsChangeEvent = instance.adminsChange({ fromBlock: 0, toBlock: 'latest' });
-    const rawLogs = await ContractEventUtils.promosifyEventGet(adminsChangeEvent);
-    const result = this.getActiveListItems(rawLogs);
-    return result;
+    const logs = new Promise((resolve, reject) => {
+      instance.adminsChange({ fromBlock: 0, toBlock: 'latest' }, (error, event) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(event);
+        }
+      });
+    });
+
+    return this.getActiveListItems(logs);
   }
 
   async getWhitelist(poolAddress) {
     const instance = await this.pool.at(poolAddress);
-    const whitelistChangeEvent = instance.whitelistChange({ fromBlock: 0, toBlock: 'latest' });
-    const rawLogs = await ContractEventUtils.promosifyEventGet(whitelistChangeEvent);
-    const result = this.getActiveListItems(rawLogs);
-    return result;
+    const logs = new Promise((resolve, reject) => {
+      instance.whitelistChange({ fromBlock: 0, toBlock: 'latest' }, (error, event) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(event);
+        }
+      });
+    });
+
+    return this.getActiveListItems(logs);
   }
 
   async getKycCountryBlacklist(poolAddress) {
     const instance = await this.pool.at(poolAddress);
-    const countryBlacklistChangeEvent = instance.countryBlacklistChange({}, { fromBlock: 0, toBlock: 'latest' });
-    const rawLogs = await ContractEventUtils.promosifyEventGet(countryBlacklistChangeEvent);
-    const hexResult = this.getActiveListItems(rawLogs);
-    const resultUTF8 = await hexResult.map(item => this.web3.utils.hexToUtf8(item));
-    return resultUTF8;
+    const logs = new Promise((resolve, reject) => {
+      instance.countryBlacklistChange({ fromBlock: 0, toBlock: 'latest' }, (error, event) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(event);
+        }
+      });
+    });
+
+    const hexResult = this.getActiveListItems(logs);
+    return hexResult.map(item => this.web3.utils.hexToUtf8(item));
   }
 
   async getAllContributions(poolAddress) {
-    const result = await this.getContributionsFromEvents(poolAddress, null);
-    return result;
+    return this.getContributionsFromEvents(poolAddress, null);
   }
 
   async getContributionsByContributor(poolAddress, contributorAddress) {
-    const result = await this.getContributionsFromEvents(poolAddress, contributorAddress);
-    return result;
+    return this.getContributionsFromEvents(poolAddress, contributorAddress);
   }
 
   async getContributionsFromEvents(poolAddress, contributorAddress) {
     const instance = await this.pool.at(poolAddress);
     const filter = {};
     if (contributorAddress) filter.contributor = contributorAddress;
-    const contributedEvent = instance.contributed(filter, { fromBlock: 0, toBlock: 'latest' });
-    const rawLogs = await ContractEventUtils.promosifyEventGet(contributedEvent);
-    const result = rawLogs.map(item => ({ contributor: item.args.poolAddress, amount: item.args.amount }));
-    return result;
+
+    const logs = new Promise((resolve, reject) => {
+      instance.contributed({ filter, fromBlock: 0, toBlock: 'latest' }, (error, event) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(event);
+        }
+      });
+    });
+
+    return logs.map(item => ({ contributor: item.args.poolAddress, amount: item.args.amount }));
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -1198,8 +1224,7 @@ export default class Pool {
   }
 
   async functionSigToCalldata(functionSig) {
-    const { abiJson, params } = SolidityFunctionSignatureUtils.encodeFunctionSignatureWithParameters(functionSig);
-    const calldata = this.web3.eth.abi.encodeFunctionCall(abiJson, params);
-    return calldata;
+    const { abiJson, params } = encodeFunctionSignatureWithParameters(functionSig);
+    return this.web3.eth.abi.encodeFunctionCall(abiJson, params);
   }
 }
