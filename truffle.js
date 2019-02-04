@@ -3,7 +3,7 @@ const infura = require('./infura.json');
 
 module.exports = {
   networks: {
-    developer: {
+    ganache: {
       host: 'localhost',
       port: 8545,
       network_id: '*',

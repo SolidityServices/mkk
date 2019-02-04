@@ -26,14 +26,14 @@
           <div class="blue-24-16-bold py-3 pl-4"> Sale ETH address:</div>
           <input type="text" v-validate="'required|eth-address'" data-vv-name="Sale ETH address"
                  class="form-control input-text"
-                 v-model="pool.saleAddress" placeholder="Sale ETH address"/>
+                 v-model="pool.saleAddress" placeholder="0x0000000000000000000000000000000000000000"/>
         </div>
 
         <div class="d-flex flex-column col-12">
           <div class="blue-24-16-bold py-3 pl-4"> Token address (optional):</div>
           <input type="text" v-validate="'eth-address'" data-vv-name="Sale ETH address"
                  class="form-control input-text"
-                 v-model="pool.tokenAddress" placeholder="Token ETH address"/>
+                 v-model="pool.tokenAddress" placeholder="0x0000000000000000000000000000000000000000"/>
         </div>
       </div>
 
@@ -108,7 +108,7 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Creator fee in %:</div>
             <div class="col-12 col-lg-6">
-              <input type="number" v-validate="'required|numeric|min_value:0|max_value:100'"
+              <input type="number" v-validate="'required|decimal|min_value:0|max_value:100'"
                      data-vv-name="Creator fee"
                      class="form-control input-text w-100"
                      placeholder="0.12"
@@ -131,6 +131,7 @@
               <date-picker v-model="pool.saleStartDate"
                            :config="datepickerOptions"
                            class="form-control input-text w-100"
+                           @dp-change="saleStartDateChanged"
               ></date-picker>
             </div>
           </div>
@@ -148,7 +149,7 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Minimum pool goal in ETH</div>
             <div class="col-12 col-lg-6">
-              <input type="number" v-validate="'required|numeric|min_value:0'"
+              <input type="number" v-validate="'required|decimal|min_value:0'"
                      step="0.000001"
                      class="form-control input-text w-100" data-vv-name="Minimum pool goal"
                      v-model="pool.minPoolGoal">
@@ -158,7 +159,7 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Max allocation in ETH</div>
             <div class="col-12 col-lg-6">
-              <input type="number" v-validate="'required|numeric|min_value:0'"
+              <input type="number" v-validate="'required|decimal|min_value:0'"
                      step="0.000001"
                      class="form-control input-text w-100" data-vv-name="Max allocation"
                      v-model="pool.maxPoolAllocation">
@@ -187,7 +188,7 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Minimum ETH contribution (optional)</div>
             <div class="col-12 col-lg-6">
-              <input type="number" v-validate="'numeric|min_value:0'" min="0"
+              <input type="number" v-validate="'decimal|min_value:0'" min="0"
                      step="0.000001"
                      class="form-control input-text w-100" data-vv-name="Minimum contribution"
                      v-model="pool.minContribution"/>
@@ -197,7 +198,7 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Maximum ETH contribution (optional)</div>
             <div class="col-12 col-lg-6">
-              <input type="number" v-validate="'numeric|min_value:0'" min="0"
+              <input type="number" v-validate="'decimal|min_value:0'" min="0"
                      step="0.000001"
                      class="form-control input-text" data-vv-name="Maximum contribution"
                      v-model="pool.maxContribution"/>
@@ -301,7 +302,16 @@
       </div>
 
       <div class="d-flex flex-row justify-content-center my-5" v-if="poolAddress">
-        <div class="orange-24-bold">{{ poolAddress }}</div>
+        <div class="card">
+          <div class="card-header">
+            Created pool address
+          </div>
+          <div class="card-body orange-24-bold">
+            <a :href="`https://etherscan.io/address/${poolAddress}`">
+              {{ poolAddress }}
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -324,6 +334,7 @@ export default {
         format: 'DD/MM/YYYY H:mm',
         useCurrent: false,
         sideBySide: true,
+        minDate: moment().startOf('day'),
       },
       calculatedFee: null,
       poolAddress: null,
@@ -356,6 +367,18 @@ export default {
       };
     },
     async submit() {
+      const validationResponse = await this.$validator.validateAll();
+      if (!validationResponse) {
+        this.errors.items.forEach((item) => {
+          this.$notify({
+            type: 'error',
+            title: `${item.field}`,
+            text: `${item.msg}`,
+          });
+        });
+        return;
+      }
+
       const transferValue = await this.getTransferDetails().transferValue;
       if (typeof this.pool.saleStartDate === 'string') {
         this.pool.saleStartDate = moment(this.pool.saleStartDate, this.datepickerOptions.format);
@@ -389,6 +412,9 @@ export default {
     },
     addAddress(object) {
       object.push('');
+    },
+    saleStartDateChanged(event) {
+      this.pool.saleEndDate = moment(event.date.add(7, 'days'), this.datepickerOptions.format);
     },
   },
 };
