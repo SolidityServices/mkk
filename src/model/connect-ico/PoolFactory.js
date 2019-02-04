@@ -77,7 +77,7 @@ export default class PoolFactory {
   async getAllPoolFactoryParams() {
     const instance = await this.poolFactory.deployed();
     const result = await instance.params.call({ from: this.account });
-    console.log(result);
+
     return {
       kycContractAddress: result[0].toString(),
       flatFee: result[1].toNumber(),
@@ -156,8 +156,8 @@ export default class PoolFactory {
         pool.tokenAddress,
       ],
       [
-        await this.functionSigToCalldata(pool.saleParticipateFunctionSig),
-        await this.functionSigToCalldata(pool.saleWithdrawFunctionSig),
+        pool.saleParticipateFunctionSig,
+        pool.saleWithdrawFunctionSig,
         pool.poolDescription,
       ],
       [
