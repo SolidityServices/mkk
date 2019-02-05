@@ -360,7 +360,7 @@ contract Pool {
         params.creator.transfer(amount);
     }
 
-    function setParams(
+    function setParamsCreator(
         address _creator,
         uint16 _creatorFeeRate, // 1/1000
         uint32 _saleStartDate,
@@ -410,7 +410,7 @@ contract Pool {
         }
     }
 
-    function setParams(
+    function setParamsProvider(
         address _provider, //connectICO address for fees
         uint16 _providerFeeRate, // 1/1000
         uint256 _maxPoolAllocation, //maximum amount raisable by pool
