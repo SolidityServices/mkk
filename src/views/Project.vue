@@ -12,21 +12,6 @@
         Edit pool
       </router-link>
 
-      <b-button @click="showDeleteModal"
-                class="btn blue-submit px-4 mx-3"
-      >
-        Delete pool
-      </b-button>
-
-      <b-modal ref="deletePoolModal" hide-footer title="Delete pool">
-        <div class="d-block text-center">
-          <h3>Are you sure you want to delete this pool?</h3>
-          <h5>{{address}}</h5>
-        </div>
-        <b-btn class="mt-3" variant="outline-primary" block @click="deletePool">Yes</b-btn>
-        <b-btn class="mt-3" variant="outline-danger" block @click="hideDeleteModal">No</b-btn>
-      </b-modal>
-
       <div class="row">
         <div class="col-1"></div>
         <div class="col-10 mt-5 ">
@@ -327,16 +312,6 @@ export default {
           text: e.message,
         });
       }
-    },
-    showDeleteModal() {
-      this.$refs.deletePoolModal.show();
-    },
-    hideDeleteModal() {
-      this.$refs.deletePoolModal.hide();
-    },
-    async deletePool() {
-      await this.connectICO.pool.deletePool(this.address);
-      this.$router.push({ name: 'pool-list' });
     },
   },
   mounted() {
