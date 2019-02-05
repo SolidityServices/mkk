@@ -2,6 +2,7 @@ import TruffleContract from 'truffle-contract';
 import poolArtifact from '../../../build/contracts/Pool.json';
 import encodeFunctionSignatureWithParameters
   from '../../utils/encodeFunctionSignatureWithParameters';
+import promisifyEventGet from '../../utils/promisifyEventGet';
 
 export default class Pool {
   constructor(provider, account, web3) {
@@ -881,7 +882,8 @@ export default class Pool {
 
   async setPoolParamsCreator(pool) {
     const instance = await this.pool.at(pool.poolAddress);
-    return instance.setParams(
+
+    const obj = [
       pool.creator,
       pool.creatorFeeRate * 100, // convert percentage to integer
       Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
@@ -890,12 +892,15 @@ export default class Pool {
       pool.minContribution * 1000000000000000000, // convert ether to wei
       pool.maxContribution * 1000000000000000000, // convert ether to wei
       pool.minPoolGoal * 1000000000000000000, // convert ether to wei
-      pool.whitelistPool ? 1 : 0,
-      pool.poolDescription,
+      pool.whitelistPool,
+      this.web3.utils.utf8ToHex(pool.poolDescription),
       pool.tokenAddress,
       [true, true, true, true, true, true, true, true, true, true, true],
       { from: this.account },
-    );
+    ];
+    console.log(obj);
+
+    return instance.setParams(...obj);
   }
 
   async setPoolParamsCreatorCalldata(pool) {
@@ -1129,46 +1134,22 @@ export default class Pool {
 
   async getAdmins(poolAddress) {
     const instance = await this.pool.at(poolAddress);
-    const logs = new Promise((resolve, reject) => {
-      instance.adminsChange({ fromBlock: 0, toBlock: 'latest' }, (error, event) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(event);
-        }
-      });
-    });
-
+    const event = await instance.adminsChange({ fromBlock: 0, toBlock: 'latest' });
+    const logs = await promisifyEventGet(event);
     return this.getActiveListItems(logs);
   }
 
   async getWhitelist(poolAddress) {
     const instance = await this.pool.at(poolAddress);
-    const logs = new Promise((resolve, reject) => {
-      instance.whitelistChange({ fromBlock: 0, toBlock: 'latest' }, (error, event) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(event);
-        }
-      });
-    });
-
+    const event = await instance.whitelistChange({ fromBlock: 0, toBlock: 'latest' });
+    const logs = await promisifyEventGet(event);
     return this.getActiveListItems(logs);
   }
 
   async getKycCountryBlacklist(poolAddress) {
     const instance = await this.pool.at(poolAddress);
-    const logs = new Promise((resolve, reject) => {
-      instance.countryBlacklistChange({ fromBlock: 0, toBlock: 'latest' }, (error, event) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(event);
-        }
-      });
-    });
-
+    const event = await instance.countryBlacklistChange({ fromBlock: 0, toBlock: 'latest' });
+    const logs = await promisifyEventGet(event);
     const hexResult = this.getActiveListItems(logs);
     return hexResult.map(item => this.web3.utils.hexToUtf8(item));
   }
@@ -1186,15 +1167,8 @@ export default class Pool {
     const filter = {};
     if (contributorAddress) filter.contributor = contributorAddress;
 
-    const logs = new Promise((resolve, reject) => {
-      instance.contributed({ filter, fromBlock: 0, toBlock: 'latest' }, (error, event) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(event);
-        }
-      });
-    });
+    const event = await instance.contributed(filter, { fromBlock: 0, toBlock: 'latest' });
+    const logs = await promisifyEventGet(event);
 
     return logs.map(item => ({ contributor: item.args.poolAddress, amount: item.args.amount }));
   }

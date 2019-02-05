@@ -5,9 +5,9 @@ import Router from 'vue-router';
 import Layout from './views/Layout.vue';
 import Index from './views/Index.vue';
 import Project from './views/Project.vue';
-import PoolCreator from './views/PoolCreator.vue';
+import PoolCreator from './views/pool/PoolCreator.vue';
 import DeployContract from './views/DeployContract.vue';
-import PoolList from './views/PoolList.vue';
+import PoolList from './views/pool/PoolList.vue';
 import PoolEdit from './views/pool/PoolEdit.vue';
 
 Vue.use(Router);

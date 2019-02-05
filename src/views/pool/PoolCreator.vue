@@ -7,7 +7,7 @@
       </div>
 
       <div class="d-sm-none mobile-back d-flex flex-row">
-        <div class="d-flex justify-content-center align-items-center ml-3"><img src="../assets/chevron-left.png" alt="">
+        <div class="d-flex justify-content-center align-items-center ml-3"><img src="../../assets/chevron-left.png" alt="">
         </div>
         <div class="white-16-bold ml-2">Pool Creator</div>
       </div>
@@ -321,7 +321,7 @@
 import { mapGetters } from 'vuex';
 import moment from 'moment';
 import datePicker from 'vue-bootstrap-datetimepicker';
-import LocalPool from '../model/LocalPool';
+import LocalPool from '../../model/LocalPool';
 
 export default {
   components: {

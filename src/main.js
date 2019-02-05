@@ -8,7 +8,7 @@ import Web3 from 'web3';
 import App from './App.vue';
 
 import router from './router';
-import store from './store';
+import store from './store/index';
 
 require('./web3init');
 

@@ -2,6 +2,7 @@ import TruffleContract from 'truffle-contract';
 import poolFactoryArtifact from '../../../build/contracts/PoolFactory.json';
 import encodeFunctionSignatureWithParameters
   from '../../utils/encodeFunctionSignatureWithParameters';
+import promisifyEventGet from '../../utils/promisifyEventGet';
 
 export default class PoolFactory {
   constructor(provider, account, web3) {
@@ -268,20 +269,13 @@ export default class PoolFactory {
     if (creatorAddress) filter.poolCreator = creatorAddress;
     if (saleAddress) filter.poolSale = saleAddress;
 
-    return new Promise((resolve, reject) => {
-      instance.poolCreated({ filter, fromBlock: 0, toBlock: 'latest' }, (error, event) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(event);
-        }
-      });
-    });
+    const event = await instance.poolCreated(filter, { fromBlock: 0, toBlock: 'latest' });
+    const logs = await promisifyEventGet(event);
+    return logs.map(item => item.args.poolAddress);
   }
 
   async functionSigToCalldata(functionSig) {
     const encodedFuncSignature = await encodeFunctionSignatureWithParameters(functionSig);
-    console.log(encodedFuncSignature);
     return this.web3.eth.abi.encodeFunctionCall(encodedFuncSignature.abiJson, encodedFuncSignature.params);
   }
 }

@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import ConnectICO from './model/connect-ico/ConnectICO';
+import ConnectICO from '../model/connect-ico/ConnectICO';
+import pool from './modules/pool';
 
 Vue.use(Vuex);
 
@@ -10,7 +11,6 @@ export default new Vuex.Store({
   state: {
     connectICO: null,
     countries,
-    pools: [],
   },
   mutations: {
     async setConnectICO(state) {
@@ -20,16 +20,10 @@ export default new Vuex.Store({
       state.connectICO = connectIco;
       window.connectICO = connectIco;
     },
-    fetchPools(state, pools) {
-      state.pools = pools;
-    },
   },
   actions: {
     setConnectICO({ commit }, connectICO) {
       commit('setConnectICO', connectICO);
-    },
-    fetchPools({ commit }, pools) {
-      commit('fetchPools', pools);
     },
   },
   getters: {
@@ -45,8 +39,8 @@ export default new Vuex.Store({
       }
       return false;
     },
-    pools(state) {
-      return state.pools;
-    },
+  },
+  modules: {
+    pool,
   },
 });
