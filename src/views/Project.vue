@@ -90,7 +90,7 @@
                 <range-slider
                   class="slider w-100 pt-1"
                   min="0"
-                  :max="pool.minPoolGoal"
+                  :max="pool.maxPoolAllocation"
                   step="1"
                   :disabled="true"
                   v-model="pool.balance">
@@ -99,7 +99,7 @@
             </div>
             <div class="col-6 col-lg-2
                 orange-24-16-bold px-0 order-2 order-lg-3 text-right text-lg-left">
-              {{pool.balance}}/{{pool.minPoolGoal}} ETH
+              {{pool.balance}}/{{pool.maxPoolAllocation}} ETH
             </div>
           </div>
 
