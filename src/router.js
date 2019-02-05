@@ -3,7 +3,6 @@ import Router from 'vue-router';
 
 // View imports
 import Layout from './views/Layout.vue';
-import Index from './views/Index.vue';
 import Project from './views/Project.vue';
 import PoolCreator from './views/pool/PoolCreator.vue';
 import DeployContract from './views/DeployContract.vue';
@@ -19,11 +18,6 @@ export default new Router({
     path: '/',
     component: Layout,
     children: [
-      {
-        path: '/',
-        name: 'index',
-        component: Index,
-      },
       {
         path: 'pool-creator',
         name: 'pool-creator',
@@ -45,7 +39,7 @@ export default new Router({
         component: PoolEdit,
       },
       {
-        path: 'pool-list',
+        path: '/',
         name: 'pool-list',
         component: PoolList,
       },
