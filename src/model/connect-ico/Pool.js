@@ -900,12 +900,12 @@ export default class Pool {
     ];
     console.log(obj);
 
-    return instance.setParams(...obj);
+    return instance.setParamsCreator(...obj);
   }
 
   async setPoolParamsCreatorCalldata(pool) {
     const instance = await this.pool.at(pool.poolAddress);
-    return instance.setParams.request(
+    return instance.setParamsCreator.request(
       pool.creator,
       pool.creatorFeeRate * 100, // convert percentage to integer
       Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
@@ -968,7 +968,7 @@ export default class Pool {
     }
 
     const instance = await this.pool.at(poolAddress);
-    return instance.setParams(
+    return instance.setParamsProvider(
       provider,
       providerFeeRate,
       maxPoolAllocation,
@@ -1013,7 +1013,7 @@ export default class Pool {
     }
 
     const instance = await this.pool.at(poolAddress);
-    return instance.setParams.request(
+    return instance.setParamsProvider.request(
       provider,
       providerFeeRate,
       maxPoolAllocation,
