@@ -883,7 +883,7 @@ export default class Pool {
   async setPoolParamsCreator(pool) {
     const instance = await this.pool.at(pool.poolAddress);
 
-    const obj = [
+    return instance.setParamsCreator(
       pool.creator,
       pool.creatorFeeRate * 100, // convert percentage to integer
       Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
@@ -893,14 +893,11 @@ export default class Pool {
       pool.maxContribution * 1000000000000000000, // convert ether to wei
       pool.minPoolGoal * 1000000000000000000, // convert ether to wei
       pool.whitelistPool,
-      this.web3.utils.utf8ToHex(pool.poolDescription),
+      pool.poolDescription,
       pool.tokenAddress,
       [true, true, true, true, true, true, true, true, true, true, true],
       { from: this.account },
-    ];
-    console.log(obj);
-
-    return instance.setParamsCreator(...obj);
+    );
   }
 
   async setPoolParamsCreatorCalldata(pool) {
@@ -914,7 +911,7 @@ export default class Pool {
       pool.minContribution * 1000000000000000000, // convert ether to wei
       pool.maxContribution * 1000000000000000000, // convert ether to wei
       pool.minPoolGoal * 1000000000000000000, // convert ether to wei
-      pool.whitelistPool ? 1 : 0,
+      pool.whitelistPool,
       pool.poolDescription,
       pool.tokenAddress,
       [true, true, true, true, true, true, true, true, true, true, true],
