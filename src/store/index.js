@@ -11,6 +11,7 @@ export default new Vuex.Store({
   state: {
     connectICO: null,
     countries,
+    mode: 'mew',
   },
   mutations: {
     async setConnectICO(state) {
@@ -20,10 +21,16 @@ export default new Vuex.Store({
       state.connectICO = connectIco;
       window.connectICO = connectIco;
     },
+    setMode(state, mode) {
+      state.mode = mode;
+    },
   },
   actions: {
     setConnectICO({ commit }, connectICO) {
       commit('setConnectICO', connectICO);
+    },
+    setMode({ commit }, mode) {
+      commit('setMode', mode);
     },
   },
   getters: {
@@ -38,6 +45,9 @@ export default new Vuex.Store({
         return state.connectICO.loaded;
       }
       return false;
+    },
+    mode(state) {
+      return state.mode;
     },
   },
   modules: {
