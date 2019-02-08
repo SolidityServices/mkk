@@ -1,5 +1,8 @@
 import Web3 from 'web3';
 
+const infura = require('../infura.json');
+
+
 console.log('Initializing web3 components...');
 window.ethInitSuccess = false;
 
@@ -33,6 +36,12 @@ if (window.ethereum) {
     + 'Consider switching to Metamask for development. '
     + 'More info here: http://truffleframework.com/tutorials/truffle-and-metamask');
   // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-  window.web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+  let providerUrl;
+  if (infura.network === 'ganache') {
+    providerUrl = 'http://localhost:8545';
+  } else {
+    providerUrl = `https://${infura.network}.infura.io/v3/${infura.apiKey}`;
+  }
+  window.web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
   window.ethInitSuccess = false;
 }

@@ -14,8 +14,8 @@ contract Pool {
     }
 
     struct Params{
-        bytes32 saleParticipateFunctionSig;
-        bytes32 saleWithdrawFunctionSig;
+        bytes32 saleParticipateCalldata;
+        bytes32 saleWithdrawCalldata;
         bytes32 poolDescription;
         address saleAddress; //address of token sale
         address tokenAddress; // address of erc20 token contract
@@ -32,6 +32,7 @@ contract Pool {
         uint16 providerFeeRate; // 1/1000
         uint16 creatorFeeRate; // 1/1000
         bool whitelistPool;
+        bool strictlyTrustlessPool;
     }
 
     struct PoolStats{
@@ -75,18 +76,17 @@ contract Pool {
         _;
     }
 
-    event adminsChange(address adminAddress, bool direction);
-    event whitelistChange(address whitelistAddress, bool direction);
-    event countryBlacklistChange(bytes32 countryCode, bool direction);
-    event contributed(address contributor, uint amount);
-
+    event adminsChange(address listItem, bool isActive); //added=true, removed=false
+    event whitelistChange(address listItem, bool isActive); //added=true, removed=false
+    event countryBlacklistChange(bytes32 listItem, bool isActive); //added=true, removed=false
+    event contributed(address indexed contributor, uint amount);
 
     constructor (
         address[5] addresses,
-        bytes32[3] bytes32s, 
-        uint[9] integers, 
-        bool _whitelistPool, 
-        address[] adminlist, 
+        bytes32[3] bytes32s,
+        uint[9] integers,
+        bool[2] bools,
+        address[] adminlist,
         address[] contributorWhitelist,
         bytes32[] countryBlacklist
      ) public {
@@ -95,8 +95,8 @@ contract Pool {
         params.creator = addresses[2];
         params.saleAddress = addresses[3];
         params.tokenAddress = addresses[4];
-        params.saleParticipateFunctionSig = bytes32s[0];
-        params.saleWithdrawFunctionSig = bytes32s[1];
+        params.saleParticipateCalldata = bytes32s[0];
+        params.saleWithdrawCalldata = bytes32s[1];
         params.poolDescription = bytes32s[2];
         params.providerFeeRate = uint16(integers[0]);
         params.creatorFeeRate = uint16(integers[1]);
@@ -107,7 +107,8 @@ contract Pool {
         params.minPoolGoal = integers[6];
         params.maxPoolAllocation = integers[7];
         params.withdrawTimelock = uint32(integers[8]);
-        params.whitelistPool = _whitelistPool;
+        params.whitelistPool = bools[0];
+        params.strictlyTrustlessPool = bools[1];
         admins[params.creator] = true;
         addAdminPrivate(adminlist);
         addWhitelistPrivate(contributorWhitelist);
@@ -144,7 +145,7 @@ contract Pool {
           emit whitelistChange(addressList[i], true);
         }
     }
-    
+
     function addWhitelistPrivate(address[] addressList) private {
         for(uint i = 0; i < addressList.length; i++) {
           require(KYC(params.kycAddress).checkKYC(addressList[i]), "addWhitelist(address[] addressList): Error, address is not a KYC address");
@@ -280,26 +281,39 @@ contract Pool {
 
     function sendToSale() public onlyAdmin{
         require(!poolStats.stopped,  "sendToSale(): Error, the pool was stopped");
-        //require(params.saleParticipateFunctionSig.length == 0, "sendToSale(): Error, participation function signature is given, 'sendToSaleFunction()' has to be used");
+        require(params.saleParticipateCalldata.length == 0, "sendToSale(): Error, participation function signature is given, 'sendToSaleWithCalldata()' has to be used");
         require(!poolStats.sentToSale, "sendToSale(): Error, the pools funds were already sent to the sale");
         require(now >= params.saleStartDate, "sendToSale(): Error, sale hasn't started yet");
         require(block.timestamp < params.saleEndDate, "sendToSale(): Error, the sale has ended");
         require(calculateNetContribution() >= params.minPoolGoal, "sendToSale(): Not enough funds collected for sale");
         takeFees();
+        params.saleAddress.transfer(calculateNetContribution());
         poolStats.sentToSale = true;
-        require(params.saleAddress.call.value(calculateNetContribution())(), "Error, transaction failed");
     }
 
-    function sendToSaleFunction() public onlyAdmin {
-        require(!poolStats.stopped,  "sendToSaleFunction(): Error, the pool was stopped");
-        require(params.saleParticipateFunctionSig.length > 0, "sendToSaleFunction(): Error, no participation function signature given");
-        require(!poolStats.sentToSale, "sendToSaleFunction(): Error, the pools funds were already sent to the sale");
-        require(now >= params.saleStartDate, "sendToSaleFunction(): Error, sale hasn't started yet");
-        require(block.timestamp < params.saleEndDate, "sendToSaleFunction(): Error, the sale has ended");
-        require(calculateNetContribution() >= params.minPoolGoal, "sendToSaleFunction():: Not enough funds collected for sale");
+    function sendToSaleWithCalldata() public onlyAdmin {
+        require(!poolStats.stopped,  "sendToSaleWithCalldata(): Error, the pool was stopped");
+        require(params.saleParticipateCalldata != 0x0, "sendToSaleWithCalldata(): Error, no participation function signature given");
+        require(!poolStats.sentToSale, "sendToSaleWithCalldata(): Error, the pools funds were already sent to the sale");
+        require(now >= params.saleStartDate, "sendToSaleWithCalldata(): Error, sale hasn't started yet");
+        require(block.timestamp < params.saleEndDate, "sendToSaleWithCalldata(): Error, the sale has ended");
+        require(calculateNetContribution() >= params.minPoolGoal, "sendToSaleWithCalldata():: Not enough funds collected for sale");
         takeFees();
+        require(params.saleAddress.call.value(calculateNetContribution())(bytes4(keccak256(params.saleParticipateCalldata))), "Error, transaction failed");
         poolStats.sentToSale = true;
-        require(params.saleAddress.call.value(calculateNetContribution())(bytes4(keccak256(params.saleParticipateFunctionSig))), "Error, transaction failed");
+    }
+
+    function sendToSaleWithCalldataParameter(bytes32 calldata) public onlyAdmin {
+        require(!params.strictlyTrustlessPool, "sendToSaleWithCalldataParameter(bytes32 calldata): Error, pool is 'strictlyTrustlessPool'");
+        require(!poolStats.stopped,  "sendToSaleWithCalldata(): Error, the pool was stopped");
+        require(calldata != 0x0, "sendToSaleWithCalldata(): Error, no participation function signature given");
+        require(!poolStats.sentToSale, "sendToSaleWithCalldata(): Error, the pools funds were already sent to the sale");
+        require(now >= params.saleStartDate, "sendToSaleWithCalldata(): Error, sale hasn't started yet");
+        require(block.timestamp < params.saleEndDate, "sendToSaleWithCalldata(): Error, the sale has ended");
+        require(calculateNetContribution() >= params.minPoolGoal, "sendToSaleWithCalldata():: Not enough funds collected for sale");
+        takeFees();
+        require(params.saleAddress.call.value(calculateNetContribution())(bytes4(keccak256(calldata))), "Error, transaction failed");
+        poolStats.sentToSale = true;
     }
 
 
@@ -317,10 +331,17 @@ contract Pool {
         return (value / 1000).mul(feePerThousand);
     }
 
-    function withdrawFromSaleFunction() public onlyAdmin{
-        require(params.saleWithdrawFunctionSig.length > 0, "withdrawFromSaleFunction(): Error, no withdraw function signature given");
-        require(poolStats.sentToSale, "withdrawFromSaleFunction(): Error, the pools funds were not sent to the sale yet");
-        require(params.saleAddress.call(bytes4(keccak256(params.saleWithdrawFunctionSig))), "withdrawFromSaleFunction(): Error, transaction failed");
+    function withdrawFromSaleWithCalldata() public onlyAdmin{
+        require(params.saleWithdrawCalldata != 0x0, "withdrawFromSaleWithCalldata(): Error, no withdraw function signature given");
+        require(poolStats.sentToSale, "withdrawFromSaleWithCalldata(): Error, the pools funds were not sent to the sale yet");
+        require(params.saleAddress.call(bytes4(keccak256(params.saleWithdrawCalldata))), "withdrawFromSaleWithCalldata(): Error, transaction failed");
+    }
+
+    function withdrawFromSaleWithCalldataParameter(bytes32 calldata) public onlyAdmin{
+        require(!params.strictlyTrustlessPool, "withdrawFromSaleWithCalldataParameter(bytes32 calldata): Error, pool is 'strictlyTrustlessPool'");
+        require(params.saleWithdrawCalldata != 0x0, "withdrawFromSaleWithCalldata(): Error, no withdraw function signature given");
+        require(poolStats.sentToSale, "withdrawFromSaleWithCalldata(): Error, the pools funds were not sent to the sale yet");
+        require(params.saleAddress.call(bytes4(keccak256(params.saleWithdrawCalldata))), "withdrawFromSaleWithCalldata(): Error, transaction failed");
     }
 
     function () public payable {
@@ -339,7 +360,7 @@ contract Pool {
         params.creator.transfer(amount);
     }
 
-    function setParams(
+    function setParamsCreator(
         address _creator,
         uint16 _creatorFeeRate, // 1/1000
         uint32 _saleStartDate,
@@ -389,7 +410,7 @@ contract Pool {
         }
     }
 
-    function setParams(
+    function setParamsProvider(
         address _provider, //connectICO address for fees
         uint16 _providerFeeRate, // 1/1000
         uint256 _maxPoolAllocation, //maximum amount raisable by pool
@@ -404,6 +425,16 @@ contract Pool {
         if(toSet[2]){
             params.maxPoolAllocation = _maxPoolAllocation;
         }
+    }
+
+    function setSaleParticipateCalldata(bytes32 calldata) public onlyAdmin{
+        require(!params.strictlyTrustlessPool, "setsaleParticipateCalldata(bytes32 calldata): Error, pool is 'strictlyTrustlessPool'");
+        params.saleParticipateCalldata = calldata;
+    }
+
+    function setSaleWithdrawCalldata(bytes32 calldata) public onlyAdmin{
+        require(!params.strictlyTrustlessPool, "setSaleWithdrawCalldata(bytes32 calldata): Error, pool is 'strictlyTrustlessPool'");
+        params.saleWithdrawCalldata = calldata;
     }
 
     function getParams1() public view returns (
@@ -433,8 +464,9 @@ contract Pool {
 
     function getParams2() public view returns (
         bool whitelistPool,
-        bytes32 saleParticipateFunctionSig,
-        bytes32 saleWithdrawFunctionSig,
+        bool strictlyTrustlessPool,
+        bytes32 saleParticipateCalldata,
+        bytes32 saleWithdrawCalldata,
         bytes32 poolDescription,
         address saleAddress, //address of token sale
         address tokenAddress, // address of erc20 token contract
@@ -445,8 +477,9 @@ contract Pool {
     {
         return(
             params.whitelistPool,
-            params.saleParticipateFunctionSig,
-            params.saleWithdrawFunctionSig,
+            params.strictlyTrustlessPool,
+            params.saleParticipateCalldata,
+            params.saleWithdrawCalldata,
             params.poolDescription,
             params.saleAddress,
             params.tokenAddress,

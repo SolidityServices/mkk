@@ -1,21 +1,23 @@
 <template>
     <div class="container">
-        <div class="d-flex flex-row mt-4 flex-wrap" v-if="false">
+        <div class="d-flex flex-row mt-4 flex-wrap">
+          <template v-if="false">
             <div class="d-flex px-3 mb-3"
                  v-for="option in options"
                  :key="option.value"
             >
-                <div class="my-auto px-2 input-radio">
-                    <input type="radio"
-                           :name="`radio_${option.value}`"
-                           :id="`radio_${option.value}`"
-                           :value="option.value"
-                           v-model="selectedOption"/>
-                    <label :for="`radio_${option.value}`"></label>
-                </div>
-                <label class="pl-1 my-auto blue-14-bold"
-                       :for="`radio_${option.value}`">{{option.text}}</label>
+              <div class="my-auto px-2 input-radio">
+                <input type="radio"
+                       :name="`radio_${option.value}`"
+                       :id="`radio_${option.value}`"
+                       :value="option.value"
+                       v-model="selectedOption"/>
+                <label :for="`radio_${option.value}`"></label>
+              </div>
+              <label class="pl-1 my-auto blue-14-bold"
+                     :for="`radio_${option.value}`">{{option.text}}</label>
             </div>
+          </template>
 
 
             <div class="col-12 col-lg-3 col-2xl-2 ml-auto">
@@ -26,14 +28,14 @@
                            placeholder="Search"
                            aria-label="Search">
                     <div class="w-25 search-form-btn my-2 my-sm-0 text-right pr-1">
-                      <img src="../assets/search.png" alt="">
+                      <img src="../../assets/search.png" alt="">
                     </div>
                 </form>
             </div>
         </div>
 
       <div class="d-flex flex-row flex-wrap mb-3">
-        <div class="d-flex flex-column w-100 mb-3" v-for="pool in filteredPools" :key="pool.poolAddress">
+        <div class="d-flex flex-column w-100 mb-3" v-for="pool in pools" :key="pool.poolAddress">
           <div class="d-flex flex-row mb-3">
             <hr class="blue-hr-fullw w-100">
           </div>
@@ -58,8 +60,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-import LocalPool from '../model/LocalPool';
+import { mapGetters, mapActions } from 'vuex';
+import LocalPool from '../../model/LocalPool';
 
 export default {
   name: 'PoolList',
@@ -71,55 +73,43 @@ export default {
       { text: 'Closed', value: 'closed' },
       { text: 'Waiting for token', value: 'waiting' },
     ],
-    pools: [],
     filter: '',
     currentPage: 1,
     itemsPerPage: 10,
-    poolCount: null,
   }),
   async created() {
-    this.poolCount = await this.connectICO.poolFactory.getPoolNumber();
     this.fetchPools();
   },
   methods: {
+    ...mapActions(['initPools']),
     async fetchPools() {
-      const pools = [];
-      const minIndex = (this.currentPage - 1) * this.itemsPerPage;
-      const maxIndex = this.currentPage * this.itemsPerPage > this.poolCount ? this.poolCount : this.currentPage * this.itemsPerPage;
+      const pools = await this.connectICO.poolFactory.getPools();
+      const poolObjects = [];
+      pools.forEach((pool) => {
+        poolObjects.push(new LocalPool(pool));
+      });
 
-      for (let i = minIndex; i < maxIndex; i += 1) {
-        pools.push(new LocalPool(await this.connectICO.poolFactory.getPool(i)));
-      }
-
-      this.pools = pools;
+      this.initPools(poolObjects);
     },
   },
   computed: {
     ...mapGetters([
       'connectICO',
     ]),
-    filteredPools() {
-      if (this.filter === '') {
-        return this.pools;
-      }
-
-      return this.pools.filter(item => item.name.contains(this.filter));
+    pools() {
+      return this.$store.getters.pools(this.filter, this.currentPage, this.itemsPerPage);
     },
-  },
-  watch: {
-    currentPage(oldVal, newVal) {
-      if (oldVal !== newVal) {
-        this.fetchPools();
-      }
+    poolCount() {
+      return this.$store.getters.poolCount(this.filter);
     },
   },
 };
 </script>
 
 <style lang="scss">
-@import '../scss/variables';
-@import '../scss/mixins';
-@import '../scss/main';
+@import '../../scss/variables';
+@import '../../scss/mixins';
+@import '../../scss/main';
     .search-form {
         border: 1px solid $blue;
         border-radius: 0;

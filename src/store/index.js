@@ -1,13 +1,16 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import ConnectICO from './model/connect-ico/ConnectICO';
+import ConnectICO from '../model/connect-ico/ConnectICO';
+import pool from './modules/pool';
 
 Vue.use(Vuex);
+
+const countries = require('./countries');
 
 export default new Vuex.Store({
   state: {
     connectICO: null,
-    countries: require('./countries'),
+    countries,
   },
   mutations: {
     async setConnectICO(state) {
@@ -36,5 +39,8 @@ export default new Vuex.Store({
       }
       return false;
     },
+  },
+  modules: {
+    pool,
   },
 });

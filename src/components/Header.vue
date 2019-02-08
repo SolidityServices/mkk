@@ -2,7 +2,7 @@
   <header class="d-flex flex-column justify-content-center align-items-center">
     <div class="d-flex flex-row w-80 mb-4">
       <div class="d-flex align-items-center justify-content-center justify-content-sm-start col-12 col-sm">
-        <router-link :to="{name: 'index'}">
+        <router-link to="/">
           <img src="../assets/logo.png" alt="">
         </router-link>
       </div>

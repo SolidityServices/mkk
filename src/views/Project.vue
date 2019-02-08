@@ -90,7 +90,7 @@
                 <range-slider
                   class="slider w-100 pt-1"
                   min="0"
-                  :max="pool.minPoolGoal"
+                  :max="pool.maxPoolAllocation"
                   step="1"
                   :disabled="true"
                   v-model="pool.balance">
@@ -99,7 +99,7 @@
             </div>
             <div class="col-6 col-lg-2
                 orange-24-16-bold px-0 order-2 order-lg-3 text-right text-lg-left">
-              {{pool.balance}}/{{pool.minPoolGoal}} ETH
+              {{pool.balance}}/{{pool.maxPoolAllocation}} ETH
             </div>
           </div>
 
@@ -136,7 +136,7 @@
             <div class="col-1 d-none d-lg-flex"></div>
             <div class="col-12 col-lg-5 pt-1 pl-3">
               <div class="pl-3 px-0">
-                <div class="d-lg-inline-block orange-18-bold pr-2 px-0">Amount in ETH: </div>
+                <div class="d-lg-inline-block orange-18-bold pr-2 px-0">Amount in ETH:</div>
                 <div class="d-lg-inline-block blue-18-reg px-0">
                   <input type="number" v-validate="'required|numeric|min_value:0'"
                          step="0.000001"
@@ -146,27 +146,16 @@
               </div>
             </div>
             <!--<div class="col-12 col-lg-6 pl-5 row">-->
-            <!--<div class="col-12 col-lg-6 row pt-4 pt-lg-0">-->
-            <!--<div class="col-6 blue-18-reg">Tx1</div>-->
-            <!--<div class="col-6 orange-18-bold">1000</div>-->
+              <!--<div class="col-12 col-lg-6 row pt-4 pt-lg-0" v-for="contribution in contributions">-->
+                <!--<div class="col-6 blue-18-reg">Tx1</div>-->
+                <!--<div class="col-6 orange-18-bold">1000</div>-->
 
-            <!--<div class="col-6 blue-18-reg">TxHash</div>-->
-            <!--<div class="col-6 orange-18-bold">1000</div>-->
+                <!--<div class="col-6 blue-18-reg">TxHash</div>-->
+                <!--<div class="col-6 orange-18-bold">1000</div>-->
 
-            <!--<div class="col-6 blue-18-reg">Amount</div>-->
-            <!--<div class="col-6 orange-18-bold">1000</div>-->
-            <!--</div>-->
-            <!--<div class="col-12 col-lg-6 row pt-4 pt-lg-0">-->
-            <!--<div class="col-6 blue-18-reg">Tx2</div>-->
-            <!--<div class="col-6 orange-18-bold">1000</div>-->
-
-            <!--<div class="col-6 blue-18-reg">TxHash</div>-->
-            <!--<div class="col-6 orange-18-bold">1000</div>-->
-
-            <!--<div class="col-6 blue-18-reg">Amount</div>-->
-            <!--<div class="col-6 orange-18-bold">1000</div>-->
-            <!--</div>-->
-
+                <!--<div class="col-6 blue-18-reg">Amount</div>-->
+                <!--<div class="col-6 orange-18-bold">{{contribution.amount.c[0] / 10000}}</div>-->
+              <!--</div>-->
             <!--</div>-->
           </div>
           <div class="row mt-5">
@@ -219,6 +208,7 @@ export default {
     amount: 0.000001,
     showAdvancedDetails: false,
     customToken: '',
+    contributions: [],
   }),
   components: {
     RangeSlider,
@@ -233,6 +223,7 @@ export default {
     async search() {
       if (await this.connectICO.poolFactory.checkIfPoolExists(this.address)) {
         this.pool = new LocalPool(this.address);
+        await this.fetchContributions();
       } else {
         this.$notify({
           type: 'error',
@@ -240,6 +231,9 @@ export default {
           text: 'Pool not found by the given address!',
         });
       }
+    },
+    async fetchContributions() {
+      this.contributions = await this.connectICO.pool.getContributionsByContributor(this.address, this.connectICO.account);
     },
     async contribute() {
       try {
