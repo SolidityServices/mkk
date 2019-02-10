@@ -80,6 +80,7 @@ contract Pool {
     event whitelistChange(address listItem, bool isActive); //added=true, removed=false
     event countryBlacklistChange(bytes32 listItem, bool isActive); //added=true, removed=false
     event contributed(address indexed contributor, uint amount);
+    event tokensReceived();
 
     constructor (
         address[5] addresses,
@@ -277,6 +278,7 @@ contract Pool {
         require(!poolStats.tokensReceivedConfirmed, "confirmTokensReceived(uint tokensExpected): Error, tokens are already confirmed as received");
         require (tokensExpected > 0, "confirmTokensReceived(uint tokensExpected): Error, number of tokens expected has to be greater than 0");
         if(ERC20Basic(params.tokenAddress).balanceOf(address(this)) > tokensExpected) poolStats.tokensReceivedConfirmed = true;
+        emit tokensReceived();
     }
 
     function sendToSale() public onlyAdmin{
