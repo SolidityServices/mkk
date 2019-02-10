@@ -9,11 +9,6 @@ contract Automations is Ownable {
     uint public pushGasCost;
     uint public sendToSaleGasCost;
 
-    enum AutomationType {
-        sendToSale,
-        pushOutToken
-    }
-
     event newPushOutToken(address indexed pool, address indexed recipient, uint gasPrice);
     event newSendToSale(address indexed pool, uint time, uint gasPrice);
     event completedPushOutToken(address indexed pool, address indexed recipient);
