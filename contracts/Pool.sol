@@ -44,8 +44,6 @@ contract Pool {
         bool stopped;
     }
 
-    address[] public contributorList; // possible to get on frontend?
-
     mapping(address => bool) public admins; //additional admins
     mapping(address => bool) public whitelist;
     mapping(bytes32 => bool) public kycCountryBlacklist; //key: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
@@ -193,7 +191,6 @@ contract Pool {
         require(!poolStats.sentToSale, "contribute(): Error, the pools funds were already sent to the sale");
         require(!poolStats.stopped,  "contribute(): Error, the pool was stopped");
         contributors[msg.sender].lastContributionTime = block.timestamp;
-        if(contributors[msg.sender].lastContributionTime == 0) contributorList.push(msg.sender);
         contributors[msg.sender].grossContribution = contributors[msg.sender].grossContribution.add(msg.value);
         poolStats.allGrossContributions = poolStats.allGrossContributions.add(msg.value);
         emit contributed(msg.sender, msg.value);
@@ -324,7 +321,14 @@ contract Pool {
 
 
     function calculateNetContribution() private view returns (uint) {
-        return poolStats.allGrossContributions.sub(poolStats.creatorStash.sub(poolStats.providerStash));
+        return poolStats.allGrossContributions.sub(poolStats.creatorStash.add(poolStats.providerStash));
+    }
+
+    function getNetContribution() public view returns (uint) {
+        return poolStats.allGrossContributions.sub(
+            calculateFee(poolStats.allGrossContributions, params.creatorFeeRate)
+            .add(calculateFee(poolStats.allGrossContributions, params.providerFeeRate))
+        );
     }
 
     function calculateFee(uint value, uint feePerThousand) private pure returns(uint fee) {
