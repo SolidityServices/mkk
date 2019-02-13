@@ -5,11 +5,18 @@ import encodeFunctionSignatureWithParameters
 import promisifyEventGet from '../../utils/promisifyEventGet';
 
 export default class PoolFactory {
-  constructor(provider, account, web3) {
+  constructor(provider, account, web3, mode) {
     this.poolFactory = TruffleContract(poolFactoryArtifact);
     this.poolFactory.setProvider(provider);
     this.account = account;
     this.web3 = web3;
+    this.mode = mode;
+
+    // Override sendAsync function
+    if (this.mode === 'mew') {
+      // dirty hack for web3@1.0.0 support for localhost testrpc, see https://github.com/trufflesuite/truffle-contract/issues/56#issuecomment-331084530
+      this.poolFactory.currentProvider.sendAsync = () => this.poolFactory.currentProvider.send.apply(this.poolFactory.currentProvider, arguments);
+    }
   }
 
   async getAddress() {
@@ -98,6 +105,21 @@ export default class PoolFactory {
    */
   async setPoolFactoryParams(poolFactory) {
     const instance = await this.poolFactory.deployed();
+
+    if (this.mode === 'mew') {
+      return instance.setParams.request(
+        poolFactory.ownerAddress,
+        poolFactory.kycContractAddress,
+        poolFactory.flatFee,
+        poolFactory.maxAllocationFeeRate,
+        poolFactory.maxCreatorFeeRate,
+        poolFactory.providerFeeRate,
+        poolFactory.useWhitelist,
+        [true, true, true, true, true, true],
+        { from: this.account },
+      ).params[0].data;
+    }
+
     return instance.setParams(
       poolFactory.ownerAddress,
       poolFactory.kycContractAddress,
@@ -109,21 +131,6 @@ export default class PoolFactory {
       [true, true, true, true, true, true],
       { from: this.account },
     );
-  }
-
-  async setPoolFactoryParamsCalldata(poolFactory) {
-    const instance = await this.poolFactory.deployed();
-    return instance.setParams.request(
-      poolFactory.ownerAddress,
-      poolFactory.kycContractAddress,
-      poolFactory.flatFee,
-      poolFactory.maxAllocationFeeRate,
-      poolFactory.maxCreatorFeeRate,
-      poolFactory.providerFeeRate,
-      poolFactory.useWhitelist,
-      [true, true, true, true, true, true],
-      { from: this.account },
-    ).params[0].data;
   }
 
   /**
@@ -151,80 +158,75 @@ export default class PoolFactory {
    */
   async createPool(pool, transferValue) {
     const instance = await this.poolFactory.deployed();
-    const reciept = await instance.createPool(
-      [
-        pool.saleAddress,
-        pool.tokenAddress,
-      ],
-      [
-        pool.saleParticipateFunctionSig,
-        pool.saleWithdrawFunctionSig,
-        pool.poolDescription,
-      ],
-      [
-        pool.creatorFeeRate * 100, // convert percentage to integer
-        Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
-        Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
-        pool.minContribution * 1000000000000000000, // convert ether to wei
-        pool.maxContribution * 1000000000000000000, // convert ether to wei
-        pool.minPoolGoal * 1000000000000000000, // convert ether to wei
-        pool.maxPoolAllocation * 1000000000000000000, // convert ether to wei
-        pool.withdrawTimelock * 60 * 60, // convert to unix time
-      ],
-      [
-        pool.whitelistPool ? 1 : 0,
-        pool.strictlyTrustlessPool ? 1 : 0,
-      ],
-      pool.adminAddresses,
-      pool.whiteListAddresses,
-      pool.countryBlackList,
-      {
-        from: this.account,
-        value: transferValue * 1000000000000000000, // convert ether to wei
-      },
-    );
+    let reciept;
 
-    const result = reciept.logs[0].args.poolAddress;
-    console.log(reciept);
-    console.log(`pool address: ${result}`);
-
-    return result;
-  }
-
-  async createPoolCalldata(pool, transferValue) {
-    const instance = await this.poolFactory.deployed();
-    const reciept = await instance.createPool.request(
-      [
-        pool.saleAddress,
-        pool.tokenAddress,
-      ],
-      [
-        await this.functionSigToCalldata(pool.saleParticipateFunctionSig),
-        await this.functionSigToCalldata(pool.saleWithdrawFunctionSig),
-        pool.poolDescription,
-      ],
-      [
-        pool.creatorFeeRate * 100, // convert percentage to integer
-        Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
-        Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
-        pool.minContribution * 1000000000000000000, // convert ether to wei
-        pool.maxContribution * 1000000000000000000, // convert ether to wei
-        pool.minPoolGoal * 1000000000000000000, // convert ether to wei
-        pool.maxPoolAllocation * 1000000000000000000, // convert ether to wei
-        pool.withdrawTimelock * 60 * 60, // convert to unix time
-      ],
-      [
-        pool.whitelistPool ? 1 : 0,
-        pool.strictlyTrustlessPool ? 1 : 0,
-      ],
-      pool.adminAddresses,
-      pool.whiteListAddresses,
-      pool.countryBlackList,
-      {
-        from: this.account,
-        value: transferValue * 1000000000000000000, // convert ether to wei
-      },
-    ).params[0].data;
+    if (this.mode === 'mew') {
+      reciept = await instance.createPool.request(
+        [
+          pool.saleAddress,
+          pool.tokenAddress,
+        ],
+        [
+          await this.functionSigToCalldata(pool.saleParticipateFunctionSig),
+          await this.functionSigToCalldata(pool.saleWithdrawFunctionSig),
+          pool.poolDescription,
+        ],
+        [
+          pool.creatorFeeRate * 100, // convert percentage to integer
+          Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
+          Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
+          pool.minContribution * 1000000000000000000, // convert ether to wei
+          pool.maxContribution * 1000000000000000000, // convert ether to wei
+          pool.minPoolGoal * 1000000000000000000, // convert ether to wei
+          pool.maxPoolAllocation * 1000000000000000000, // convert ether to wei
+          pool.withdrawTimelock * 60 * 60, // convert to unix time
+        ],
+        [
+          pool.whitelistPool ? 1 : 0,
+          pool.strictlyTrustlessPool ? 1 : 0,
+        ],
+        pool.adminAddresses,
+        pool.whiteListAddresses,
+        pool.countryBlackList,
+        {
+          from: this.account,
+          value: transferValue * 1000000000000000000, // convert ether to wei
+        },
+      ).params[0].data;
+    } else {
+      reciept = await instance.createPool(
+        [
+          pool.saleAddress,
+          pool.tokenAddress,
+        ],
+        [
+          pool.saleParticipateFunctionSig,
+          pool.saleWithdrawFunctionSig,
+          pool.poolDescription,
+        ],
+        [
+          pool.creatorFeeRate * 100, // convert percentage to integer
+          Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
+          Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
+          pool.minContribution * 1000000000000000000, // convert ether to wei
+          pool.maxContribution * 1000000000000000000, // convert ether to wei
+          pool.minPoolGoal * 1000000000000000000, // convert ether to wei
+          pool.maxPoolAllocation * 1000000000000000000, // convert ether to wei
+          pool.withdrawTimelock * 60 * 60, // convert to unix time
+        ],
+        [
+          pool.whitelistPool ? 1 : 0,
+          pool.strictlyTrustlessPool ? 1 : 0,
+        ],
+        pool.adminAddresses,
+        pool.whiteListAddresses,
+        pool.countryBlackList,
+        {
+          from: this.account,
+          value: transferValue * 1000000000000000000, // convert ether to wei
+        },
+      );
+    }
 
     const result = reciept.logs[0].args.poolAddress;
     console.log(reciept);
@@ -241,13 +243,12 @@ export default class PoolFactory {
    */
   async withdraw() { // onlyOwner
     const instance = await this.poolFactory.deployed();
-    const result = await instance.withdraw({ from: this.account });
-    return result.toString();
-  }
 
-  async withdrawCalldata() { // onlyOwner
-    const instance = await this.poolFactory.deployed();
-    return instance.withdraw.request({ from: this.account }).params[0].data;
+    if (this.mode === 'mew') {
+      return instance.withdraw.request({ from: this.account }).params[0].data;
+    }
+
+    return instance.withdraw({ from: this.account });
   }
 
   async getPools() {
@@ -264,7 +265,6 @@ export default class PoolFactory {
 
   async getPoolsCreatedFromEvents(creatorAddress, saleAddress) {
     const instance = await this.poolFactory.deployed();
-
     const filter = {};
     if (creatorAddress) filter.poolCreator = creatorAddress;
     if (saleAddress) filter.poolSale = saleAddress;

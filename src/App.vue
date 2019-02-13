@@ -98,9 +98,9 @@ export default {
       if (infura.network === 'ganache') {
         providerUrl = 'http://localhost:8545';
       } else {
-        providerUrl = `https://${infura.network}.infura.io/v3/${infura.apiKey}`;
+        providerUrl = `wss://${infura.network}.infura.io/ws/v3/${infura.apiKey}`;
       }
-      window.web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
+      window.web3 = new Web3(new Web3.providers.WebsocketProvider(providerUrl));
       window.ethInitSuccess = false;
     },
   },

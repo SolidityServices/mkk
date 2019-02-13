@@ -15,7 +15,7 @@ export default new Vuex.Store({
   },
   mutations: {
     async setConnectICO(state) {
-      const connectIco = new ConnectICO();
+      const connectIco = new ConnectICO(state.mode);
       console.log('Starting ConnectICO');
       await connectIco.start();
       state.connectICO = connectIco;
