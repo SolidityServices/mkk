@@ -18,7 +18,7 @@ export default class ConnectICO {
 
     // set the initial this.account balance so it can be displayed.
     this.web3.eth.getAccounts((err, accounts) => {
-      let account = '0x0';
+      let account = '0x0000000000000000000000000000000000000000';
 
       if (this.mode === 'mm') {
         if (err) {
@@ -50,11 +50,6 @@ export default class ConnectICO {
       this.poolFactory = new PoolFactory(this.web3.currentProvider, this.account, this.web3, this.mode);
       this.KYC = new KYC(this.web3.currentProvider, this.account, this.web3);
       this.tokenPushRegistry = new TokenPushRegistry(this.web3.currentProvider);
-
-      console.log(this.pool);
-      console.log(this.poolFactory);
-      console.log(this.KYC);
-      console.log(this.tokenPushRegistry);
 
       console.log('Application initialized');
       this.loaded = true;

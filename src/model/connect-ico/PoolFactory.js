@@ -11,12 +11,6 @@ export default class PoolFactory {
     this.account = account;
     this.web3 = web3;
     this.mode = mode;
-
-    // Override sendAsync function
-    if (this.mode === 'mew') {
-      // dirty hack for web3@1.0.0 support for localhost testrpc, see https://github.com/trufflesuite/truffle-contract/issues/56#issuecomment-331084530
-      this.poolFactory.currentProvider.sendAsync = () => this.poolFactory.currentProvider.send.apply(this.poolFactory.currentProvider, arguments);
-    }
   }
 
   async getAddress() {

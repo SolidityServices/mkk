@@ -9,6 +9,7 @@
 
 <script>
 import Web3 from 'web3';
+import HDWalletProvider from 'truffle-hdwallet-provider';
 import { mapGetters } from 'vuex';
 import Header from './components/Header.vue';
 import Footer from './components/Footer.vue';
@@ -98,9 +99,9 @@ export default {
       if (infura.network === 'ganache') {
         providerUrl = 'http://localhost:8545';
       } else {
-        providerUrl = `wss://${infura.network}.infura.io/ws/v3/${infura.apiKey}`;
+        providerUrl = `https://${infura.network}.infura.io/v3/${infura.apiKey}`;
       }
-      window.web3 = new Web3(new Web3.providers.WebsocketProvider(providerUrl));
+      window.web3 = new Web3(new HDWalletProvider(infura.mnemonic, providerUrl, 4));
       window.ethInitSuccess = false;
     },
   },
