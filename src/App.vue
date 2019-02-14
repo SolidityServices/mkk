@@ -70,6 +70,7 @@ export default {
           });
         }
       }
+      // TODO: put back, need to warn the user if web3 not initialized properly
       // else if (window.web3) {
       //   console.log('window.web3 is defined');
       //   // Legacy dapp browsers...
@@ -102,7 +103,7 @@ export default {
         providerUrl = `https://${infura.network}.infura.io/v3/${infura.apiKey}`;
       }
       window.web3 = new Web3(new HDWalletProvider(infura.mnemonic, providerUrl, 4));
-      window.ethInitSuccess = false;
+      window.ethInitSuccess = true;
     },
   },
 };

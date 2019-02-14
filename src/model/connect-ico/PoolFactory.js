@@ -152,43 +152,9 @@ export default class PoolFactory {
    */
   async createPool(pool, transferValue) {
     const instance = await this.poolFactory.deployed();
-    let reciept;
 
     if (this.mode === 'mew') {
-      reciept = await instance.createPool.request(
-        [
-          pool.saleAddress,
-          pool.tokenAddress,
-        ],
-        [
-          await this.functionSigToCalldata(pool.saleParticipateFunctionSig),
-          await this.functionSigToCalldata(pool.saleWithdrawFunctionSig),
-          pool.poolDescription,
-        ],
-        [
-          pool.creatorFeeRate * 100, // convert percentage to integer
-          Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
-          Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
-          pool.minContribution * 1000000000000000000, // convert ether to wei
-          pool.maxContribution * 1000000000000000000, // convert ether to wei
-          pool.minPoolGoal * 1000000000000000000, // convert ether to wei
-          pool.maxPoolAllocation * 1000000000000000000, // convert ether to wei
-          pool.withdrawTimelock * 60 * 60, // convert to unix time
-        ],
-        [
-          pool.whitelistPool ? 1 : 0,
-          pool.strictlyTrustlessPool ? 1 : 0,
-        ],
-        pool.adminAddresses,
-        pool.whiteListAddresses,
-        pool.countryBlackList,
-        {
-          from: this.account,
-          value: transferValue * 1000000000000000000, // convert ether to wei
-        },
-      ).params[0].data;
-    } else {
-      reciept = await instance.createPool(
+      return instance.createPool.request(
         [
           pool.saleAddress,
           pool.tokenAddress,
@@ -219,8 +185,41 @@ export default class PoolFactory {
           from: this.account,
           value: transferValue * 1000000000000000000, // convert ether to wei
         },
-      );
+      ).params[0].data;
     }
+
+    const reciept = await instance.createPool(
+      [
+        pool.saleAddress,
+        pool.tokenAddress,
+      ],
+      [
+        pool.saleParticipateFunctionSig,
+        pool.saleWithdrawFunctionSig,
+        pool.poolDescription,
+      ],
+      [
+        pool.creatorFeeRate * 100, // convert percentage to integer
+        Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
+        Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
+        pool.minContribution * 1000000000000000000, // convert ether to wei
+        pool.maxContribution * 1000000000000000000, // convert ether to wei
+        pool.minPoolGoal * 1000000000000000000, // convert ether to wei
+        pool.maxPoolAllocation * 1000000000000000000, // convert ether to wei
+        pool.withdrawTimelock * 60 * 60, // convert to unix time
+      ],
+      [
+        pool.whitelistPool ? 1 : 0,
+        pool.strictlyTrustlessPool ? 1 : 0,
+      ],
+      pool.adminAddresses,
+      pool.whiteListAddresses,
+      pool.countryBlackList,
+      {
+        from: this.account,
+        value: transferValue * 1000000000000000000, // convert ether to wei
+      },
+    );
 
     const result = reciept.logs[0].args.poolAddress;
     console.log(reciept);

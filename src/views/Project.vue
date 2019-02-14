@@ -199,6 +199,8 @@ import RangeSlider from 'vue-range-slider';
 import 'vue-range-slider/dist/vue-range-slider.css';
 import LocalPool from '../model/LocalPool';
 import Pool from '../components/Pool.vue';
+import mewLinkBuilder from '../utils/mewLinkBuilder';
+import openMewUrl from '../utils/openMewUrl';
 
 export default {
   data: () => ({
@@ -217,6 +219,7 @@ export default {
   computed: {
     ...mapGetters([
       'connectICO',
+      'mode',
     ]),
   },
   methods: {
@@ -237,12 +240,22 @@ export default {
     },
     async contribute() {
       try {
-        await this.connectICO.pool.contribute(this.address, this.amount);
-        this.$notify({
-          type: 'success',
-          title: 'Successful deposit!',
-          text: `${this.amount} ETH`,
-        });
+        const response = await this.connectICO.pool.contribute(this.address, this.amount);
+        if (this.mode === 'mm') {
+          this.$notify({
+            type: 'success',
+            title: 'Successful deposit!',
+            text: `${this.amount} ETH`,
+          });
+        } else if (this.mode === 'mew') {
+          const url = mewLinkBuilder(
+            this.connectICO.poolFactory.poolFactory.address,
+            response,
+            this.amount,
+            await window.web3.eth.net.getNetworkType(),
+          );
+          openMewUrl(url);
+        }
       } catch (e) {
         this.$notify({
           type: 'error',
@@ -252,12 +265,22 @@ export default {
     },
     async withdraw() {
       try {
-        await this.connectICO.pool.withdraw(this.address, this.amount);
-        this.$notify({
-          type: 'success',
-          title: 'Successful withdraw!',
-          text: `${this.amount} ETH`,
-        });
+        const response = await this.connectICO.pool.withdraw(this.address, this.amount);
+        if (this.mode === 'mm') {
+          this.$notify({
+            type: 'success',
+            title: 'Successful withdraw!',
+            text: `${this.amount} ETH`,
+          });
+        } else if (this.mode === 'mew') {
+          const url = mewLinkBuilder(
+            this.connectICO.poolFactory.poolFactory.address,
+            response,
+            this.amount,
+            await window.web3.eth.net.getNetworkType(),
+          );
+          openMewUrl(url);
+        }
       } catch (e) {
         this.$notify({
           type: 'error',
@@ -267,11 +290,21 @@ export default {
     },
     async withdrawTokens() {
       try {
-        await this.connectICO.pool.withdrawToken(this.address);
-        this.$notify({
-          type: 'success',
-          text: 'Tokens successfully withdrawn!',
-        });
+        const response = await this.connectICO.pool.withdrawToken(this.address);
+        if (this.mode === 'mm') {
+          this.$notify({
+            type: 'success',
+            text: 'Tokens successfully withdrawn!',
+          });
+        } else if (this.mode === 'mew') {
+          const url = mewLinkBuilder(
+            this.connectICO.poolFactory.poolFactory.address,
+            response,
+            0,
+            await window.web3.eth.net.getNetworkType(),
+          );
+          openMewUrl(url);
+        }
       } catch (e) {
         this.$notify({
           type: 'error',
@@ -281,11 +314,22 @@ export default {
     },
     async withdrawRefund() {
       try {
-        await this.connectICO.pool.withdrawRefund(this.address);
-        this.$notify({
-          type: 'success',
-          text: 'Refund successfully withdrawn!',
-        });
+        const response = await this.connectICO.pool.withdrawRefund(this.address);
+
+        if (this.mode === 'mm') {
+          this.$notify({
+            type: 'success',
+            text: 'Refund successfully withdrawn!',
+          });
+        } else if (this.mode === 'mew') {
+          const url = mewLinkBuilder(
+            this.connectICO.poolFactory.poolFactory.address,
+            response,
+            0,
+            await window.web3.eth.net.getNetworkType(),
+          );
+          openMewUrl(url);
+        }
       } catch (e) {
         this.$notify({
           type: 'error',
@@ -295,11 +339,21 @@ export default {
     },
     async withdrawCustomToken() {
       try {
-        await this.connectICO.pool.withdrawCustomToken(this.address, this.customToken);
-        this.$notify({
-          type: 'success',
-          text: 'Token successfully withdrawn!',
-        });
+        const response = await this.connectICO.pool.withdrawCustomToken(this.address, this.customToken);
+        if (this.mode === 'mm') {
+          this.$notify({
+            type: 'success',
+            text: 'Token successfully withdrawn!',
+          });
+        } else if (this.mode === 'mew') {
+          const url = mewLinkBuilder(
+            this.connectICO.poolFactory.poolFactory.address,
+            response,
+            0,
+            await window.web3.eth.net.getNetworkType(),
+          );
+          openMewUrl(url);
+        }
       } catch (e) {
         this.$notify({
           type: 'error',
