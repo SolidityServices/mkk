@@ -21,7 +21,7 @@ function filterPools(pools, filter, category) {
         return false;
     }
 
-    return item.poolAddress.includes(filter);
+    return item.poolAddress.includes(filter) || item.poolDescription.includes(filter);
   });
 }
 
@@ -50,7 +50,7 @@ export default {
   getters: {
     pools(state) {
       return (filter, page, itemsPerPage) => {
-        const filteredPools = filterPools(state.pools, state.filter, state.category);
+        const filteredPools = filterPools(state.pools, filter, state.category);
 
         const minIndex = (page - 1) * itemsPerPage;
         const maxIndex = page * itemsPerPage > filteredPools.length ? filteredPools.length : page * itemsPerPage;
