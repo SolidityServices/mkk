@@ -406,7 +406,7 @@ export default {
           const url = mewLinkBuilder(
             this.connectICO.poolFactory.poolFactory.address,
             response,
-            transferDetails.transferValue * 1000000000000000000, // convert ether to wei
+            transferDetails.transferValue,
             await window.web3.eth.net.getNetworkType(),
           );
           openMewUrl(url);

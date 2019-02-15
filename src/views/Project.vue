@@ -249,9 +249,9 @@ export default {
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
-            this.connectICO.poolFactory.poolFactory.address,
+            this.connectICO.pool.pool.address,
             response,
-            this.amount * 1000000000000000000, // convert ether to wei
+            this.amount,
             await window.web3.eth.net.getNetworkType(),
           );
           openMewUrl(url);
@@ -274,9 +274,9 @@ export default {
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
-            this.connectICO.poolFactory.poolFactory.address,
+            this.connectICO.pool.pool.address,
             response,
-            this.amount * 1000000000000000000, // convert ether to wei
+            this.amount,
             await window.web3.eth.net.getNetworkType(),
           );
           openMewUrl(url);
@@ -298,7 +298,7 @@ export default {
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
-            this.connectICO.poolFactory.poolFactory.address,
+            this.connectICO.pool.pool.address,
             response,
             0,
             await window.web3.eth.net.getNetworkType(),
@@ -323,7 +323,7 @@ export default {
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
-            this.connectICO.poolFactory.poolFactory.address,
+            this.connectICO.pool.pool.address,
             response,
             0,
             await window.web3.eth.net.getNetworkType(),
@@ -347,7 +347,7 @@ export default {
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
-            this.connectICO.poolFactory.poolFactory.address,
+            this.connectICO.pool.pool.address,
             response,
             0,
             await window.web3.eth.net.getNetworkType(),
