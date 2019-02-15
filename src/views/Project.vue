@@ -91,8 +91,8 @@
                   class="slider w-100 pt-1"
                   min="0"
                   :max="pool.maxPoolAllocation"
-                  step="1"
                   :disabled="true"
+                  :step="pool.minContribution"
                   v-model="pool.balance">
                 </range-slider>
               </div>
