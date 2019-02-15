@@ -80,12 +80,12 @@ export default class LocalPool {
   initParams() {
     const params = {};
 
-    params.saleAddress = '';
+    params.saleAddress = '0x0000000000000000000000000000000000000010';
     params.tokenAddress = '';
     params.saleParticipateFunctionSig = '';
     params.saleWithdrawFunctionSig = '';
-    params.poolDescription = '';
-    params.creatorFeeRate = 1;
+    params.poolDescription = 'mew pool';
+    params.creatorFeeRate = 0;
     const date = Math.floor(new Date() / 1000);
     params.saleStartDate = date;
     params.saleEndDate = date + (24 * 60 * 60 * 7); // add 7 days
