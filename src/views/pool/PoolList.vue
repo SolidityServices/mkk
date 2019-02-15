@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="d-flex flex-row mt-4 flex-wrap">
-          <template v-if="false">
+          <template>
             <div class="d-flex px-3 mb-3"
                  v-for="option in options"
                  :key="option.value"
@@ -66,12 +66,11 @@ import LocalPool from '../../model/LocalPool';
 export default {
   name: 'PoolList',
   data: () => ({
-    selectedOption: null,
     options: [
       { text: 'Active', value: 'active' },
       { text: 'Upcoming', value: 'upcoming' },
       { text: 'Closed', value: 'closed' },
-      { text: 'Waiting for token', value: 'waiting' },
+      // { text: 'Waiting for token', value: 'waiting' },
     ],
     filter: '',
     currentPage: 1,
@@ -101,6 +100,10 @@ export default {
     },
     poolCount() {
       return this.$store.getters.poolCount(this.filter);
+    },
+    selectedOption: {
+      get: function () { return this.$store.getters.category; },
+      set: function (value) { return this.$store.dispatch('setCategory', value); },
     },
   },
 };
