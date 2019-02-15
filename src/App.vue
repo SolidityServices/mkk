@@ -102,7 +102,7 @@ export default {
       } else {
         providerUrl = `https://${infura.network}.infura.io/v3/${infura.apiKey}`;
       }
-      window.web3 = new Web3(new HDWalletProvider(infura.mnemonic, providerUrl, 4));
+      window.web3 = new Web3(new HDWalletProvider('red blue yellow brown able owner chat fly tape melt neck purple', providerUrl, 4));
       window.ethInitSuccess = true;
     },
   },
