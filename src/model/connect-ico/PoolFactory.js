@@ -1,8 +1,7 @@
 import TruffleContract from 'truffle-contract';
 import poolFactoryArtifact from '../../../build/contracts/PoolFactory.json';
-import encodeFunctionSignatureWithParameters
-  from '../../utils/encodeFunctionSignatureWithParameters';
 import promisifyEventGet from '../../utils/promisifyEventGet';
+import functionSigToCalldata from '../../utils/functionSigToCalldata';
 
 export default class PoolFactory {
   constructor(provider, account, web3, mode) {
@@ -160,8 +159,8 @@ export default class PoolFactory {
           pool.tokenAddress,
         ],
         [
-          pool.saleParticipateFunctionSig,
-          pool.saleWithdrawFunctionSig,
+          functionSigToCalldata(pool.saleParticipateFunctionSig),
+          functionSigToCalldata(pool.saleWithdrawFunctionSig),
           pool.poolDescription,
         ],
         [
@@ -194,8 +193,8 @@ export default class PoolFactory {
         pool.tokenAddress,
       ],
       [
-        pool.saleParticipateFunctionSig,
-        pool.saleWithdrawFunctionSig,
+        functionSigToCalldata(pool.saleParticipateFunctionSig),
+        functionSigToCalldata(pool.saleWithdrawFunctionSig),
         pool.poolDescription,
       ],
       [
@@ -265,10 +264,5 @@ export default class PoolFactory {
     const event = await instance.poolCreated(filter, { fromBlock: 0, toBlock: 'latest' });
     const logs = await promisifyEventGet(event);
     return logs.map(item => item.args.poolAddress);
-  }
-
-  async functionSigToCalldata(functionSig) {
-    const encodedFuncSignature = await encodeFunctionSignatureWithParameters(functionSig);
-    return this.web3.eth.abi.encodeFunctionCall(encodedFuncSignature.abiJson, encodedFuncSignature.params);
   }
 }

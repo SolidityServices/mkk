@@ -1,8 +1,7 @@
 import TruffleContract from 'truffle-contract';
 import poolArtifact from '../../../build/contracts/Pool.json';
-import encodeFunctionSignatureWithParameters
-  from '../../utils/encodeFunctionSignatureWithParameters';
 import promisifyEventGet from '../../utils/promisifyEventGet';
+import functionSigToCalldata from '../../utils/functionSigToCalldata';
 
 export default class Pool {
   constructor(provider, account, web3, mode) {
@@ -819,10 +818,10 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.sendToSaleWithCalldataParameter.request(this.functionSigToCalldata(functionSignature), { from: this.account }).params[0].data;
+      return instance.sendToSaleWithCalldataParameter.request(functionSigToCalldata(functionSignature), { from: this.account }).params[0].data;
     }
 
-    return instance.sendToSaleWithCalldataParameter(this.functionSigToCalldata(functionSignature), { from: this.account });
+    return instance.sendToSaleWithCalldataParameter(functionSigToCalldata(functionSignature), { from: this.account });
   }
 
   /**
@@ -837,9 +836,9 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.withdrawFromSaleWithCalldataParameter.request(this.functionSigToCalldata(functionSignature), { from: this.account }).params[0].data;
+      return instance.withdrawFromSaleWithCalldataParameter.request(functionSigToCalldata(functionSignature), { from: this.account }).params[0].data;
     }
-    return instance.withdrawFromSaleWithCalldataParameter(this.functionSigToCalldata(functionSignature), { from: this.account });
+    return instance.withdrawFromSaleWithCalldataParameter(functionSigToCalldata(functionSignature), { from: this.account });
   }
 
   /**
@@ -1083,20 +1082,20 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.setSaleParticipateCalldata.request(this.functionSigToCalldata(functionSignature), { from: this.account }).params[0].data;
+      return instance.setSaleParticipateCalldata.request(functionSigToCalldata(functionSignature), { from: this.account }).params[0].data;
     }
 
-    return instance.setSaleParticipateCalldata(this.functionSigToCalldata(functionSignature), { from: this.account });
+    return instance.setSaleParticipateCalldata(functionSigToCalldata(functionSignature), { from: this.account });
   }
 
   async setSaleWithdrawCalldata(poolAddress, functionSignature) {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.setSaleWithdrawCalldata.request(this.functionSigToCalldata(functionSignature), { from: this.account }).params[0].data;
+      return instance.setSaleWithdrawCalldata.request(functionSigToCalldata(functionSignature), { from: this.account }).params[0].data;
     }
 
-    return instance.setSaleWithdrawCalldata(this.functionSigToCalldata(functionSignature), { from: this.account });
+    return instance.setSaleWithdrawCalldata(functionSigToCalldata(functionSignature), { from: this.account });
   }
 
   async getAdmins(poolAddress) {
@@ -1177,10 +1176,5 @@ export default class Pool {
       if (mostRecentEvents[item].isActive) activeItems.push(item);
     });
     return activeItems;
-  }
-
-  async functionSigToCalldata(functionSig) {
-    const { abiJson, params } = encodeFunctionSignatureWithParameters(functionSig);
-    return this.web3.eth.abi.encodeFunctionCall(abiJson, params);
   }
 }

@@ -70,7 +70,6 @@ export default {
           });
         }
       }
-      // TODO: put back, need to warn the user if web3 not initialized properly
       // else if (window.web3) {
       //   console.log('window.web3 is defined');
       //   // Legacy dapp browsers...

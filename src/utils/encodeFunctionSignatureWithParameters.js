@@ -2,7 +2,6 @@ import stringArgv from 'string-argv';
 import fixBoolsAndUints from './fixBoolsAndUints';
 
 export default async function (signatureWithParameters) {
-  console.log(signatureWithParameters);
   const nameEndIndex = signatureWithParameters.indexOf('(');
   const signatureEndIndex = signatureWithParameters.indexOf(')') + 1;
   const paramsStartIndex = signatureEndIndex + 1;
