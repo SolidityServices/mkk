@@ -251,7 +251,7 @@ export default {
           const url = mewLinkBuilder(
             this.connectICO.poolFactory.poolFactory.address,
             response,
-            this.amount,
+            this.amount * 1000000000000000000, // convert ether to wei
             await window.web3.eth.net.getNetworkType(),
           );
           openMewUrl(url);
@@ -276,7 +276,7 @@ export default {
           const url = mewLinkBuilder(
             this.connectICO.poolFactory.poolFactory.address,
             response,
-            this.amount,
+            this.amount * 1000000000000000000, // convert ether to wei
             await window.web3.eth.net.getNetworkType(),
           );
           openMewUrl(url);
