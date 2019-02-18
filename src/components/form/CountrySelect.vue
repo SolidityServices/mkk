@@ -1,0 +1,87 @@
+<template>
+    <multiselect
+            :value="values"
+            @input="setCountries"
+            :options="options"
+            :multiple="true"
+            label="name"
+            track-by="alpha3Code">
+    </multiselect>
+</template>
+
+<script>
+import Multiselect from 'vue-multiselect';
+
+export default {
+  components: {
+    Multiselect,
+  },
+  props: [
+    'value',
+    'options',
+  ],
+  data() {
+    return {
+      values: [],
+    };
+  },
+  mounted() {
+    this.values = this.transformCountryObjects(this.value);
+  },
+  methods: {
+    transformCountryObjects(countryCodeArray) {
+      return this.options.filter(option => countryCodeArray.includes(option.alpha3Code));
+    },
+    transformCountryCodes(countryObjects) {
+      return countryObjects.map(value => value.alpha3Code);
+    },
+    setCountries(countryObjects) {
+      this.values = countryObjects;
+
+      this.$emit('input', this.transformCountryCodes(countryObjects));
+    },
+  },
+};
+</script>
+
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+
+<style>
+    .multiselect {
+        /*height: 40px;*/
+        /*border-radius: 20px;*/
+        /*border: 2px #243AA9 solid;*/
+        /*color: #243AA9;*/
+    }
+    .multiselect__tags{
+        border-radius: 20px;
+        border: 2px #243AA9 solid;
+        color: #243AA9;
+    }
+
+    .multiselect__content-wrapper{
+        border-radius: 20px;
+        border: 2px #243AA9 solid;
+        color: #243AA9;
+    }
+
+    .multiselect__tag {
+        margin: 0 10px 0 0;
+        background: #243AA9;
+        border-radius: 10px;
+    }
+
+    .multiselect__option--highlight{
+        background: #243AA9;
+    }
+
+    .multiselect__tag-icon:hover {
+        background: transparent;
+    }
+
+    .multiselect__tag-icon::after {
+        line-height: 16px;
+        font-size: 16px;
+        color: white;
+    }
+</style>

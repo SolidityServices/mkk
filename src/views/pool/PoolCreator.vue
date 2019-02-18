@@ -214,24 +214,45 @@
             </div>
           </div>
 
-          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Country blacklist:</div>
-            <div class="col-12 col-lg-6">
-              <b-form-select
-                multiple
-                v-model="pool.countryBlackList"
-                class="form-control input-dd"
-                value-field="alpha3Code"
-                text-field="name"
-                :options="countries"
+          <div class="col-12 col-md-6 d-flex flex-row mt-3 flex-wrap">
+            <div class="col-12 blue-18-reg mb-1">Country blacklist:</div>
+            <div class="col-12">
+              <country-select
+                      multiple
+                      v-model="pool.countryBlackList"
+                      :options="countries"
               />
             </div>
           </div>
 
-          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Selected countries:</div>
-            <div class="col-12 col-lg-6">{{pool.countryBlackList.join(', ')}}</div>
+          <div class="col-12 col-md-6 d-flex flex-row mt-3 flex-wrap">
+            <div class="col-12 blue-18-reg mb-1">Selected countries:</div>
+            <div class="col-12">{{pool.countryBlackList.join(', ')}}</div>
           </div>
+
+          <!--<div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">-->
+            <!--<div class="col-12 col-lg-6 blue-18-reg">Selected countries:</div>-->
+            <!--<div class="col-12 col-lg-6">{{pool.countryBlackList.join(', ')}}</div>-->
+          <!--</div>-->
+
+          <!--<div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">-->
+            <!--<div class="col-12 col-lg-6 blue-18-reg">Country blacklist:</div>-->
+            <!--<div class="col-12 col-lg-6">-->
+              <!--<b-form-select-->
+                <!--multiple-->
+                <!--v-model="pool.countryBlackList"-->
+                <!--class="form-control input-dd"-->
+                <!--value-field="alpha3Code"-->
+                <!--text-field="name"-->
+                <!--:options="countries"-->
+              <!--/>-->
+            <!--</div>-->
+          <!--</div>-->
+
+          <!--<div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">-->
+            <!--<div class="col-12 blue-18-reg mb-1">Selected countries:</div>-->
+            <!--<div class="col-12">{{pool.countryBlackList.join(', ')}}</div>-->
+          <!--</div>-->
 
 
           <div class="col-12 d-flex flex-column mt-3 flex-wrap">
@@ -330,6 +351,7 @@
 import { mapGetters } from 'vuex';
 import moment from 'moment';
 import datePicker from 'vue-bootstrap-datetimepicker';
+import CountrySelect from '../../components/form/CountrySelect.vue';
 import LocalPool from '../../model/LocalPool';
 import mewLinkBuilder from '../../utils/mewLinkBuilder';
 import openMewUrl from '../../utils/openMewUrl';
@@ -337,10 +359,12 @@ import openMewUrl from '../../utils/openMewUrl';
 export default {
   components: {
     datePicker,
+    CountrySelect,
   },
   data() {
     return {
       pool: null,
+      multiSelectCountries: [],
       datepickerOptions: {
         format: 'DD/MM/YYYY H:mm',
         useCurrent: false,
@@ -366,6 +390,9 @@ export default {
     ]),
   },
   methods: {
+    setCountries(countries) {
+      console.log(countries);
+    },
     async getTransferDetails() {
       const factoryParams = await this.connectICO.poolFactory.getAllPoolFactoryParams();
       return {
