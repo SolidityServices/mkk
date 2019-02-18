@@ -318,11 +318,11 @@ export default class Pool {
    * @param {number} index
    * @return {string} pool contributor address
    */
-
+  /*  deprecated, use contributed event instead
   async getContributor(poolAddress, index) {
     const instance = await this.pool.at(poolAddress);
     return instance.contributorList.call(index, { from: this.account });
-  }
+  } */
 
 
   /** FIX CONTRACT (GETTER)
@@ -333,7 +333,7 @@ export default class Pool {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @return {number} number of individual pool contributors
    */
-  /*
+  /*  deprecated, use contributed event instead
   async getContributorNumber(poolAddress) {
     let instance;
     let result;
@@ -376,6 +376,12 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
     const result = await instance.contributors.call(contributorAddress, { from: this.account });
     return result[1].toNumber();
+  }
+
+  async getNetContribution(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    const result = await instance.getNetContribution.call({ from: this.account });
+    return result.toNumber();
   }
 
 
@@ -1168,6 +1174,19 @@ export default class Pool {
     const logs = await promisifyEventGet(event);
 
     return logs.map(item => ({ contributor: item.args.poolAddress, amount: item.args.amount }));
+  }
+
+  async watchContributionEvents(poolAddress, contributorAddress) {
+    const instance = await this.pool.at(poolAddress);
+    const filter = {};
+    if (contributorAddress) filter.contributor = contributorAddress;
+
+    const event = await instance.contributed(filter, { fromBlock: 0, toBlock: 'latest' });
+    event.watch((error, result) => {
+      if (!error) {
+        console.log(result);
+      }
+    });
   }
 
   // eslint-disable-next-line class-methods-use-this
