@@ -228,36 +228,71 @@
             </button>
           </div>
 
-          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap" v-if="!disabled">
-            <div class="col-12 col-lg-6 blue-18-reg">Country blacklist:</div>
-            <div class="col-12 col-lg-6">
-              <b-form-select
-                multiple
-                v-model="selectedCountries"
-                class="form-control input-dd"
-                :disabled="disabled"
-                value-field="alpha3Code"
-                text-field="name"
-                :options="countries"
-              />
+          <div class="col-12 d-flex flex-row mt-3 flex-wrap">
+            <div class="col-12 col-lg-3 blue-18-reg mb-1">Pool Country blacklist:</div>
+            <div class="col-12 col-lg-9">{{ blacklistedCountriesText }}</div>
+          </div>
+
+          <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap">
+              <div class="col-12 col-md-6 mb-2 mb-lg-0">
+                <country-select
+                        multiple
+                        v-model="countriesToAdd"
+                        :options="selectableCountries"/>
+              </div>
+
+              <div class="col-12 col-md-3 d-flex flex-row flex-wrap">
+                <button class="btn blue-submit px-4 w-100" @click="addToBlacklist">
+                  Add to blacklist
+                </button>
+              </div>
+          </div>
+
+          <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap">
+            <div class="col-12 col-md-6  mb-2 mb-lg-0">
+              <country-select
+                      multiple
+                      v-model="countriesToRemove"
+                      :options="blacklistedCountries"/>
+            </div>
+
+            <div class="col-12 col-md-3 d-flex flex-row flex-wrap">
+              <button class="btn blue-submit px-4 w-100" @click="removeFromBlacklist">
+                Remove from blacklist
+              </button>
             </div>
           </div>
 
-          <div class="col-12 col-md-6 d-flex flex-column mt-3 flex-wrap" v-if="!disabled">
-            <div class="d-flex flex-row flex-wrap" v-if="!disabled">
-              <div class="col-12 col-lg-6 blue-18-reg">Selected countries:</div>
-              <div class="col-12 col-lg-6">{{ selectedCountriesText }}</div>
-            </div>
-          </div>
+          <!--<div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap" v-if="!disabled">-->
+            <!--<div class="col-12 col-lg-6 blue-18-reg">Country blacklist:</div>-->
+            <!--<div class="col-12 col-lg-6">-->
+              <!--<b-form-select-->
+                <!--multiple-->
+                <!--v-model="selectedCountries"-->
+                <!--class="form-control input-dd"-->
+                <!--:disabled="disabled"-->
+                <!--value-field="alpha3Code"-->
+                <!--text-field="name"-->
+                <!--:options="countries"-->
+              <!--/>-->
+            <!--</div>-->
+          <!--</div>-->
 
-          <div class="w-100 d-flex flex-row align-items-center mt-3 flex-wrap justify-content-center" v-if="!disabled">
-            <button class="btn white-submit px-4 mr-3" @click="addCountryToBlacklist">
-              Add country
-            </button>
-            <button class="btn white-submit px-4 mr-3" @click="removeCountryFromBlacklist">
-              Remove country
-            </button>
-          </div>
+          <!--<div class="col-12 col-md-6 d-flex flex-column mt-3 flex-wrap" v-if="!disabled">-->
+            <!--<div class="d-flex flex-row flex-wrap" v-if="!disabled">-->
+              <!--<div class="col-12 col-lg-6 blue-18-reg">Selected countries:</div>-->
+              <!--<div class="col-12 col-lg-6">{{ selectedCountriesText }}</div>-->
+            <!--</div>-->
+          <!--</div>-->
+
+          <!--<div class="w-100 d-flex flex-row align-items-center mt-3 flex-wrap justify-content-center" v-if="!disabled">-->
+            <!--<button class="btn white-submit px-4 mr-3" @click="addCountryToBlacklist">-->
+              <!--Add country-->
+            <!--</button>-->
+            <!--<button class="btn white-submit px-4 mr-3" @click="removeCountryFromBlacklist">-->
+              <!--Remove country-->
+            <!--</button>-->
+          <!--</div>-->
 
 
           <div class="col-12 d-flex flex-column mt-3 flex-wrap" v-if="!disabled && isCreator">
@@ -316,10 +351,12 @@ import { mapGetters } from 'vuex';
 import moment from 'moment';
 import datePicker from 'vue-bootstrap-datetimepicker';
 import LocalPool from '../model/LocalPool';
+import CountrySelect from './form/CountrySelect.vue';
 
 export default {
   components: {
     datePicker,
+    CountrySelect,
   },
   props: {
     pool: {
@@ -345,9 +382,16 @@ export default {
       poolAddress: null,
       showFuncSig: false,
       selectedCountries: [],
+      selectableCountries: [],
+      blacklistedCountries: [],
+      countriesToAdd: [],
+      countriesToRemove: [],
       newAdminAddress: '',
       newWhitelistAddress: '',
     };
+  },
+  mounted() {
+    this.initCountryData();
   },
   computed: {
     submitDisabled() {
@@ -357,6 +401,9 @@ export default {
       'connectICO',
       'countries',
     ]),
+    blacklistedCountriesText() {
+      return this.blacklistedCountries.map(country => country.alpha3Code).join(', ');
+    },
     selectedCountriesText() {
       return this.selectedCountries ? this.selectedCountries.join(', ') : '';
     },
@@ -365,6 +412,40 @@ export default {
     },
   },
   methods: {
+    async initCountryData() {
+      const data = await this.connectICO.pool.getKycCountryBlacklist(this.pool.poolAddress);
+      this.countriesToAdd = [];
+      this.countriesToRemove = data || [];
+      this.selectedCountries = data || [];
+      this.selectableCountries = (data) ? this.countries.filter(option => !data.includes(option.alpha3Code)) : [];
+      this.blacklistedCountries = (data) ? this.countries.filter(option => data.includes(option.alpha3Code)) : [];
+
+      return data;
+    },
+    async addToBlacklist() {
+      try {
+        await this.connectICO.pool.addCountryBlacklist(this.pool.poolAddress, this.countriesToAdd);
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
+
+      this.initCountryData();
+    },
+    async removeFromBlacklist() {
+      try {
+        await this.connectICO.pool.removeCountryBlacklist(this.pool.poolAddress, this.countriesToRemove);
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
+
+      this.initCountryData();
+    },
     async getTransferDetails() {
       const factoryParams = await this.connectICO.poolFactory.getAllPoolFactoryParams();
       return {
@@ -414,26 +495,26 @@ export default {
         });
       }
     },
-    async addCountryToBlacklist() {
-      try {
-        await this.connectICO.pool.addCountryBlacklist(this.pool.poolAddress, this.selectedCountries);
-      } catch (e) {
-        this.$notify({
-          type: 'error',
-          text: e.message,
-        });
-      }
-    },
-    async removeCountryFromBlacklist() {
-      try {
-        await this.connectICO.pool.removeCountryBlacklist(this.pool.poolAddress, this.selectedCountries);
-      } catch (e) {
-        this.$notify({
-          type: 'error',
-          text: e.message,
-        });
-      }
-    },
+    // async addCountryToBlacklist() {
+    //   try {
+    //     await this.connectICO.pool.addCountryBlacklist(this.pool.poolAddress, this.selectedCountries);
+    //   } catch (e) {
+    //     this.$notify({
+    //       type: 'error',
+    //       text: e.message,
+    //     });
+    //   }
+    // },
+    // async removeCountryFromBlacklist() {
+    //   try {
+    //     await this.connectICO.pool.removeCountryBlacklist(this.pool.poolAddress, this.selectedCountries);
+    //   } catch (e) {
+    //     this.$notify({
+    //       type: 'error',
+    //       text: e.message,
+    //     });
+    //   }
+    // },
     async addAdminAddress() {
       try {
         await this.connectICO.pool.addAdmin(this.pool.poolAddress, [this.newAdminAddress]);

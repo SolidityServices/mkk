@@ -1,7 +1,9 @@
 <template>
     <multiselect
             :value="values"
-            @input="setCountries"
+            @input="onInput"
+            @select="onAdd"
+            @remove="onRemove"
             :options="options"
             :multiple="true"
             label="name"
@@ -28,6 +30,11 @@ export default {
   mounted() {
     this.values = this.transformCountryObjects(this.value);
   },
+  watch: {
+    value(val) {
+      this.values = this.transformCountryObjects(val);
+    },
+  },
   methods: {
     transformCountryObjects(countryCodeArray) {
       return this.options.filter(option => countryCodeArray.includes(option.alpha3Code));
@@ -35,7 +42,13 @@ export default {
     transformCountryCodes(countryObjects) {
       return countryObjects.map(value => value.alpha3Code);
     },
-    setCountries(countryObjects) {
+    onAdd(countryObject) {
+      this.$emit('add', countryObject.alpha3Code);
+    },
+    onRemove(countryObject) {
+      this.$emit('remove', countryObject.alpha3Code);
+    },
+    onInput(countryObjects) {
       this.values = countryObjects;
 
       this.$emit('input', this.transformCountryCodes(countryObjects));
