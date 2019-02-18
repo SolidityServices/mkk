@@ -263,38 +263,6 @@
             </div>
           </div>
 
-          <!--<div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap" v-if="!disabled">-->
-            <!--<div class="col-12 col-lg-6 blue-18-reg">Country blacklist:</div>-->
-            <!--<div class="col-12 col-lg-6">-->
-              <!--<b-form-select-->
-                <!--multiple-->
-                <!--v-model="selectedCountries"-->
-                <!--class="form-control input-dd"-->
-                <!--:disabled="disabled"-->
-                <!--value-field="alpha3Code"-->
-                <!--text-field="name"-->
-                <!--:options="countries"-->
-              <!--/>-->
-            <!--</div>-->
-          <!--</div>-->
-
-          <!--<div class="col-12 col-md-6 d-flex flex-column mt-3 flex-wrap" v-if="!disabled">-->
-            <!--<div class="d-flex flex-row flex-wrap" v-if="!disabled">-->
-              <!--<div class="col-12 col-lg-6 blue-18-reg">Selected countries:</div>-->
-              <!--<div class="col-12 col-lg-6">{{ selectedCountriesText }}</div>-->
-            <!--</div>-->
-          <!--</div>-->
-
-          <!--<div class="w-100 d-flex flex-row align-items-center mt-3 flex-wrap justify-content-center" v-if="!disabled">-->
-            <!--<button class="btn white-submit px-4 mr-3" @click="addCountryToBlacklist">-->
-              <!--Add country-->
-            <!--</button>-->
-            <!--<button class="btn white-submit px-4 mr-3" @click="removeCountryFromBlacklist">-->
-              <!--Remove country-->
-            <!--</button>-->
-          <!--</div>-->
-
-
           <div class="col-12 d-flex flex-column mt-3 flex-wrap" v-if="!disabled && isCreator">
             <div class="row mx-0 mt-3">
               <div class="col-12 col-lg-3 blue-18-reg d-flex flex-row">
@@ -381,7 +349,6 @@ export default {
       },
       poolAddress: null,
       showFuncSig: false,
-      selectedCountries: [],
       selectableCountries: [],
       blacklistedCountries: [],
       countriesToAdd: [],
@@ -404,19 +371,12 @@ export default {
     blacklistedCountriesText() {
       return this.blacklistedCountries.map(country => country.alpha3Code).join(', ');
     },
-    selectedCountriesText() {
-      return this.selectedCountries ? this.selectedCountries.join(', ') : '';
-    },
-    countryBlackListText() {
-      return this.pool.countryBlackList ? this.pool.countryBlackList.join(', ') : '';
-    },
   },
   methods: {
     async initCountryData() {
       const data = await this.connectICO.pool.getKycCountryBlacklist(this.pool.poolAddress);
       this.countriesToAdd = [];
       this.countriesToRemove = data || [];
-      this.selectedCountries = data || [];
       this.selectableCountries = (data) ? this.countries.filter(option => !data.includes(option.alpha3Code)) : [];
       this.blacklistedCountries = (data) ? this.countries.filter(option => data.includes(option.alpha3Code)) : [];
 
@@ -495,26 +455,6 @@ export default {
         });
       }
     },
-    // async addCountryToBlacklist() {
-    //   try {
-    //     await this.connectICO.pool.addCountryBlacklist(this.pool.poolAddress, this.selectedCountries);
-    //   } catch (e) {
-    //     this.$notify({
-    //       type: 'error',
-    //       text: e.message,
-    //     });
-    //   }
-    // },
-    // async removeCountryFromBlacklist() {
-    //   try {
-    //     await this.connectICO.pool.removeCountryBlacklist(this.pool.poolAddress, this.selectedCountries);
-    //   } catch (e) {
-    //     this.$notify({
-    //       type: 'error',
-    //       text: e.message,
-    //     });
-    //   }
-    // },
     async addAdminAddress() {
       try {
         await this.connectICO.pool.addAdmin(this.pool.poolAddress, [this.newAdminAddress]);
