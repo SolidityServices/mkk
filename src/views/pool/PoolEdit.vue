@@ -40,6 +40,8 @@ import { mapGetters } from 'vuex';
 import 'vue-range-slider/dist/vue-range-slider.css';
 import LocalPool from '../../model/LocalPool';
 import Pool from '../../components/Pool.vue';
+import mewLinkBuilder from '../../utils/mewLinkBuilder';
+import openMewUrl from '../../utils/openMewUrl';
 
 export default {
   data: () => ({
@@ -69,11 +71,22 @@ export default {
     },
     async sendFundsToSale() {
       try {
-        await this.connectICO.pool.sendToSale(this.pool.poolAddress);
-        this.$notify({
-          type: 'success',
-          text: 'Successfully sent funds to sale!',
-        });
+        const response = await this.connectICO.pool.sendToSale(this.pool.poolAddress);
+
+        if (this.mode === 'mm') {
+          this.$notify({
+            type: 'success',
+            text: 'Successfully sent funds to sale!',
+          });
+        } else if (this.mode === 'mew') {
+          const url = mewLinkBuilder(
+            this.address,
+            response,
+            0,
+            await window.web3.eth.net.getNetworkType(),
+          );
+          openMewUrl(url);
+        }
       } catch (e) {
         this.$notify({
           type: 'error',
@@ -83,11 +96,22 @@ export default {
     },
     async stopPool() {
       try {
-        await this.connectICO.pool.stopPool(this.pool.poolAddress);
-        this.$notify({
-          type: 'success',
-          text: 'Pool successfully stopped!',
-        });
+        const response = await this.connectICO.pool.stopPool(this.pool.poolAddress);
+
+        if (this.mode === 'mm') {
+          this.$notify({
+            type: 'success',
+            text: 'Pool successfully stopped!',
+          });
+        } else if (this.mode === 'mew') {
+          const url = mewLinkBuilder(
+            this.address,
+            response,
+            0,
+            await window.web3.eth.net.getNetworkType(),
+          );
+          openMewUrl(url);
+        }
       } catch (e) {
         this.$notify({
           type: 'error',
@@ -98,10 +122,21 @@ export default {
     async confirmTokensReceived() {
       try {
         const response = await this.connectICO.pool.areTokensReceivedConfirmed(this.pool.poolAddress);
-        this.$notify({
-          type: 'success',
-          text: response,
-        });
+
+        if (this.mode === 'mm') {
+          this.$notify({
+            type: 'success',
+            text: response,
+          });
+        } else if (this.mode === 'mew') {
+          const url = mewLinkBuilder(
+            this.address,
+            response,
+            0,
+            await window.web3.eth.net.getNetworkType(),
+          );
+          openMewUrl(url);
+        }
       } catch (e) {
         this.$notify({
           type: 'error',
@@ -111,11 +146,22 @@ export default {
     },
     async creatorWithdraw() {
       try {
-        await this.connectICO.pool.creatorWithdraw(this.pool.poolAddress);
-        this.$notify({
-          type: 'success',
-          text: 'Successful creator withdraw!',
-        });
+        const response = await this.connectICO.pool.creatorWithdraw(this.pool.poolAddress);
+
+        if (this.mode === 'mm') {
+          this.$notify({
+            type: 'success',
+            text: 'Successful creator withdraw!',
+          });
+        } else if (this.mode === 'mew') {
+          const url = mewLinkBuilder(
+            this.address,
+            response,
+            0,
+            await window.web3.eth.net.getNetworkType(),
+          );
+          openMewUrl(url);
+        }
       } catch (e) {
         this.$notify({
           type: 'error',
@@ -125,11 +171,22 @@ export default {
     },
     async pushOutTokens() {
       try {
-        await this.connectICO.pool.pushOutToken(this.pool.poolAddress, this.recipientAddress);
-        this.$notify({
-          type: 'success',
-          text: 'Successful sale token push out!',
-        });
+        const response = await this.connectICO.pool.pushOutToken(this.pool.poolAddress, this.recipientAddress);
+
+        if (this.mode === 'mm') {
+          this.$notify({
+            type: 'success',
+            text: 'Successful sale token push out!',
+          });
+        } else if (this.mode === 'mew') {
+          const url = mewLinkBuilder(
+            this.address,
+            response,
+            0,
+            await window.web3.eth.net.getNetworkType(),
+          );
+          openMewUrl(url);
+        }
       } catch (e) {
         this.$notify({
           type: 'error',
