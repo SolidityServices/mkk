@@ -233,7 +233,7 @@
             <div class="col-12 col-lg-9">{{ blacklistedCountriesText }}</div>
           </div>
 
-          <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap">
+          <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
               <div class="col-12 col-md-6 mb-2 mb-lg-0">
                 <country-select
                         multiple
@@ -248,7 +248,7 @@
               </div>
           </div>
 
-          <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap">
+          <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
             <div class="col-12 col-md-6  mb-2 mb-lg-0">
               <country-select
                       multiple
