@@ -322,6 +322,8 @@ import { mapGetters } from 'vuex';
 import moment from 'moment';
 import datePicker from 'vue-bootstrap-datetimepicker';
 import LocalPool from '../../model/LocalPool';
+import mewLinkBuilder from '../../utils/mewLinkBuilder';
+import openMewUrl from '../../utils/openMewUrl';
 
 export default {
   components: {
@@ -351,6 +353,7 @@ export default {
     ...mapGetters([
       'connectICO',
       'countries',
+      'mode',
     ]),
   },
   methods: {
@@ -379,7 +382,7 @@ export default {
         return;
       }
 
-      const transferValue = await this.getTransferDetails().transferValue;
+      const transferDetails = await this.getTransferDetails();
       if (typeof this.pool.saleStartDate === 'string') {
         this.pool.saleStartDate = moment(this.pool.saleStartDate, this.datepickerOptions.format);
       }
@@ -388,14 +391,25 @@ export default {
       }
 
       try {
-        const response = await this.connectICO.poolFactory.createPool(this.pool, transferValue);
-        if (response) {
-          this.poolAddress = response;
-          this.$notify({
-            type: 'success',
-            title: 'Pool created!',
-            text: `${response}`,
-          });
+        const response = await this.connectICO.poolFactory.createPool(this.pool, transferDetails.transferValue);
+
+        if (this.mode === 'mm') {
+          if (response) {
+            this.poolAddress = response;
+            this.$notify({
+              type: 'success',
+              title: 'Pool created!',
+              text: `${response}`,
+            });
+          }
+        } else if (this.mode === 'mew') {
+          const url = mewLinkBuilder(
+            this.connectICO.poolFactory.poolFactory.address,
+            response,
+            transferDetails.transferValue,
+            await window.web3.eth.net.getNetworkType(),
+          );
+          openMewUrl(url);
         }
       } catch (e) {
         this.$notify({

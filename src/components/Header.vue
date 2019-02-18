@@ -13,17 +13,40 @@
         <span><a href="#" target="_blank"><img src="../assets/header/header-icon-3.png" alt=""></a></span>
       </div>
     </div>
-    <div class="d-flex flex-row flex-wrap w-80 w-lg-60 justify-content-center">
-      <router-link :to="{name: 'pool-creator'}" class="custom-navbar-item">Pool Creator</router-link>
-      <!--<router-link :to="{name: 'project', params: {address: null}}" class="custom-navbar-item">Project</router-link>-->
-      <!--<router-link :to="{name: 'deploy-contract'}" class="custom-navbar-item">Deploy Contract</router-link>-->
-      <router-link :to="{name: 'pool-list'}" class="custom-navbar-item">Pool List</router-link>
+    <div class="d-flex flex-row flex-wrap w-100">
+      <div class="d-flex flex-grow-1 justify-content-center">
+        <router-link :to="{name: 'pool-creator'}" class="custom-navbar-item">Pool Creator</router-link>
+        <!--<router-link :to="{name: 'project', params: {address: null}}" class="custom-navbar-item">Project</router-link>-->
+        <!--<router-link :to="{name: 'deploy-contract'}" class="custom-navbar-item">Deploy Contract</router-link>-->
+        <router-link :to="{name: 'pool-list'}" class="custom-navbar-item">Pool List</router-link>
+      </div>
+      <b-form-group class="d-flex mx-5">
+        <b-form-radio-group id="modeOptions"
+                            class="text-white"
+                            v-model="mode"
+                            :options="modeOptions"
+                            name="modeOptions">
+        </b-form-radio-group>
+      </b-form-group>
     </div>
   </header>
 </template>
 
 <script>
-export default {};
+export default {
+  data: () => ({
+    modeOptions: [
+      { text: 'MEW', value: 'mew' },
+      { text: 'MM', value: 'mm' },
+    ],
+  }),
+  computed: {
+    mode: {
+      get() { return this.$store.getters.mode; },
+      set(v) { this.$store.commit('setMode', v); },
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
