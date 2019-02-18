@@ -28,14 +28,16 @@
                  class="form-control input-text"
                  :disabled="disabled"
                  v-model="pool.saleAddress" placeholder="Sale ETH address"/>
+          <span v-if="errors.has('Sale ETH address')" v-text="errors.first('Sale ETH address')" class="text-danger"></span>
         </div>
 
         <div class="d-flex flex-column col-12">
           <div class="blue-24-16-bold py-3 pl-4"> Token address (optional):</div>
-          <input type="text" v-validate="'eth-address'" data-vv-name="Sale ETH address"
+          <input type="text" v-validate="'eth-address'" data-vv-name="Token address"
                  class="form-control input-text"
                  :disabled="disabled"
                  v-model="pool.tokenAddress" placeholder="Token ETH address"/>
+          <span v-if="errors.has('Token address')" v-text="errors.first('Token address')" class="text-danger"></span>
         </div>
       </div>
 
@@ -101,6 +103,7 @@
                 v-validate="'required'"
                 data-vv-name="Description"
               />
+              <span v-if="errors.has('Description')" v-text="errors.first('Description')" class="text-danger"></span>
             </div>
           </div>
 
@@ -122,6 +125,7 @@
                      min="0"
                      max="100"
                      v-model="pool.creatorFeeRate">
+              <span v-if="errors.has('Creator fee')" v-text="errors.first('Creator fee')" class="text-danger"></span>
             </div>
           </div>
 
@@ -162,6 +166,7 @@
                      :disabled="disabled"
                      data-vv-name="Minimum pool goal"
                      v-model="pool.minPoolGoal">
+              <span v-if="errors.has('Minimum pool goal')" v-text="errors.first('Minimum pool goal')" class="text-danger"></span>
             </div>
           </div>
 
@@ -174,6 +179,7 @@
                      :disabled="disabled"
                      data-vv-name="Max allocation"
                      v-model="pool.maxPoolAllocation">
+              <span v-if="errors.has('Max allocation')" v-text="errors.first('Max allocation')" class="text-danger"></span>
             </div>
           </div>
 
@@ -195,6 +201,7 @@
                      :disabled="disabled"
                      data-vv-name="Withdraw time lock"
                      v-model="pool.withdrawTimelock">
+              <span v-if="errors.has('Withdraw time lock')" v-text="errors.first('Withdraw time lock')" class="text-danger"></span>
             </div>
           </div>
 
@@ -207,6 +214,7 @@
                      :disabled="disabled"
                      data-vv-name="Minimum contribution"
                      v-model="pool.minContribution"/>
+              <span v-if="errors.has('Minimum contribution')" v-text="errors.first('Minimum contribution')" class="text-danger"></span>
             </div>
           </div>
 
@@ -219,6 +227,7 @@
                      :disabled="disabled"
                      data-vv-name="Maximum contribution"
                      v-model="pool.maxContribution"/>
+              <span v-if="errors.has('Maximum contribution')" v-text="errors.first('Maximum contribution')" class="text-danger"></span>
             </div>
           </div>
 
