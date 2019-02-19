@@ -1172,6 +1172,28 @@ export default class Pool {
     });
   }
 
+  async getTokensRecievedEvent(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    const event = await instance.tokensReceived({
+      fromBlock: 0,
+      toBlock: 'latest',
+    });
+    const logs = await promisifyEventGet(event);
+
+    return logs;
+  }
+
+  async watchTokensRecievedEvent(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+
+    const event = await instance.tokensReceived({ fromBlock: 0, toBlock: 'latest' });
+    event.watch((error, result) => {
+      if (!error) {
+        console.log(result);
+      }
+    });
+  }
+
   // eslint-disable-next-line class-methods-use-this
   getActiveListItems(logs) {
     const mostRecentEvents = {};

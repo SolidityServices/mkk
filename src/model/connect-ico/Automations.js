@@ -1,12 +1,43 @@
 import TruffleContract from 'truffle-contract';
-import promisifyEventGet from './promisifyEventGet';
+import automationsArtifact from '../../../build/contracts/Automations.json';
+import promisifyEventGet from '../../utils/promisifyEventGet';
 
 export default class Automations {
-  constructor(provider, account, web3, automationsArtifact) {
+  constructor(provider, account, web3) {
     this.kyc = TruffleContract(automationsArtifact);
     this.kyc.setProvider(provider);
     this.account = account;
     this.web3 = web3;
+  }
+
+  async getAddress() {
+    const instance = await this.tokenPushRegistry.deployed();
+    return instance.address;
+  }
+
+  async getPushServer() {
+    const instance = await this.tokenPushRegistry.deployed();
+    return instance.pushServer.call({ from: this.account });
+  }
+
+  async getPushGasCost() {
+    const instance = await this.tokenPushRegistry.deployed();
+    return instance.pushGasCost.call({ from: this.account });
+  }
+
+  async getSendToSaleGasCost() {
+    const instance = await this.tokenPushRegistry.deployed();
+    return instance.sendToSaleGasCost.call({ from: this.account });
+  }
+
+  async addPushOutToken(pool, recipient, gasPrice) {
+    const instance = await this.tokenPushRegistry.deployed();
+    return instance.addPushOutToken(pool, recipient, gasPrice, { from: this.account });
+  }
+
+  async addSendToSale(pool, time, gasPrice) {
+    const instance = await this.tokenPushRegistry.deployed();
+    return instance.addSendToSale(pool, time, gasPrice, { from: this.account });
   }
 
   async emitPushOutTokenCompleted(pool, recipient) {
@@ -17,6 +48,16 @@ export default class Automations {
   async emitSendToSaleCompleted(pool) {
     const instance = await this.tokenPushRegistry.deployed();
     return instance.emitPushOutTokenCompleted(pool, { from: this.account });
+  }
+
+  async setPushServer(pushServer) {
+    const instance = await this.tokenPushRegistry.deployed();
+    return instance.setPushServer(pushServer, { from: this.account });
+  }
+
+  async setPushGasCost(pushGasCost) {
+    const instance = await this.tokenPushRegistry.deployed();
+    return instance.setPushGasCost(pushGasCost, { from: this.account });
   }
 
   async getNewPushOutTokenEvent(poolAddress) {
