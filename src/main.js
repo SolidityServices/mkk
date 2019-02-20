@@ -16,6 +16,21 @@ Validator.extend('eth-address', {
   validate: value => Web3.utils.isAddress(value),
 });
 
+Validator.extend('eth-address-array', {
+  getMessage: field => `The ${field} contains elements that is not an Ethereum address.`,
+  validate: (value) => {
+    let valid = true;
+
+    value.forEach((address) => {
+      if (!Web3.utils.isAddress(address)) {
+        valid = false;
+      }
+    });
+
+    return valid;
+  },
+});
+
 Vue.use(VeeValidate);
 Vue.use(BootstrapVue);
 Vue.use(Notifications);
