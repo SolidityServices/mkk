@@ -1,11 +1,10 @@
 import TruffleContract from 'truffle-contract';
 
 export default class KYC {
-  constructor(provider, account, web3, kycArtifact) {
+  constructor(provider, account, kycArtifact) {
     this.kyc = TruffleContract(kycArtifact);
     this.kyc.setProvider(provider);
     this.account = account;
-    this.web3 = web3;
   }
 
   async addKYCAddress(kycAddress, country) {
