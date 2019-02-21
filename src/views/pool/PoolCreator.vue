@@ -491,12 +491,6 @@ export default {
     async calculateFee() {
       this.calculatedFee = await this.getTransferDetails();
     },
-    removeAddress(object, index) {
-      object.splice(index, 1);
-    },
-    addAddress(object) {
-      object.push('');
-    },
     saleStartDateChanged(event) {
       this.pool.saleEndDate = moment(event.date.add(7, 'days'), this.datepickerOptions.format);
     },
