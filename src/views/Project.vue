@@ -137,42 +137,45 @@
           <div class="d-inline blue-36-20-bold"> Contributions
             <hr align="left" class="blue-hr-2">
           </div>
-          <div class="row pt-4">
-            <div class="col-1 d-none d-lg-flex"></div>
-            <div class="col-12 col-lg-5 pt-1 pl-3">
-              <div class="pl-3 px-0">
-                <div class="d-lg-inline-block orange-18-bold pr-2 px-0">Amount in ETH:</div>
-                <div class="d-lg-inline-block blue-18-reg px-0">
-                  <input type="number" v-validate="'required|numeric|min_value:0'"
-                         step="0.000001"
-                         class="form-control input-text w-100" data-vv-name="Amount"
-                         v-model="amount">
-                </div>
-              </div>
+
+          <div class="d-flex flex-row align-items-center mb-3">
+            <div class="col-12 col-md-4 d-flex justify-content-end">
+              <div class="d-lg-inline-block orange-18-bold pr-2 px-0">Deposit Amount in ETH:</div>
             </div>
-            <!--<div class="col-12 col-lg-6 pl-5 row">-->
-              <!--<div class="col-12 col-lg-6 row pt-4 pt-lg-0" v-for="contribution in contributions">-->
-                <!--<div class="col-6 blue-18-reg">Tx1</div>-->
-                <!--<div class="col-6 orange-18-bold">1000</div>-->
 
-                <!--<div class="col-6 blue-18-reg">TxHash</div>-->
-                <!--<div class="col-6 orange-18-bold">1000</div>-->
+            <div class="col-12 col-md-8 d-flex flex-row align-items-center">
+              <div class="col-12 col-md-8">
+                <input type="number" v-validate="`required|decimal|max-deposit`"
+                       step="0.000001"
+                       class="form-control input-text w-100" data-vv-name="Deposit amount"
+                       v-model="depositAmount">
+                <span v-if="errors.has('Deposit amount')" v-text="errors.first('Deposit amount')" class="text-danger"></span>
+              </div>
 
-                <!--<div class="col-6 blue-18-reg">Amount</div>-->
-                <!--<div class="col-6 orange-18-bold">{{contribution.amount.c[0] / 10000}}</div>-->
-              <!--</div>-->
-            <!--</div>-->
+              <button class="btn px-4 blue-submit btn-block" @click="contribute">Deposit ETH</button>
+            </div>
           </div>
+
+          <div class="d-flex flex-row align-items-center mb-3">
+            <div class="col-12 col-md-4 d-flex justify-content-end">
+              <div class="d-lg-inline-block orange-18-bold pr-2 px-0">Withdraw Amount in ETH:</div>
+            </div>
+
+            <div class="col-12 col-md-8 d-flex flex-row align-items-center">
+              <div class="col-12 col-md-8">
+                <input type="number" v-validate="`required|max-withdraw`"
+                       step="0.000001"
+                       class="form-control input-text w-100" data-vv-name="Withdraw amount"
+                       v-model="withdrawAmount">
+                <span v-if="errors.has('Withdraw amount')" v-text="errors.first('Withdraw amount')" class="text-danger"></span>
+              </div>
+
+              <button class="btn px-4 blue-submit btn-block" @click="withdraw">Withdraw ETH</button>
+            </div>
+          </div>
+
           <div class="row mt-5">
             <div class="d-flex row justify-content-center w-100 py-5">
-              <div class="text-center text-lg-right mx-2">
-                <button class="btn px-4 blue-submit" @click="contribute">Deposit ETH</button>
-              </div>
-
-              <div class="text-center text-lg-left mx-2">
-                <button class="btn px-4 blue-submit" @click="withdraw">Withdraw ETH</button>
-              </div>
-
               <div class="text-center text-lg-left mx-2">
                 <button class="btn px-4 white-submit" @click="withdrawTokens">Withdraw tokens</button>
               </div>
@@ -212,12 +215,15 @@ export default {
     address: '',
     pool: null,
     sliderTotalFilled: 20,
-    amount: 0.000001,
+    depositAmount: 0.000001,
+    withdrawAmount: 0.000001,
     showAdvancedDetails: false,
     customToken: '',
     contributions: [],
     blacklistedCountries: [],
     withDrawRefundAvailable: false,
+    userContribution: 0,
+    userMaxDeposit: 0,
   }),
   components: {
     RangeSlider,
@@ -252,19 +258,25 @@ export default {
       this.contributions = await this.connectICO.pool.getContributionsByContributor(this.address, this.connectICO.account);
     },
     async contribute() {
+      const isValid = await this.$validator.validate('Deposit amount', this.depositAmount);
+
+      if (!isValid) {
+        return;
+      }
+
       try {
-        const response = await this.connectICO.pool.contribute(this.address, this.amount);
+        const response = await this.connectICO.pool.contribute(this.address, this.depositAmount);
         if (this.mode === 'mm') {
           this.$notify({
             type: 'success',
             title: 'Successful deposit!',
-            text: `${this.amount} ETH`,
+            text: `${this.depositAmount} ETH`,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
             this.connectICO.pool.pool.address,
             response,
-            this.amount,
+            this.depositAmount,
             await window.web3.eth.net.getNetworkType(),
           );
           openMewUrl(url);
@@ -277,19 +289,25 @@ export default {
       }
     },
     async withdraw() {
+      const isValid = await this.$validator.validate('Withdraw amount', this.withdrawAmount);
+
+      if (!isValid) {
+        return;
+      }
+
       try {
-        const response = await this.connectICO.pool.withdraw(this.address, this.amount);
+        const response = await this.connectICO.pool.withdraw(this.address, this.withdrawAmount);
         if (this.mode === 'mm') {
           this.$notify({
             type: 'success',
             title: 'Successful withdraw!',
-            text: `${this.amount} ETH`,
+            text: `${this.withdrawAmount} ETH`,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
             this.connectICO.pool.pool.address,
             response,
-            this.amount,
+            this.withdrawAmount,
             await window.web3.eth.net.getNetworkType(),
           );
           openMewUrl(url);
@@ -391,21 +409,21 @@ export default {
     async initWithDrawRefundAvailable() {
       this.withDrawRefundAvailable = await this.checkWithDrawRefundAvailable();
     },
-    // async initSymbol() {
-    //   const grossContri = await this.connectICO.pool.getGrossContributionByContributor(this.address, this.connectICO.account);
-    //
-    //   console.log(grossContri / 1000000000000000000);
-    //
-    //   // try {
-    //   //      // const contributorTokens = await this.connectICO.pool.getTokensOwedToContributor(this.address, this.connectICO.account);
-    //   //      // const symbol = await this.connectICO.KYC.getSymbol(this.pool.tokenAddress);
-    //   // } catch (e) {
-    //   //   this.$notify({
-    //   //     type: 'error',
-    //   //     text: e.message,
-    //   //   });
-    //   // }
-    // },
+    async initUserContributions() {
+      try {
+        let userContribution = await this.connectICO.pool.getGrossContributionByContributor(this.address, this.connectICO.account);
+
+        userContribution /= 1000000000000000000;
+
+        this.userContribution = userContribution;
+        this.userMaxDeposit = parseFloat(this.pool.maxContribution) - parseFloat(userContribution);
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
+    },
   },
   mounted() {
     if (this.$route.params.address) {
@@ -413,8 +431,24 @@ export default {
       this.search();
       this.initCountryData();
       this.initWithDrawRefundAvailable();
-      // this.initSymbol();
     }
+  },
+  beforeUpdate() {
+    this.initUserContributions();
+
+    this.$validator.extend('max-deposit', {
+      getMessage: field => `The ${field} must between ${this.pool.minContribution} and ${this.userMaxDeposit}.`,
+      validate: value => value >= this.pool.minContribution && value <= this.userMaxDeposit,
+    }, {
+      immediate: false,
+    });
+
+    this.$validator.extend('max-withdraw', {
+      getMessage: field => `The ${field} must bigger than 0 and lesser or equal ${this.userContribution}.`,
+      validate: value => value > 0 && value <= this.userContribution,
+    }, {
+      immediate: false,
+    });
   },
 };
 </script>
