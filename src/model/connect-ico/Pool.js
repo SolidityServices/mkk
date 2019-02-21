@@ -1159,17 +1159,13 @@ export default class Pool {
     }));
   }
 
-  async watchContributionEvents(poolAddress, contributorAddress) {
+  async watchContributionEvents(poolAddress, contributorAddress, callback) {
     const instance = await this.pool.at(poolAddress);
     const filter = {};
     if (contributorAddress) filter.contributor = contributorAddress;
 
     const event = await instance.contributed(filter, { fromBlock: 0, toBlock: 'latest' });
-    event.watch((error, result) => {
-      if (!error) {
-        console.log(result);
-      }
-    });
+    event.watch(callback);
   }
 
   async getTokensRecievedEvent(poolAddress) {
@@ -1183,15 +1179,11 @@ export default class Pool {
     return logs;
   }
 
-  async watchTokensRecievedEvent(poolAddress) {
+  async watchTokensRecievedEvent(poolAddress, callback) {
     const instance = await this.pool.at(poolAddress);
 
     const event = await instance.tokensReceived({ fromBlock: 0, toBlock: 'latest' });
-    event.watch((error, result) => {
-      if (!error) {
-        console.log(result);
-      }
-    });
+    event.watch(callback);
   }
 
   // eslint-disable-next-line class-methods-use-this
