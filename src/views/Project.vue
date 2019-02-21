@@ -80,9 +80,9 @@
           <!--<div class="orange-24-bold text-center pt-2">85 ETH</div>-->
           <!--</div>-->
           <!--</div>-->
-          <div class="row mx-0 pt-3">
+          <!--<div class="row mx-0 pt-3">-->
 
-          </div>
+          <!--</div>-->
           <div class="row mx-0 pt-5">
             <div class="col-6 col-lg-2 orange-24-16-bold px-0 order-1"> Total filled</div>
             <div class="col-12 col-lg-4 pt-1 order-3 order-lg-2 px-0">
@@ -101,6 +101,11 @@
                 orange-24-16-bold px-0 order-2 order-lg-3 text-right text-lg-left">
               {{pool.balance}}/{{pool.maxPoolAllocation}} ETH
             </div>
+          </div>
+
+          <div class="d-flex flex-row mt-5 flex-wrap">
+              <div class="col-12 col-lg-3 blue-18-reg mb-1">Pool Country blacklist:</div>
+              <div class="col-12 col-lg-9">{{ blacklistedCountriesText }}</div>
           </div>
 
           <hr class="blue-hr-fullw my-5">
@@ -173,7 +178,7 @@
               </div>
 
               <div class="text-center text-lg-left mx-2">
-                <button class="btn px-4 white-submit" @click="withdrawRefund">Withdraw refund</button>
+                <button class="btn px-4 white-submit" @click="withdrawRefund" :disabled="!withDrawRefundAvailable">Withdraw refund</button>
               </div>
             </div>
             <div class="d-flex flex-row justify-content-center col-12 col-lg-6 mx-auto pb-5">
@@ -211,6 +216,8 @@ export default {
     showAdvancedDetails: false,
     customToken: '',
     contributions: [],
+    blacklistedCountries: [],
+    withDrawRefundAvailable: false,
   }),
   components: {
     RangeSlider,
@@ -221,8 +228,14 @@ export default {
       'connectICO',
       'mode',
     ]),
+    blacklistedCountriesText() {
+      return this.blacklistedCountries.join(', ');
+    },
   },
   methods: {
+    async initCountryData() {
+      this.blacklistedCountries = await this.connectICO.pool.getKycCountryBlacklist(this.address);
+    },
     async search() {
       if (await this.connectICO.poolFactory.checkIfPoolExists(this.address)) {
         this.pool = new LocalPool(this.address);
@@ -361,11 +374,46 @@ export default {
         });
       }
     },
+    async checkWithDrawRefundAvailable() {
+      const isSentToSale = await this.connectICO.pool.isSentToSale(this.address);
+
+      if (isSentToSale) {
+        const poolBalance = this.connectICO.pool.getPoolBalance(this.address);
+        const creatorStash = this.connectICO.pool.getCreatorStash(this.address);
+        const providerStash = this.connectICO.pool.getProviderStash(this.address);
+
+        if (poolBalance > (creatorStash + providerStash)) {
+          return true;
+        }
+      }
+      return false;
+    },
+    async initWithDrawRefundAvailable() {
+      this.withDrawRefundAvailable = await this.checkWithDrawRefundAvailable();
+    },
+    // async initSymbol() {
+    //   const grossContri = await this.connectICO.pool.getGrossContributionByContributor(this.address, this.connectICO.account);
+    //
+    //   console.log(grossContri / 1000000000000000000);
+    //
+    //   // try {
+    //   //      // const contributorTokens = await this.connectICO.pool.getTokensOwedToContributor(this.address, this.connectICO.account);
+    //   //      // const symbol = await this.connectICO.KYC.getSymbol(this.pool.tokenAddress);
+    //   // } catch (e) {
+    //   //   this.$notify({
+    //   //     type: 'error',
+    //   //     text: e.message,
+    //   //   });
+    //   // }
+    // },
   },
   mounted() {
     if (this.$route.params.address) {
       this.address = this.$route.params.address;
       this.search();
+      this.initCountryData();
+      this.initWithDrawRefundAvailable();
+      // this.initSymbol();
     }
   },
 };
