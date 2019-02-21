@@ -51,7 +51,6 @@ export default class Automations {
     const instance = await this.automations.deployed();
     const event = await instance.newSendToSale({ fromBlock: 0, toBlock: 'latest' });
     event.watch(callback);
-
   }
 
   async getCompletedPushOutTokenEvent() {

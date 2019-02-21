@@ -19,11 +19,22 @@ export default class Pool {
   async sendToSale(poolAddress) {
     const instance = await this.pool.at(poolAddress);
 
-    if (this.mode === 'mew') {
-      return instance.sendToSale.request({ from: this.account }).params[0].data;
-    }
-
     return instance.sendToSale({ from: this.account });
+  }
+
+  /**
+   * Push out pool main tokens to participants (only admin, mostly for token push server)
+   *
+   * Frontend page: Pool admin page for pool admins
+   * (but mostly called by token push server, might not even on frontend)
+   *
+   * @param {string} poolAddress address of the Pool this function iteracts with
+   * @param {string} recipientAddress address to push out their coins
+   */
+  async pushOutToken(poolAddress, recipientAddress) {
+    const instance = await this.pool.at(poolAddress);
+
+    return instance.pushOutToken(recipientAddress, { from: this.account });
   }
 
   async getTokensRecievedEvent(poolAddress) {

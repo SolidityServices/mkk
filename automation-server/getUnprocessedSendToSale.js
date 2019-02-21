@@ -15,14 +15,12 @@ export default async function (automationsInstance) {
     delete unprocessedSendToSale[poolAddress];
   });
 
-  automationsInstance.watchNewSendToSaleEvent((error, result) => {
-    if (!error) {
-      unprocessedSendToSale[result.args.pool] = {
-        time: result.args.time,
-        gasPrice: result.args.gasPrice,
-      };
-    } else {
-      console.log(error);
-    }
+  const sendToSaleTimes = {};
+
+  unprocessedSendToSale.keys().forEach((element) => {
+    if (sendToSaleTimes[unprocessedSendToSale[element].time]) sendToSaleTimes[unprocessedSendToSale[element].time].push(unprocessedSendToSale[element].pool);
+    else sendToSaleTimes[unprocessedSendToSale[element].time] = [unprocessedSendToSale[element].pool];
   });
+
+  return { unprocessedSendToSale, sendToSaleTimes };
 }
