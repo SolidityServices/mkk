@@ -1159,6 +1159,21 @@ export default class Pool {
     }));
   }
 
+  /**
+   * Watch for contributions
+   *
+   * @param {string} poolAddress address of the Pool this function iteracts with
+   * @param {string} contributorAddress address of contributor, if you want to watch for events by ALL contributors, pass null or false
+   * @param {function} callback callback function, should look something like this:
+   *  (error, result) => {
+   *    if(!error){
+   *     ... do stuff
+   *   } else {
+   *     console.log(error);
+   *   }
+   * }
+   */
+
   async watchContributionEvents(poolAddress, contributorAddress, callback) {
     const instance = await this.pool.at(poolAddress);
     const filter = {};
