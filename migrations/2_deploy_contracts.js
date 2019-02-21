@@ -4,7 +4,7 @@ var Pool = artifacts.require('./Pool.sol')
 var SafeMath = artifacts.require('../node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol')
 var SemiSafeMath = artifacts.require('./SemiSafeMath.sol')
 var KYC = artifacts.require('./KYC.sol')
-var TokenPushRegistry = artifacts.require('./TokenPushRegistry.sol')
+var Automations = artifacts.require('./Automations.sol')
 
 module.exports = function (deployer) {
 

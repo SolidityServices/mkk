@@ -1,0 +1,6 @@
+{
+  "mnemonic": "XXXXX - https://iancoleman.io/bip39/",
+  "apiKey": "XXXXX - https://infura.io",
+  "network": "mainnet/kovan/ropsten/rinkeby",
+  "accountNumber": 0
+}

@@ -1159,17 +1159,46 @@ export default class Pool {
     }));
   }
 
-  async watchContributionEvents(poolAddress, contributorAddress) {
+  /**
+   * Watch for contributions
+   *
+   * @param {string} poolAddress address of the Pool this function iteracts with
+   * @param {string} contributorAddress address of contributor, if you want to watch for events by ALL contributors, pass null or false
+   * @param {function} callback callback function, should look something like this:
+   *  (error, result) => {
+   *    if(!error){
+   *     ... do stuff
+   *   } else {
+   *     console.log(error);
+   *   }
+   * }
+   */
+
+  async watchContributionEvents(poolAddress, contributorAddress, callback) {
     const instance = await this.pool.at(poolAddress);
     const filter = {};
     if (contributorAddress) filter.contributor = contributorAddress;
 
     const event = await instance.contributed(filter, { fromBlock: 0, toBlock: 'latest' });
-    event.watch((error, result) => {
-      if (!error) {
-        console.log(result);
-      }
+    event.watch(callback);
+  }
+
+  async getTokensRecievedEvent(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    const event = await instance.tokensReceived({
+      fromBlock: 0,
+      toBlock: 'latest',
     });
+    const logs = await promisifyEventGet(event);
+
+    return logs;
+  }
+
+  async watchTokensRecievedEvent(poolAddress, callback) {
+    const instance = await this.pool.at(poolAddress);
+
+    const event = await instance.tokensReceived({ fromBlock: 0, toBlock: 'latest' });
+    event.watch(callback);
   }
 
   // eslint-disable-next-line class-methods-use-this
