@@ -40,14 +40,10 @@ export default class Pool {
     }));
   }
 
-  async watchTokensRecievedEvent(poolAddress) {
+  async watchTokensRecievedEvent(poolAddress, callback) {
     const instance = await this.pool.at(poolAddress);
 
     const event = await instance.tokensReceived({ fromBlock: 0, toBlock: 'latest' });
-    event.watch((error, result) => {
-      if (!error) {
-        console.log(result);
-      }
-    });
+    event.watch(callback);
   }
 }
