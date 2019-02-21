@@ -2,7 +2,7 @@ import Vue from 'vue';
 import PoolFactory from './PoolFactory';
 import Pool from './Pool';
 import KYC from './KYC';
-import TokenPushRegistry from './TokenPushRegistry';
+import Automations from './Automations';
 
 export default class ConnectICO {
   constructor(mode) {
@@ -49,7 +49,7 @@ export default class ConnectICO {
       this.pool = new Pool(this.web3.currentProvider, this.account, this.web3, this.mode);
       this.poolFactory = new PoolFactory(this.web3.currentProvider, this.account, this.web3, this.mode);
       this.KYC = new KYC(this.web3.currentProvider, this.account, this.web3);
-      this.tokenPushRegistry = new TokenPushRegistry(this.web3.currentProvider);
+      this.automations = new Automations(this.web3.currentProvider, this.account);
 
       console.log('Application initialized');
       this.loaded = true;

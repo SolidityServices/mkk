@@ -3,11 +3,10 @@ import automationsArtifact from '../../../build/contracts/Automations.json';
 import promisifyEventGet from '../../utils/promisifyEventGet';
 
 export default class Automations {
-  constructor(provider, account, web3) {
+  constructor(provider, account) {
     this.kyc = TruffleContract(automationsArtifact);
     this.kyc.setProvider(provider);
     this.account = account;
-    this.web3 = web3;
   }
 
   async getAddress() {
