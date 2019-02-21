@@ -246,30 +246,15 @@
               <div class="col-12 col-md-6 mb-2 mb-lg-0">
                 <country-select
                         multiple
-                        v-model="countriesToAdd"
-                        :options="selectableCountries"/>
+                        v-model="blacklistedCountries"
+                        :options="countries"/>
               </div>
 
               <div class="col-12 col-md-3 d-flex flex-row flex-wrap">
                 <button class="btn blue-submit px-4 w-100" @click="addToBlacklist">
-                  Add to blacklist
+                  Update country blacklist
                 </button>
               </div>
-          </div>
-
-          <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
-            <div class="col-12 col-md-6  mb-2 mb-lg-0">
-              <country-select
-                      multiple
-                      v-model="countriesToRemove"
-                      :options="blacklistedCountries"/>
-            </div>
-
-            <div class="col-12 col-md-3 d-flex flex-row flex-wrap">
-              <button class="btn blue-submit px-4 w-100" @click="removeFromBlacklist">
-                Remove from blacklist
-              </button>
-            </div>
           </div>
 
           <div class="col-12 d-flex flex-column mt-3 flex-wrap" v-if="!disabled && isCreator">
@@ -358,10 +343,7 @@ export default {
       },
       poolAddress: null,
       showFuncSig: false,
-      selectableCountries: [],
       blacklistedCountries: [],
-      countriesToAdd: [],
-      countriesToRemove: [],
       newAdminAddress: '',
       newWhitelistAddress: '',
     };
@@ -378,34 +360,16 @@ export default {
       'countries',
     ]),
     blacklistedCountriesText() {
-      return this.blacklistedCountries.map(country => country.alpha3Code).join(', ');
+      return this.blacklistedCountries.join(', ');
     },
   },
   methods: {
     async initCountryData() {
-      const data = await this.connectICO.pool.getKycCountryBlacklist(this.pool.poolAddress);
-      this.countriesToAdd = [];
-      this.countriesToRemove = data || [];
-      this.selectableCountries = (data) ? this.countries.filter(option => !data.includes(option.alpha3Code)) : [];
-      this.blacklistedCountries = (data) ? this.countries.filter(option => data.includes(option.alpha3Code)) : [];
-
-      return data;
+      this.blacklistedCountries = await this.connectICO.pool.getKycCountryBlacklist(this.pool.poolAddress);
     },
     async addToBlacklist() {
       try {
-        await this.connectICO.pool.addCountryBlacklist(this.pool.poolAddress, this.countriesToAdd);
-      } catch (e) {
-        this.$notify({
-          type: 'error',
-          text: e.message,
-        });
-      }
-
-      this.initCountryData();
-    },
-    async removeFromBlacklist() {
-      try {
-        await this.connectICO.pool.removeCountryBlacklist(this.pool.poolAddress, this.countriesToRemove);
+        await this.connectICO.pool.addCountryBlacklist(this.pool.poolAddress, this.blacklistedCountries);
       } catch (e) {
         this.$notify({
           type: 'error',
