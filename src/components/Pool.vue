@@ -243,65 +243,77 @@
           </div>
 
           <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
-              <div class="col-12 col-md-6 mb-2 mb-lg-0">
+              <div class="col-12 col-md-8 mb-2 mb-lg-0">
                 <country-select
                         multiple
                         v-model="blacklistedCountries"
                         :options="countries"/>
               </div>
 
-              <div class="col-12 col-md-3 d-flex flex-row flex-wrap">
+              <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
                 <button class="btn blue-submit px-4 w-100" @click="addToBlacklist">
-                  Update country blacklist
+                  Update Country blacklist
                 </button>
               </div>
           </div>
 
-          <div class="col-12 d-flex flex-column mt-3 flex-wrap" v-if="!disabled && isCreator">
-            <div class="row mx-0 mt-3">
-              <div class="col-12 col-lg-3 blue-18-reg d-flex flex-row">
-                <span>Admin address: </span>
+          <!--v-if="!disabled && isCreator"-->
+          <div class="w-100">
+              <div class="col-12 d-flex flex-row mt-3 flex-wrap">
+                <div class="col-12 blue-18-reg">Admin addresses:</div>
               </div>
-              <div class="col-12 col-lg-9 d-flex flex-row">
-                <input type="text" v-validate="'required|eth-address'" data-vv-name="Admin address"
-                       class="form-control input-text w-100"
-                       v-model="newAdminAddress" placeholder="Admin address"/>
+
+              <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
+                <div class="col-12 col-md-8 mb-2 mb-lg-0">
+                  <multiselect
+                          class="w-100"
+                          v-validate="'eth-address-array'"
+                          data-vv-name="Admin addresses"
+                          v-model="adminAddresses"
+                          :multiple="true"
+                          :options="[]"
+                          :taggable="true"
+                          @tag="addAdminAddress">
+                  </multiselect>
+                  <span v-if="errors.has('Admin addresses')" v-text="errors.first('Admin addresses')" class="text-danger"></span>
+                </div>
+
+                <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
+                  <button class="btn btn-block blue-submit px-4 w-100" @click="updateAdminAddresses">
+                    Update Admin addresses
+                  </button>
+                </div>
+              </div>
+          </div>
+
+          <!--v-if="!disabled"-->
+          <div class="w-100">
+            <div class="col-12 d-flex flex-row mt-3 flex-wrap">
+              <div class="col-12 blue-18-reg">Whitelist addresses:</div>
+            </div>
+
+            <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
+              <div class="col-12 col-md-8 mb-2 mb-lg-0">
+                <multiselect
+                        class="w-100"
+                        v-validate="'eth-address-array'"
+                        data-vv-name="Whitelist addresses"
+                        v-model="whitelistAddresses"
+                        :multiple="true"
+                        :options="[]"
+                        :taggable="true"
+                        @tag="addWhitelistAddress">
+                </multiselect>
+                <span v-if="errors.has('Whitelist addresses')" v-text="errors.first('Whitelist addresses')" class="text-danger"></span>
+              </div>
+
+              <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
+                <button class="btn btn-block blue-submit px-4 w-100" @click="updateWhitelistAddresses">
+                  Update Whitelist addresses
+                </button>
               </div>
             </div>
           </div>
-
-          <div class="w-100 d-flex flex-row align-items-center mt-2 flex-wrap justify-content-center" v-if="!disabled && isCreator">
-            <button class="btn white-submit px-4 mr-3" @click="addAdminAddress">
-              Add address
-            </button>
-            <button class="btn white-submit px-4 mr-3" @click="removeAdminAddress">
-              Remove address
-            </button>
-          </div>
-
-          <div class="col-12 d-flex flex-column mt-3 flex-wrap" v-if="!disabled">
-            <div class="row mx-0 mt-3">
-              <div class="col-12 col-lg-3 blue-18-reg d-flex flex-row">
-                <span>Whitelist addresses: </span>
-              </div>
-              <div class="d-flex flex-row col-12 col-lg-9">
-                <input type="text" v-validate="'eth-address'" data-vv-name="Whitelist address"
-                       class="form-control input-text w-100"
-                       :disabled="disabled"
-                       v-model="newWhitelistAddress" placeholder="Whitelist address"/>
-              </div>
-            </div>
-          </div>
-
-          <div class="w-100 d-flex flex-row align-items-center mt-2 flex-wrap justify-content-center" v-if="!disabled">
-            <button class="btn white-submit px-4 mr-3" @click="addWhitelistAddress">
-              Add address
-            </button>
-            <button class="btn white-submit px-4 mr-3" @click="removeWhitelistAddress">
-              Remove address
-            </button>
-          </div>
-
         </div>
       </div>
     </div>
@@ -312,12 +324,14 @@
 import { mapGetters } from 'vuex';
 import moment from 'moment';
 import datePicker from 'vue-bootstrap-datetimepicker';
+import Multiselect from 'vue-multiselect';
 import LocalPool from '../model/LocalPool';
 import CountrySelect from './form/CountrySelect.vue';
 
 export default {
   components: {
     datePicker,
+    Multiselect,
     CountrySelect,
   },
   props: {
@@ -344,12 +358,13 @@ export default {
       poolAddress: null,
       showFuncSig: false,
       blacklistedCountries: [],
-      newAdminAddress: '',
-      newWhitelistAddress: '',
+      adminAddresses: [],
+      whitelistAddresses: [],
     };
   },
   mounted() {
-    this.initCountryData();
+    this.initBlacklistedCountries();
+    this.initAddresses();
   },
   computed: {
     submitDisabled() {
@@ -364,7 +379,53 @@ export default {
     },
   },
   methods: {
-    async initCountryData() {
+    async initAddresses() {
+      this.adminAddresses = await this.connectICO.pool.getAdmins(this.pool.poolAddress);
+      this.whitelistAddresses = await this.connectICO.pool.getWhitelist(this.pool.poolAddress);
+    },
+    async addAdminAddress(address) {
+      const isValid = await this.$validator.validate('Admin addresses', [address]);
+
+      if (!isValid) {
+        return;
+      }
+
+      if (!this.adminAddresses.includes(address)) {
+        this.adminAddresses.push(address);
+      }
+    },
+    async addWhitelistAddress(address) {
+      const isValid = await this.$validator.validate('Whitelist addresses', [address]);
+
+      if (!isValid) {
+        return;
+      }
+
+      if (!this.whitelistAddresses.includes(address)) {
+        this.whitelistAddresses.push(address);
+      }
+    },
+    async updateAdminAddresses() {
+      try {
+        await this.connectICO.pool.addAdmin(this.pool.poolAddress, this.adminAddresses);
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
+    },
+    async updateWhitelistAddresses() {
+      try {
+        await this.connectICO.pool.addWhitelist(this.pool.poolAddress, this.whitelistAddresses);
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
+    },
+    async initBlacklistedCountries() {
       this.blacklistedCountries = await this.connectICO.pool.getKycCountryBlacklist(this.pool.poolAddress);
     },
     async addToBlacklist() {
@@ -376,8 +437,6 @@ export default {
           text: e.message,
         });
       }
-
-      this.initCountryData();
     },
     async getTransferDetails() {
       const factoryParams = await this.connectICO.poolFactory.getAllPoolFactoryParams();
@@ -421,46 +480,6 @@ export default {
             text: `${response}`,
           });
         }
-      } catch (e) {
-        this.$notify({
-          type: 'error',
-          text: e.message,
-        });
-      }
-    },
-    async addAdminAddress() {
-      try {
-        await this.connectICO.pool.addAdmin(this.pool.poolAddress, [this.newAdminAddress]);
-      } catch (e) {
-        this.$notify({
-          type: 'error',
-          text: e.message,
-        });
-      }
-    },
-    async removeAdminAddress() {
-      try {
-        await this.connectICO.pool.removeAdmin(this.pool.poolAddress, [this.newAdminAddress]);
-      } catch (e) {
-        this.$notify({
-          type: 'error',
-          text: e.message,
-        });
-      }
-    },
-    async addWhitelistAddress() {
-      try {
-        await this.connectICO.pool.addWhitelist(this.pool.poolAddress, [this.newAdminAddress]);
-      } catch (e) {
-        this.$notify({
-          type: 'error',
-          text: e.message,
-        });
-      }
-    },
-    async removeWhitelistAddress() {
-      try {
-        await this.connectICO.pool.removeWhitelist(this.pool.poolAddress, [this.newAdminAddress]);
       } catch (e) {
         this.$notify({
           type: 'error',
