@@ -246,15 +246,30 @@
               <div class="col-12 col-md-8 mb-2 mb-lg-0">
                 <country-select
                         multiple
-                        v-model="blacklistedCountries"
-                        :options="countries"/>
+                        v-model="countriesToAdd"
+                        :options="selectableCountries"/>
               </div>
 
               <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
                 <button class="btn blue-submit px-4 w-100" @click="addToBlacklist">
-                  Update Country blacklist
+                  Add to blacklist
                 </button>
               </div>
+          </div>
+
+          <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
+            <div class="col-12 col-md-6  mb-2 mb-lg-0">
+              <country-select
+                      multiple
+                      v-model="countriesToRemove"
+                      :options="blacklistedCountries"/>
+            </div>
+
+            <div class="col-12 col-md-3 d-flex flex-row flex-wrap">
+              <button class="btn blue-submit px-4 w-100" @click="removeFromBlacklist">
+                Remove from blacklist
+              </button>
+            </div>
           </div>
 
           <!--v-if="!disabled && isCreator"-->
@@ -269,21 +284,47 @@
                           class="w-100"
                           v-validate="'eth-address-array'"
                           data-vv-name="Admin addresses"
-                          v-model="adminAddresses"
+                          v-model="adminAddressesToAdd"
                           :multiple="true"
                           :options="[]"
                           :taggable="true"
-                          @tag="addAdminAddress">
+                          @tag="addAdminAddressToAdd">
                   </multiselect>
-                  <span v-if="errors.has('Admin addresses')" v-text="errors.first('Admin addresses')" class="text-danger"></span>
+                  <span v-if="errors.has('Add Admin addresses')" v-text="errors.first('Add Admin addresses')" class="text-danger"></span>
                 </div>
 
                 <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
-                  <button class="btn btn-block blue-submit px-4 w-100" @click="updateAdminAddresses">
-                    Update Admin addresses
+                  <button class="btn btn-block blue-submit px-4 w-100" @click="addAdminAddresses">
+                    Add Admin addresses
                   </button>
                 </div>
               </div>
+          </div>
+
+          <div class="w-100">
+            <div class="col-12 d-flex flex-row mt-3 flex-wrap">
+              <div class="col-12 blue-18-reg">Admin addresses:</div>
+            </div>
+
+            <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
+              <div class="col-12 col-md-8 mb-2 mb-lg-0">
+                <multiselect
+                        class="w-100"
+                        v-validate="'eth-address-array'"
+                        data-vv-name="Add Admin addresses"
+                        v-model="adminAddressesToRemove"
+                        :multiple="true"
+                        :options="adminAddresses">
+                </multiselect>
+                <span v-if="errors.has('Admin addresses')" v-text="errors.first('Admin addresses')" class="text-danger"></span>
+              </div>
+
+              <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
+                <button class="btn btn-block blue-submit px-4 w-100" @click="removeAdminAddresses">
+                  Remove Admin addresses
+                </button>
+              </div>
+            </div>
           </div>
 
           <!--v-if="!disabled"-->
@@ -297,19 +338,45 @@
                 <multiselect
                         class="w-100"
                         v-validate="'eth-address-array'"
-                        data-vv-name="Whitelist addresses"
-                        v-model="whitelistAddresses"
+                        data-vv-name="Add Whitelist addresses"
+                        v-model="whitelistAddressesToAdd"
                         :multiple="true"
                         :options="[]"
                         :taggable="true"
-                        @tag="addWhitelistAddress">
+                        @tag="addWhitelistAddressToAdd">
+                </multiselect>
+                <span v-if="errors.has('Add Whitelist addresses')" v-text="errors.first('Add Whitelist addresses')" class="text-danger"></span>
+              </div>
+
+              <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
+                <button class="btn btn-block blue-submit px-4 w-100" @click="addWhitelistAddresses">
+                  Add Whitelist addresses
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="w-100">
+            <div class="col-12 d-flex flex-row mt-3 flex-wrap">
+              <div class="col-12 blue-18-reg">Whitelist addresses:</div>
+            </div>
+
+            <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
+              <div class="col-12 col-md-8 mb-2 mb-lg-0">
+                <multiselect
+                        class="w-100"
+                        v-validate="'eth-address-array'"
+                        data-vv-name="Whitelist addresses"
+                        v-model="whitelistAddressesToRemove"
+                        :multiple="true"
+                        :options="whitelistAddresses">
                 </multiselect>
                 <span v-if="errors.has('Whitelist addresses')" v-text="errors.first('Whitelist addresses')" class="text-danger"></span>
               </div>
 
               <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
-                <button class="btn btn-block blue-submit px-4 w-100" @click="updateWhitelistAddresses">
-                  Update Whitelist addresses
+                <button class="btn btn-block blue-submit px-4 w-100" @click="removeWhitelistAddresses">
+                  Remove Whitelist addresses
                 </button>
               </div>
             </div>
@@ -357,9 +424,16 @@ export default {
       },
       poolAddress: null,
       showFuncSig: false,
+      selectableCountries: [],
       blacklistedCountries: [],
+      countriesToAdd: [],
+      countriesToRemove: [],
       adminAddresses: [],
+      adminAddressesToAdd: [],
+      adminAddressesToRemove: [],
       whitelistAddresses: [],
+      whitelistAddressesToAdd: [],
+      whitelistAddressesToRemove: [],
     };
   },
   mounted() {
@@ -375,7 +449,7 @@ export default {
       'countries',
     ]),
     blacklistedCountriesText() {
-      return this.blacklistedCountries.join(', ');
+      return this.blacklistedCountries.map(country => country.alpha3Code).join(', ');
     },
   },
   methods: {
@@ -383,31 +457,43 @@ export default {
       this.adminAddresses = await this.connectICO.pool.getAdmins(this.pool.poolAddress);
       this.whitelistAddresses = await this.connectICO.pool.getWhitelist(this.pool.poolAddress);
     },
-    async addAdminAddress(address) {
-      const isValid = await this.$validator.validate('Admin addresses', [address]);
+    async addAdminAddressToAdd(address) {
+      const isEthAddress = await this.$validator.validate('Add Admin addresses', [address]);
+      const isKycAddress = await this.connectICO.KYC.checkKYC(address);
 
-      if (!isValid) {
+      if (!isKycAddress) {
+        const field = this.$validator.fields.find({ name: 'Add Admin addresses' });
+
+        this.$validator.errors.add({
+          id: field.id,
+          field: 'Add Admin addresses',
+          msg: 'The given address is not a KYC Address',
+        });
+
+        field.setFlags({
+          invalid: true,
+          valid: false,
+          validated: true,
+        });
+      }
+
+      if (!isEthAddress || !isKycAddress) {
         return;
       }
 
-      if (!this.adminAddresses.includes(address)) {
-        this.adminAddresses.push(address);
+      if (!this.adminAddressesToAdd.includes(address)) {
+        this.adminAddressesToAdd.push(address);
       }
     },
-    async addWhitelistAddress(address) {
-      const isValid = await this.$validator.validate('Whitelist addresses', [address]);
-
-      if (!isValid) {
-        return;
-      }
-
-      if (!this.whitelistAddresses.includes(address)) {
-        this.whitelistAddresses.push(address);
-      }
-    },
-    async updateAdminAddresses() {
+    async addAdminAddresses() {
       try {
-        await this.connectICO.pool.addAdmin(this.pool.poolAddress, this.adminAddresses);
+        await this.connectICO.pool.addAdmin(this.pool.poolAddress, this.adminAddressesToAdd);
+        await this.initAddresses();
+
+        this.$notify({
+          type: 'success',
+          text: 'Admin addresses successfully added!',
+        });
       } catch (e) {
         this.$notify({
           type: 'error',
@@ -415,22 +501,118 @@ export default {
         });
       }
     },
-    async updateWhitelistAddresses() {
+    async removeAdminAddresses() {
       try {
-        await this.connectICO.pool.addWhitelist(this.pool.poolAddress, this.whitelistAddresses);
+        await this.connectICO.pool.removeAdmin(this.pool.poolAddress, this.adminAddressesToRemove);
+        await this.initAddresses();
+
+        this.$notify({
+          type: 'success',
+          text: 'Admin addresses successfully removed!',
+        });
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
         });
       }
+    },
+    async addWhitelistAddressToAdd(address) {
+      const isEthAddress = await this.$validator.validate('Add Whitelist addresses', [address]);
+      const isKycAddress = await this.connectICO.KYC.checkKYC(address);
+
+      if (!isKycAddress) {
+        const field = this.$validator.fields.find({ name: 'Add Whitelist addresses' });
+
+        this.$validator.errors.add({
+          id: field.id,
+          field: 'Add Whitelist addresses',
+          msg: 'The given address is not a KYC Address',
+        });
+
+        field.setFlags({
+          invalid: true,
+          valid: false,
+          validated: true,
+        });
+      }
+
+      if (!isEthAddress || !isKycAddress) {
+        return;
+      }
+
+      if (!this.whitelistAddressesToAdd.includes(address)) {
+        this.whitelistAddressesToAdd.push(address);
+      }
+    },
+    async addWhitelistAddresses() {
+      try {
+        await this.connectICO.pool.addWhitelist(this.pool.poolAddress, this.whitelistAddressesToAdd);
+        await this.initAddresses();
+
+        this.$notify({
+          type: 'success',
+          text: 'Whitelist addresses successfully added!',
+        });
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
+    },
+    async removeWhitelistAddresses() {
+      try {
+        await this.connectICO.pool.removeWhitelist(this.pool.poolAddress, this.whitelistAddressesToRemove);
+        await this.initAddresses();
+
+        this.$notify({
+          type: 'success',
+          text: 'Whitelist addresses successfully removed!',
+        });
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
+    },
+    async initCountryData() {
+      const data = await this.connectICO.pool.getKycCountryBlacklist(this.pool.poolAddress);
+
+      this.countriesToAdd = [];
+      this.countriesToRemove = data || [];
+      this.selectableCountries = (data) ? this.countries.filter(option => !data.includes(option.alpha3Code)) : [];
+      this.blacklistedCountries = (data) ? this.countries.filter(option => data.includes(option.alpha3Code)) : [];
     },
     async initBlacklistedCountries() {
       this.blacklistedCountries = await this.connectICO.pool.getKycCountryBlacklist(this.pool.poolAddress);
     },
     async addToBlacklist() {
       try {
-        await this.connectICO.pool.addCountryBlacklist(this.pool.poolAddress, this.blacklistedCountries);
+        await this.connectICO.pool.addCountryBlacklist(this.pool.poolAddress, this.countriesToAdd);
+        await this.initCountryData();
+
+        this.$notify({
+          type: 'success',
+          text: 'Countries successfully added to blacklist.',
+        });
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
+    },
+    async removeFromBlacklist() {
+      try {
+        await this.connectICO.pool.removeCountryBlacklist(this.pool.poolAddress, this.countriesToRemove);
+        await this.initCountryData();
+
+        this.$notify({
+          type: 'success',
+          text: 'Countries successfully removed from blacklist.',
+        });
       } catch (e) {
         this.$notify({
           type: 'error',
