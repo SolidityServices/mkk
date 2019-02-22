@@ -280,6 +280,7 @@
           </div>
 
           <!--v-if="!disabled && isCreator"-->
+          <div class="w-100">
               <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
                 <div class="col-12 col-md-8 mb-2 mb-lg-0">
                   <multiselect
@@ -378,9 +379,50 @@
               </div>
             </div>
           </div>
+
+          <hr class="blue-hr-fullw my-5 w-100">
+
+          <div class="w-100">
+            <div class="o-border d-inline "></div>
+            <div class="d-inline blue-36-20-bold"> Automations
+              <hr align="left" class="blue-hr-2">
+            </div>
+          </div>
+
+          <div class="w-100">
+            <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
+              <div class="col-12 col-md-3 d-flex justify-content-end">
+                <div class="d-lg-inline-block orange-18-bold pr-2 px-0">Add auto send to sale GAS price in GWEI:</div>
+              </div>
+
+              <div class="col-12 col-md-3 mb-2 mb-lg-0">
+                <input type="number" v-validate="`required|decimal`"
+                       step="0.000001"
+                       class="form-control input-text w-100" data-vv-name="Gwei amount"
+                       v-model="sendToSaleGweiValue">
+                <span v-if="errors.has('Gwei amount')" v-text="errors.first('Gwei amount')" class="text-danger"></span>
+              </div>
+
+              <div class="col-12 col-md-3 mb-2 mb-lg-0">
+                <date-picker v-model="sendToSaleTime"
+                             :config="datepickerOptions"
+                             class="form-control input-text w-100"
+                             :disabled="disabled"
+                ></date-picker>
+              </div>
+
+              <div class="col-12 col-md-3 d-flex flex-row flex-wrap">
+                <button class="btn px-4 blue-submit btn-block" @click="addSendToSale">Add auto send to sale</button>
+              </div>
+            </div>
+          </div>
+
+          <hr class="blue-hr-fullw my-5 w-100">
+
       </div>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -388,6 +430,7 @@ import { mapGetters } from 'vuex';
 import moment from 'moment';
 import datePicker from 'vue-bootstrap-datetimepicker';
 import Multiselect from 'vue-multiselect';
+import Web3 from 'web3';
 import LocalPool from '../model/LocalPool';
 import CountrySelect from './form/CountrySelect.vue';
 
@@ -430,6 +473,8 @@ export default {
       whitelistAddresses: [],
       whitelistAddressesToAdd: [],
       whitelistAddressesToRemove: [],
+      sendToSaleTime: '',
+      sendToSaleGweiValue: 0,
     };
   },
   mounted() {
@@ -634,6 +679,20 @@ export default {
           * this.pool.maxPoolAllocation / 1000
         ),
       };
+    },
+    async addSendToSale() {
+      try {
+        const date = moment(this.sendToSaleTime, this.datepickerOptions.format);
+        const gasPrice = Web3.utils.toWei(this.sendToSaleGweiValue, 'gwei');
+        const response = await this.connectICO.automations.addSendToSale(this.address, date, gasPrice);
+
+        console.log(response);
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
     },
     async submit() {
       const validationResponse = await this.$validator.validateAll();
