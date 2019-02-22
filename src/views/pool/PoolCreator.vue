@@ -495,9 +495,26 @@ export default {
       this.pool.saleEndDate = moment(event.date.add(7, 'days'), this.datepickerOptions.format);
     },
     async addAdminAddress(address) {
-      const isValid = await this.$validator.validate('Admin addresses', [address]);
+      const isEthAddress = await this.$validator.validate('Admin addresses', [address]);
+      const isKycAddress = await this.connectICO.KYC.checkKYC(address);
 
-      if (!isValid) {
+      if (!isKycAddress) {
+        const field = this.$validator.fields.find({ name: 'Admin addresses' });
+
+        this.$validator.errors.add({
+          id: field.id,
+          field: 'Admin addresses',
+          msg: 'The given address is not a KYC Address',
+        });
+
+        field.setFlags({
+          invalid: true,
+          valid: false,
+          validated: true,
+        });
+      }
+
+      if (!isEthAddress || !isKycAddress) {
         return;
       }
 
@@ -506,9 +523,26 @@ export default {
       }
     },
     async addWhitelistAddress(address) {
-      const isValid = await this.$validator.validate('Whitelist addresses', [address]);
+      const isEthAddress = await this.$validator.validate('Whitelist addresses', [address]);
+      const isKycAddress = await this.connectICO.KYC.checkKYC(address);
 
-      if (!isValid) {
+      if (!isKycAddress) {
+        const field = this.$validator.fields.find({ name: 'Whitelist addresses' });
+
+        this.$validator.errors.add({
+          id: field.id,
+          field: 'Whitelist addresses',
+          msg: 'The given address is not a KYC Address',
+        });
+
+        field.setFlags({
+          invalid: true,
+          valid: false,
+          validated: true,
+        });
+      }
+
+      if (!isEthAddress || !isKycAddress) {
         return;
       }
 
