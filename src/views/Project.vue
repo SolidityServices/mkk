@@ -134,6 +134,31 @@
           <hr class="blue-hr-fullw my-5">
 
           <div class="o-border d-inline "></div>
+          <div class="d-inline blue-36-20-bold"> Automations
+            <hr align="left" class="blue-hr-2">
+          </div>
+
+          <div class="d-flex flex-row align-items-center mb-3">
+            <div class="col-12 col-md-4 d-flex justify-content-end">
+              <div class="d-lg-inline-block orange-18-bold pr-2 px-0">Auto token withdraw order GAS Price in GWEI:</div>
+            </div>
+
+            <div class="col-12 col-md-8 d-flex flex-row align-items-center">
+              <div class="col-12 col-md-8">
+                <input type="number" v-validate="`required|decimal`"
+                       step="0.000001"
+                       class="form-control input-text w-100" data-vv-name="Gwei amount"
+                       v-model="autoTokenWithDrawGweiValue">
+                <span v-if="errors.has('Gwei amount')" v-text="errors.first('Gwei amount')" class="text-danger"></span>
+              </div>
+
+              <button class="btn px-4 blue-submit btn-block" @click="addPushOutToken">Add auto push out tokens</button>
+            </div>
+          </div>
+
+          <hr class="blue-hr-fullw my-5">
+
+          <div class="o-border d-inline "></div>
           <div class="d-inline blue-36-20-bold"> Contributions
             <hr align="left" class="blue-hr-2">
           </div>
@@ -205,13 +230,23 @@
 import { mapGetters } from 'vuex';
 import RangeSlider from 'vue-range-slider';
 import 'vue-range-slider/dist/vue-range-slider.css';
+import Web3 from 'web3';
 import LocalPool from '../model/LocalPool';
 import Pool from '../components/Pool.vue';
 import mewLinkBuilder from '../utils/mewLinkBuilder';
 import openMewUrl from '../utils/openMewUrl';
 
 export default {
+  components: {
+    RangeSlider,
+    Pool,
+  },
   data: () => ({
+    datepickerOptions: {
+      format: 'DD/MM/YYYY H:mm',
+      useCurrent: false,
+      sideBySide: true,
+    },
     address: '',
     pool: null,
     sliderTotalFilled: 20,
@@ -224,11 +259,9 @@ export default {
     withDrawRefundAvailable: false,
     userContribution: 0,
     userMaxDeposit: 0,
+    autoTokenWithDrawDate: '',
+    autoTokenWithDrawGweiValue: 0,
   }),
-  components: {
-    RangeSlider,
-    Pool,
-  },
   computed: {
     ...mapGetters([
       'connectICO',
@@ -417,6 +450,19 @@ export default {
 
         this.userContribution = userContribution;
         this.userMaxDeposit = parseFloat(this.pool.maxContribution) - parseFloat(userContribution);
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
+    },
+    async addPushOutToken() {
+      try {
+        const gasPrice = Web3.utils.toWei(this.autoTokenWithDrawGweiValue, 'gwei');
+        const response = await this.connectICO.automations.addPushOutToken(this.address, this.connectICO.account, gasPrice);
+
+        console.log(response);
       } catch (e) {
         this.$notify({
           type: 'error',
