@@ -102,7 +102,7 @@
                 v-model="pool.poolDescription"
                 v-validate="'required'"
                 data-vv-name="Description"
-              />
+              ></textarea>
               <span v-if="errors.has('Description')" v-text="errors.first('Description')" class="text-danger"></span>
             </div>
           </div>
@@ -418,11 +418,10 @@
           </div>
 
           <hr class="blue-hr-fullw my-5 w-100">
-
+        </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
