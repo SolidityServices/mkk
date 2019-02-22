@@ -1,6 +1,7 @@
 import TruffleContract from 'truffle-contract';
 import poolArtifact from '../../../build/contracts/Pool.json';
 import promisifyEventGet from '../../utils/promisifyEventGet';
+import promisifyEvent from '../../utils/promisifyEvent';
 import functionSigToCalldata from '../../utils/functionSigToCalldata';
 
 export default class Pool {
@@ -1134,6 +1135,17 @@ export default class Pool {
     return hexResult.map(item => this.web3.utils.hexToUtf8(item));
   }
 
+  async getKycCountryBlacklist2(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
+    const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('countryBlacklistChange', {
+      fromBlock: 0,
+      toBlock: 'latest',
+    }, callback));
+    const hexResult = this.getActiveListItems2(logs);
+    return hexResult.map(item => this.web3.utils.hexToUtf8(item));
+  }
+
   async getAllContributions(poolAddress) {
     return this.getContributionsFromEvents(poolAddress, null);
   }
@@ -1203,6 +1215,7 @@ export default class Pool {
 
   // eslint-disable-next-line class-methods-use-this
   getActiveListItems(logs) {
+    console.log(logs);
     const mostRecentEvents = {};
     const activeItems = [];
     logs.forEach((item) => {
@@ -1218,7 +1231,37 @@ export default class Pool {
         };
       }
     });
+    console.log(mostRecentEvents);
     const allItems = Object.keys(mostRecentEvents);
+    console.log(allItems);
+    allItems.forEach((item) => {
+      if (mostRecentEvents[item].isActive) activeItems.push(item);
+    });
+    return activeItems;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  getActiveListItems2(logs) {
+    console.log(logs);
+    const mostRecentEvents = {};
+    const activeItems = [];
+    logs.forEach((item) => {
+      if (!mostRecentEvents[item.returnValues.listItem]) {
+        mostRecentEvents[item.returnValues.listItem] = {
+          isActive: item.returnValues.isActive,
+          blockNumber: item.blockNumber,
+        };
+      } else if (mostRecentEvents[item.returnValues.listItem].blockNumber < item.blockNumber) {
+        mostRecentEvents[item.returnValues.listItem] = {
+          isActive: item.returnValues.isActive,
+          blockNumber: item.blockNumber,
+        };
+      }
+    });
+    console.log('mostRecentEvents:');
+    console.log(mostRecentEvents);
+    const allItems = Object.keys(mostRecentEvents);
+    console.log(allItems);
     allItems.forEach((item) => {
       if (mostRecentEvents[item].isActive) activeItems.push(item);
     });
