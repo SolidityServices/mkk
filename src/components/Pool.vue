@@ -231,11 +231,49 @@
             </div>
           </div>
 
+          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
+            <div class="col-12 col-lg-6 d-flex flex-row align-items-center">
+              <div class="input-cb mr-3">
+                <input type="checkbox" v-model="pool.strictlyTrustlessPool" id="trustlessPool" name=""/>
+                <label for="trustlessPool"></label>
+              </div>
+              <label class="blue-18-reg mb-0" for="trustlessPool">Trustless Pool</label>
+            </div>
+          </div>
+
           <div class="d-flex flex-row justify-content-center my-5 w-100" v-if="!disabled">
             <button class="btn blue-submit px-4" @click="submit" :disabled="submitDisabled">
               Update
             </button>
           </div>
+
+          <hr class="blue-hr-fullw my-5 w-100">
+
+          <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled && pool.strictlyTrustlessPool">
+            <div class="col-12 col-md-7">
+              <input type="text" class="form-control input-text" v-model="sendToSaleWithCalldataSig"/>
+            </div>
+
+            <div class="col-12 col-md-5 d-flex flex-row flex-wrap">
+              <button class="btn blue-submit px-4 w-100" @click="sendSaleParticipateWithCalldata">
+                Send Sale Participate With Calldata
+              </button>
+            </div>
+          </div>
+
+          <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled && pool.strictlyTrustlessPool">
+            <div class="col-12 col-md-7">
+              <input type="text" class="form-control input-text" v-model="withdrawFromSaleWithCalldataSig"/>
+            </div>
+
+            <div class="col-12 col-md-5 d-flex flex-row flex-wrap">
+              <button class="btn blue-submit px-4 w-100" @click="sendSaleWithdrawRequestWithCalldata">
+                Send Sale Withdraw Request With Calldata
+              </button>
+            </div>
+          </div>
+
+          <hr class="blue-hr-fullw my-5 w-100">
 
           <div class="col-12 d-flex flex-row mt-3 flex-wrap">
             <div class="col-12 col-lg-3 blue-18-reg mb-1">Pool Country blacklist:</div>
@@ -271,6 +309,8 @@
               </button>
             </div>
           </div>
+
+          <hr class="blue-hr-fullw my-5 w-100">
 
           <div class="w-100">
             <div class="col-12 d-flex flex-row mt-3 flex-wrap">
@@ -325,6 +365,8 @@
               </div>
             </div>
           </div>
+
+          <hr class="blue-hr-fullw my-5 w-100">
 
           <div class="w-100">
             <div class="col-12 d-flex flex-row mt-3 flex-wrap">
@@ -474,6 +516,8 @@ export default {
       whitelistAddressesToRemove: [],
       sendToSaleTime: '',
       sendToSaleGweiValue: 0,
+      sendToSaleWithCalldataSig: '{}',
+      withdrawFromSaleWithCalldataSig: '{}',
     };
   },
   mounted() {
@@ -723,6 +767,32 @@ export default {
             text: `${response}`,
           });
         }
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
+    },
+    async sendSaleParticipateWithCalldata() {
+      try {
+        const response = await this.connectICO.pool.sendToSaleWithCalldataParameter(this.pool.poolAddress, this.sendToSaleWithCalldataSig);
+
+        console.log(response);
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
+    },
+    async sendSaleWithdrawRequestWithCalldata() {
+      try {
+        console.log(this.address);
+
+        const response = await this.connectICO.pool.withdrawFromSaleWithCalldataParameter(this.pool.poolAddress, this.sendToSaleWithCalldataSig);
+
+        console.log(response);
       } catch (e) {
         this.$notify({
           type: 'error',
