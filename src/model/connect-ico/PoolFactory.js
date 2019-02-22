@@ -269,6 +269,6 @@ export default class PoolFactory {
       toBlock: 'latest',
     }, callback));
 
-    return logs.map(item => item.args.poolAddress);
+    return logs.map(item => item.returnValues.poolAddress);
   }
 }
