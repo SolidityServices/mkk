@@ -258,26 +258,28 @@
           </div>
 
           <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
-            <div class="col-12 col-md-6  mb-2 mb-lg-0">
+            <div class="col-12 col-md-8  mb-2 mb-lg-0">
               <country-select
                       multiple
                       v-model="countriesToRemove"
                       :options="blacklistedCountries"/>
             </div>
 
-            <div class="col-12 col-md-3 d-flex flex-row flex-wrap">
+            <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
               <button class="btn blue-submit px-4 w-100" @click="removeFromBlacklist">
                 Remove from blacklist
               </button>
             </div>
           </div>
 
-          <!--v-if="!disabled && isCreator"-->
           <div class="w-100">
-              <div class="col-12 d-flex flex-row mt-3 flex-wrap">
-                <div class="col-12 blue-18-reg">Admin addresses:</div>
-              </div>
+            <div class="col-12 d-flex flex-row mt-3 flex-wrap">
+              <div class="col-12 blue-18-reg">Admin addresses:</div>
+              <div class="col-12">{{ adminAddressesText }}</div>
+            </div>
+          </div>
 
+          <!--v-if="!disabled && isCreator"-->
               <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
                 <div class="col-12 col-md-8 mb-2 mb-lg-0">
                   <multiselect
@@ -302,10 +304,6 @@
           </div>
 
           <div class="w-100">
-            <div class="col-12 d-flex flex-row mt-3 flex-wrap">
-              <div class="col-12 blue-18-reg">Admin addresses:</div>
-            </div>
-
             <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
               <div class="col-12 col-md-8 mb-2 mb-lg-0">
                 <multiselect
@@ -327,12 +325,15 @@
             </div>
           </div>
 
-          <!--v-if="!disabled"-->
           <div class="w-100">
             <div class="col-12 d-flex flex-row mt-3 flex-wrap">
               <div class="col-12 blue-18-reg">Whitelist addresses:</div>
+              <div class="col-12">{{ whitelistAddressesText }}</div>
             </div>
+          </div>
 
+          <!--v-if="!disabled"-->
+          <div class="w-100">
             <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
               <div class="col-12 col-md-8 mb-2 mb-lg-0">
                 <multiselect
@@ -357,10 +358,6 @@
           </div>
 
           <div class="w-100">
-            <div class="col-12 d-flex flex-row mt-3 flex-wrap">
-              <div class="col-12 blue-18-reg">Whitelist addresses:</div>
-            </div>
-
             <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
               <div class="col-12 col-md-8 mb-2 mb-lg-0">
                 <multiselect
@@ -437,7 +434,7 @@ export default {
     };
   },
   mounted() {
-    this.initBlacklistedCountries();
+    this.initCountryData();
     this.initAddresses();
   },
   computed: {
@@ -451,9 +448,19 @@ export default {
     blacklistedCountriesText() {
       return this.blacklistedCountries.map(country => country.alpha3Code).join(', ');
     },
+    adminAddressesText() {
+      return this.adminAddresses.join(', ');
+    },
+    whitelistAddressesText() {
+      return this.whitelistAddresses.join(', ');
+    },
   },
   methods: {
     async initAddresses() {
+      this.adminAddressesToAdd = [];
+      this.adminAddressesToRemove = [];
+      this.whitelistAddressesToAdd = [];
+      this.whitelistAddressesToRemove = [];
       this.adminAddresses = await this.connectICO.pool.getAdmins(this.pool.poolAddress);
       this.whitelistAddresses = await this.connectICO.pool.getWhitelist(this.pool.poolAddress);
     },
@@ -584,9 +591,6 @@ export default {
       this.countriesToRemove = data || [];
       this.selectableCountries = (data) ? this.countries.filter(option => !data.includes(option.alpha3Code)) : [];
       this.blacklistedCountries = (data) ? this.countries.filter(option => data.includes(option.alpha3Code)) : [];
-    },
-    async initBlacklistedCountries() {
-      this.blacklistedCountries = await this.connectICO.pool.getKycCountryBlacklist(this.pool.poolAddress);
     },
     async addToBlacklist() {
       try {
