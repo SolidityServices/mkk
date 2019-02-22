@@ -1,5 +1,5 @@
 import TruffleContract from 'truffle-contract';
-import promisifyEventGet from './promisifyEventGet';
+import promisifyEvent from './promisifyEvent';
 
 export default class Automations {
   constructor(provider, account, web3, automationsArtifact) {
@@ -19,72 +19,75 @@ export default class Automations {
     return instance.emitPushOutTokenCompleted(pool, { from: this.account });
   }
 
-  async getNewPushOutTokenEvent() {
-    const instance = await this.automations.deployed();
-    const event = await instance.newPushOutToken({
+  async getNewPushOutTokenEvent(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
+
+    const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('newPushOutToken', {
       fromBlock: 0,
       toBlock: 'latest',
-    });
-    const logs = await promisifyEventGet(event);
+    }, callback));
 
     return logs;
   }
 
-  async watchNewPushOutTokenEvent(callback) {
-    const instance = await this.automations.deployed();
-    const event = await instance.newPushOutToken({ fromBlock: 0, toBlock: 'latest' });
-    event.watch(callback);
+  async watchNewPushOutTokenEvent(poolAddress, callback) {
+    const instance = await this.pool.at(poolAddress);
+    const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
+    instanceRawWeb3.event.newPushOutToken({ fromBlock: 0, toBlock: 'latest' }).on('data', callback);
   }
 
-  async getNewSendToSaleEvent() {
-    const instance = await this.automations.deployed();
-    const event = await instance.newSendToSale({
+  async getNewSendToSaleEvent(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
+
+    const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('newSendToSale', {
       fromBlock: 0,
       toBlock: 'latest',
-    });
-    const logs = await promisifyEventGet(event);
+    }, callback));
 
     return logs;
   }
 
-  async watchNewSendToSaleEvent(callback) {
-    const instance = await this.automations.deployed();
-    const event = await instance.newSendToSale({ fromBlock: 0, toBlock: 'latest' });
-    event.watch(callback);
+  async watchNewSendToSaleEvent(poolAddress, callback) {
+    const instance = await this.pool.at(poolAddress);
+    const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
+    instanceRawWeb3.event.newSendToSale({ fromBlock: 0, toBlock: 'latest' }).on('data', callback);
   }
 
-  async getCompletedPushOutTokenEvent() {
-    const instance = await this.automations.deployed();
-    const event = await instance.completedPushOutToken({
+  async getCompletedPushOutTokenEvent(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
+
+    const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('completedPushOutToken', {
       fromBlock: 0,
       toBlock: 'latest',
-    });
-    const logs = await promisifyEventGet(event);
+    }, callback));
 
     return logs;
   }
 
-  async watchCompletedPushOutTokenEvent(callback) {
-    const instance = await this.automations.deployed();
-    const event = await instance.completedPushOutToken({ fromBlock: 0, toBlock: 'latest' });
-    event.watch(callback);
+  async watchCompletedPushOutTokenEvent(poolAddress, callback) {
+    const instance = await this.pool.at(poolAddress);
+    const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
+    instanceRawWeb3.event.completedPushOutToken({ fromBlock: 0, toBlock: 'latest' }).on('data', callback);
   }
 
-  async getCompletedSendToSaleEvent() {
-    const instance = await this.automations.deployed();
-    const event = await instance.completedSendToSale({
+  async getCompletedSendToSaleEvent(poolAddress) {
+    const instance = await this.pool.at(poolAddress);
+    const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
+
+    const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('completedSendToSale', {
       fromBlock: 0,
       toBlock: 'latest',
-    });
-    const logs = await promisifyEventGet(event);
+    }, callback));
 
     return logs;
   }
 
-  async watchCompletedSendToSaleEvent(callback) {
-    const instance = await this.automations.deployed();
-
-    const event = await instance.completedSendToSale({ fromBlock: 0, toBlock: 'latest' });
-    event.watch(callback);
+  async watchCompletedSendToSaleEvent(poolAddress, callback) {
+    const instance = await this.pool.at(poolAddress);
+    const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
+    instanceRawWeb3.event.completedSendToSale({ fromBlock: 0, toBlock: 'latest' }).on('data', callback);
   }
 }

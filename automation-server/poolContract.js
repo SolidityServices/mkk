@@ -1,5 +1,5 @@
 import TruffleContract from 'truffle-contract';
-import promisifyEventGet from './promisifyEventGet';
+import promisifyEvent from './promisifyEvent';
 
 export default class Pool {
   constructor(provider, account, web3, poolArtifact) {
@@ -38,23 +38,20 @@ export default class Pool {
   }
 
   async getTokensRecievedEvent(poolAddress) {
-    const instance = await this.pool.at(poolAddress);
-    const event = await instance.tokensReceived({
+    const instanceRawWeb3 = new this.web3.eth.Contract(this.pool.abi, poolAddress);
+    const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('tokensReceived', {
       fromBlock: 0,
       toBlock: 'latest',
-    });
-    const logs = await promisifyEventGet(event);
+    }, callback));
 
     return logs.map(item => ({
-      contributor: item.args.poolAddress,
-      amount: item.args.amount,
+      contributor: item.returnValues.poolAddress,
+      amount: item.returnValues.amount,
     }));
   }
 
   async watchTokensRecievedEvent(poolAddress, callback) {
-    const instance = await this.pool.at(poolAddress);
-
-    const event = await instance.tokensReceived({ fromBlock: 0, toBlock: 'latest' });
-    event.watch(callback);
+    const instanceRawWeb3 = new this.web3.eth.Contract(this.pool.abi, poolAddress);
+    instanceRawWeb3.event.tokensReceived({ fromBlock: 0, toBlock: 'latest' }).on('data', callback);
   }
 }

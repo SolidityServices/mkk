@@ -4,14 +4,14 @@ export default async function (automationsInstance) {
 
   const unprocessedPushOutToken = {};
   allPushOutToken.forEach((element) => {
-    unprocessedPushOutToken[element.args.recipient] = {
-      pool: element.args.pool,
-      gasPrice: element.args.gasPrice,
+    unprocessedPushOutToken[element.returnValues.recipient] = {
+      pool: element.returnValues.pool,
+      gasPrice: element.returnValues.gasPrice,
     };
   });
 
   completedPushOutToken.forEach((element) => {
-    const recipientAddress = element.args.recipient;
+    const recipientAddress = element.returnValues.recipient;
     delete unprocessedPushOutToken[recipientAddress];
   });
 
