@@ -1,6 +1,6 @@
 import TruffleContract from 'truffle-contract';
 import poolArtifact from '../../../build/contracts/Pool.json';
-import promisifyEventGet from '../../utils/promisifyEventGet';
+import promisifyEvent from '../../utils/promisifyEvent';
 import functionSigToCalldata from '../../utils/functionSigToCalldata';
 
 export default class Pool {
@@ -1104,33 +1104,30 @@ export default class Pool {
   }
 
   async getAdmins(poolAddress) {
-    const instance = await this.pool.at(poolAddress);
-    const event = await instance.adminsChange({
+    const instanceRawWeb3 = new this.web3.eth.Contract(this.pool.abi, poolAddress);
+    const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('adminsChange', {
       fromBlock: 0,
       toBlock: 'latest',
-    });
-    const logs = await promisifyEventGet(event);
+    }, callback));
     return this.getActiveListItems(logs);
   }
 
   async getWhitelist(poolAddress) {
-    const instance = await this.pool.at(poolAddress);
-    const event = await instance.whitelistChange({
+    const instanceRawWeb3 = new this.web3.eth.Contract(this.pool.abi, poolAddress);
+    const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('whitelistChange', {
       fromBlock: 0,
       toBlock: 'latest',
-    });
-    const logs = await promisifyEventGet(event);
+    }, callback));
     return this.getActiveListItems(logs);
   }
 
   async getKycCountryBlacklist(poolAddress) {
-    const instance = await this.pool.at(poolAddress);
-    const event = await instance.countryBlacklistChange({
+    const instanceRawWeb3 = new this.web3.eth.Contract(this.pool.abi, poolAddress);
+    const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('countryBlacklistChange', {
       fromBlock: 0,
       toBlock: 'latest',
-    });
-    const logs = await promisifyEventGet(event);
-    const hexResult = this.getActiveListItems(logs);
+    }, callback));
+    const hexResult = this.getActiveListItems2(logs);
     return hexResult.map(item => this.web3.utils.hexToUtf8(item));
   }
 
@@ -1143,19 +1140,19 @@ export default class Pool {
   }
 
   async getContributionsFromEvents(poolAddress, contributorAddress) {
-    const instance = await this.pool.at(poolAddress);
-    const filter = {};
-    if (contributorAddress) filter.contributor = contributorAddress;
+    const instanceRawWeb3 = new this.web3.eth.Contract(this.pool.abi, poolAddress);
+    const eventFilter = {};
+    if (contributorAddress) eventFilter.contributor = contributorAddress;
 
-    const event = await instance.contributed(filter, {
+    const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('contributed', {
+      filter: eventFilter,
       fromBlock: 0,
       toBlock: 'latest',
-    });
-    const logs = await promisifyEventGet(event);
+    }, callback));
 
     return logs.map(item => ({
-      contributor: item.args.poolAddress,
-      amount: item.args.amount,
+      contributor: item.returnValues.returnValues,
+      amount: item.returnValues.amount,
     }));
   }
 
@@ -1175,50 +1172,48 @@ export default class Pool {
    */
 
   async watchContributionEvents(poolAddress, contributorAddress, callback) {
-    const instance = await this.pool.at(poolAddress);
-    const filter = {};
-    if (contributorAddress) filter.contributor = contributorAddress;
-
-    const event = await instance.contributed(filter, { fromBlock: 0, toBlock: 'latest' });
-    event.watch(callback);
+    const instanceRawWeb3 = new this.web3.eth.Contract(this.pool.abi, poolAddress);
+    const eventFilter = {};
+    if (contributorAddress) eventFilter.contributor = contributorAddress;
+    instanceRawWeb3.event.contributed({ filter: eventFilter, fromBlock: 0, toBlock: 'latest' }).on('data', callback);
   }
 
   async getTokensRecievedEvent(poolAddress) {
-    const instance = await this.pool.at(poolAddress);
-    const event = await instance.tokensReceived({
+    const instanceRawWeb3 = new this.web3.eth.Contract(this.pool.abi, poolAddress);
+    const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('tokensReceived', {
       fromBlock: 0,
       toBlock: 'latest',
-    });
-    const logs = await promisifyEventGet(event);
-
+    }, callback));
     return logs;
   }
 
   async watchTokensRecievedEvent(poolAddress, callback) {
-    const instance = await this.pool.at(poolAddress);
-
-    const event = await instance.tokensReceived({ fromBlock: 0, toBlock: 'latest' });
-    event.watch(callback);
+    const instanceRawWeb3 = new this.web3.eth.Contract(this.pool.abi, poolAddress);
+    instanceRawWeb3.event.tokensReceived({ fromBlock: 0, toBlock: 'latest' }).on('data', callback);
   }
 
   // eslint-disable-next-line class-methods-use-this
   getActiveListItems(logs) {
+    console.log(logs);
     const mostRecentEvents = {};
     const activeItems = [];
     logs.forEach((item) => {
-      if (!mostRecentEvents[item.args.listItem]) {
-        mostRecentEvents[item.args.listItem] = {
-          isActive: item.args.isActive,
+      if (!mostRecentEvents[item.returnValues.listItem]) {
+        mostRecentEvents[item.returnValues.listItem] = {
+          isActive: item.returnValues.isActive,
           blockNumber: item.blockNumber,
         };
-      } else if (mostRecentEvents[item.args.listItem].blockNumber < item.blockNumber) {
-        mostRecentEvents[item.args.listItem] = {
-          isActive: item.args.isActive,
+      } else if (mostRecentEvents[item.returnValues.listItem].blockNumber < item.blockNumber) {
+        mostRecentEvents[item.returnValues.listItem] = {
+          isActive: item.returnValues.isActive,
           blockNumber: item.blockNumber,
         };
       }
     });
+    console.log('mostRecentEvents:');
+    console.log(mostRecentEvents);
     const allItems = Object.keys(mostRecentEvents);
+    console.log(allItems);
     allItems.forEach((item) => {
       if (mostRecentEvents[item].isActive) activeItems.push(item);
     });

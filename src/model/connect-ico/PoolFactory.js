@@ -1,6 +1,6 @@
 import TruffleContract from 'truffle-contract';
 import poolFactoryArtifact from '../../../build/contracts/PoolFactory.json';
-import promisifyEventGet from '../../utils/promisifyEventGet';
+import promisifyEvent from '../../utils/promisifyEvent';
 import functionSigToCalldata from '../../utils/functionSigToCalldata';
 
 export default class PoolFactory {
@@ -257,12 +257,18 @@ export default class PoolFactory {
 
   async getPoolsCreatedFromEvents(creatorAddress, saleAddress) {
     const instance = await this.poolFactory.deployed();
-    const filter = {};
-    if (creatorAddress) filter.poolCreator = creatorAddress;
-    if (saleAddress) filter.poolSale = saleAddress;
+    const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
 
-    const event = await instance.poolCreated(filter, { fromBlock: 0, toBlock: 'latest' });
-    const logs = await promisifyEventGet(event);
+    const eventFilter = {};
+    if (creatorAddress) eventFilter.poolCreator = creatorAddress;
+    if (saleAddress) eventFilter.poolSale = saleAddress;
+
+    const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('poolCreated', {
+      filter: eventFilter,
+      fromBlock: 0,
+      toBlock: 'latest',
+    }, callback));
+
     return logs.map(item => item.args.poolAddress);
   }
 }

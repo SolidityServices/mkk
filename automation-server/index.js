@@ -46,14 +46,14 @@ const unprocessedPushOutToken = getUnprocessedPushOutToken(automationsInstance);
 
 automationsInstance.watchNewSendToSaleEvent((error, result) => {
   if (!error) {
-    unprocessedSendToSale[result.args.pool] = {
-      time: result.args.time,
-      gasPrice: result.args.gasPrice,
+    unprocessedSendToSale[result.returnValues.pool] = {
+      time: result.returnValues.time,
+      gasPrice: result.returnValues.gasPrice,
     };
 
     // eslint-disable-next-line prefer-destructuring
-    const pool = result.args.pool;
-    const time = result.args.gasPrice;
+    const pool = result.returnValues.pool;
+    const time = result.returnValues.gasPrice;
 
     if (sendToSaleTimes[time]) sendToSaleTimes[time].push(pool);
     else sendToSaleTimes[time] = [pool];
@@ -64,9 +64,9 @@ automationsInstance.watchNewSendToSaleEvent((error, result) => {
 
 automationsInstance.watchNewPushOutTokenEvent((error, result) => {
   if (!error) {
-    unprocessedPushOutToken[result.args.recipient] = {
-      pool: result.args.pool,
-      gasPrice: result.args.gasPrice,
+    unprocessedPushOutToken[result.returnValues.recipient] = {
+      pool: result.returnValues.pool,
+      gasPrice: result.returnValues.gasPrice,
     };
   } else {
     console.log(error);
