@@ -220,7 +220,11 @@ export default class PoolFactory {
       },
     );
 
-    const result = reciept.logs[0].args.poolAddress;
+    const poolCreationEventLog = reciept.logs.find(item => (Object.prototype.hasOwnProperty.call(item, 'args') && Object.prototype.hasOwnProperty.call(item.args, 'poolAddress')));
+    const result = (poolCreationEventLog) ? poolCreationEventLog.args.poolAddress : null;
+
+    // const result = reciept.logs[0].args.poolAddress;
+    console.log(poolCreationEventLog);
     console.log(reciept);
     console.log(`pool address: ${result}`);
 
