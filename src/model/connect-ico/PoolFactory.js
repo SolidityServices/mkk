@@ -187,7 +187,7 @@ export default class PoolFactory {
       ).params[0].data;
     }
 
-    const reciept = await instance.createPool(
+    const receipt = await instance.createPool(
       [
         pool.saleAddress,
         pool.tokenAddress,
@@ -220,12 +220,12 @@ export default class PoolFactory {
       },
     );
 
-    const poolCreationEventLog = reciept.logs.find(item => (Object.prototype.hasOwnProperty.call(item, 'args') && Object.prototype.hasOwnProperty.call(item.args, 'poolAddress')));
+    const poolCreationEventLog = receipt.logs.find(item => (Object.prototype.hasOwnProperty.call(item, 'args') && Object.prototype.hasOwnProperty.call(item.args, 'poolAddress')));
     const result = (poolCreationEventLog) ? poolCreationEventLog.args.poolAddress : null;
 
-    // const result = reciept.logs[0].args.poolAddress;
+    // const result = receipt.logs[0].args.poolAddress;
     console.log(poolCreationEventLog);
-    console.log(reciept);
+    console.log(receipt);
     console.log(`pool address: ${result}`);
 
     return result;
