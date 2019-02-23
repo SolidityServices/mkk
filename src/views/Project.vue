@@ -38,9 +38,6 @@
             <div class="col-12 col-lg-4 pt-3">
               <div class="blue-18-bold">Parameters</div>
               <div class="row pt-3">
-                <!--<div class="py-1 col-8 blue-18-reg">Net amount (ETH):</div>-->
-                <!--<div class="py-1 col-4 orange-18-bold text-right">1000</div>-->
-
                 <div class="py-1 col-8 blue-18-reg">Fee</div>
                 <div class="py-1 col-4 orange-18-bold text-right">{{pool.creatorFeeRate}} %</div>
 
@@ -55,34 +52,7 @@
               </div>
             </div>
           </div>
-          <!--<div class="blue-18-bold pt-3 pl-3">Auto distribution</div>-->
-          <!--<div class="row mx-0 pt-3">-->
-          <!--<div class="col-12 col-lg-4 row">-->
-          <!--<div class="col-12 orange-18-reg">18 day 22 hours 45 minutes</div>-->
-          <!--<div class="col-6 pt-3 pt-lg-0 mx-0 row my-auto pt-2">-->
-          <!--<div class="input-radio">-->
-          <!--<input type="radio" name="exampleRadios" id="exampleRadios1"-->
-          <!--value="option1" checked/>-->
-          <!--<label for="exampleRadios1"></label>-->
-          <!--</div>-->
-          <!--<div class="pl-3 blue-18-reg">ON</div>-->
-          <!--</div>-->
-          <!--<div class="col-6 pt-3 pt-lg-0 mx-0 row my-auto pt-2">-->
-          <!--<div class="input-radio">-->
-          <!--<input type="radio" name="exampleRadios" id="exampleRadios2" value="option2"/>-->
-          <!--<label for="exampleRadios2"></label>-->
-          <!--</div>-->
-          <!--<div class="pl-3 blue-18-reg">OFF</div>-->
-          <!--</div>-->
-          <!--</div>-->
-          <!--<div class="col-12 col-lg-2 pt-4 pt-lg-0">-->
-          <!--<div class="blue-18-bold text-center">Amount</div>-->
-          <!--<div class="orange-24-bold text-center pt-2">85 ETH</div>-->
-          <!--</div>-->
-          <!--</div>-->
-          <!--<div class="row mx-0 pt-3">-->
 
-          <!--</div>-->
           <div class="row mx-0 pt-5">
             <div class="col-6 col-lg-2 orange-24-16-bold px-0 order-1"> Total filled</div>
             <div class="col-12 col-lg-4 pt-1 order-3 order-lg-2 px-0">
@@ -145,7 +115,7 @@
 
             <div class="col-12 col-md-8 d-flex flex-row align-items-center">
               <div class="col-12 col-md-8">
-                <input type="number" v-validate="`required|decimal`"
+                <input type="number" v-validate="`required|decimal|min_value:1`"
                        step="0.000001"
                        class="form-control input-text w-100" data-vv-name="Gwei amount"
                        v-model="autoTokenWithDrawGweiValue">
@@ -202,21 +172,24 @@
           <div class="row mt-5">
             <div class="d-flex row justify-content-center w-100 py-5">
               <div class="text-center text-lg-left mx-2">
-                <button class="btn px-4 white-submit" @click="withdrawTokens">Withdraw tokens</button>
+                <button class="btn px-4 white-submit" @click="withdrawTokens" :disabled="!withdrawTokensAvailable">Withdraw tokens</button>
               </div>
+
 
               <div class="text-center text-lg-left mx-2">
                 <button class="btn px-4 white-submit" @click="withdrawRefund" :disabled="!withDrawRefundAvailable">Withdraw refund</button>
               </div>
             </div>
             <div class="d-flex flex-row justify-content-center col-12 col-lg-6 mx-auto pb-5">
-              <input type="text" v-validate="'required|eth-address'" data-vv-name="Custom token"
+              <input type="text"
+                     v-validate="'required|eth-address'"
+                     data-vv-name="Custom token"
                      class="form-control input-text w-100 mx-2"
-                     v-model="customToken" placeholder="Custom token"/>
-              <button class="btn px-4 blue-submit text-lg-center mx-2" @click="withdrawCustomToken">Withdraw custom token</button>
+                     v-model="customToken" placeholder="Custom token"
+                     :disabled="!withdrawCustomTokenAvailable"/>
+              <button class="btn px-4 blue-submit text-lg-center mx-2" @click="withdrawCustomToken" :disabled="!withdrawCustomTokenAvailable">Withdraw custom token</button>
             </div>
           </div>
-
 
         </div>
         <div class="col-1"></div>
@@ -257,6 +230,8 @@ export default {
     contributions: [],
     blacklistedCountries: [],
     withDrawRefundAvailable: false,
+    withdrawTokensAvailable: false,
+    withdrawCustomTokenAvailable: false,
     userContribution: 0,
     userMaxDeposit: 0,
     autoTokenWithDrawDate: '',
@@ -425,6 +400,16 @@ export default {
         });
       }
     },
+    async initWithdrawCustomTokenAvailable() {
+      const isSentToSale = await this.connectICO.pool.isSentToSale(this.address);
+
+      this.withdrawCustomTokenAvailable = isSentToSale;
+    },
+    async initWithdrawTokensAvailable() {
+      const isSentToSale = await this.connectICO.pool.isSentToSale(this.address);
+
+      this.withdrawTokensAvailable = isSentToSale;
+    },
     async checkWithDrawRefundAvailable() {
       const isSentToSale = await this.connectICO.pool.isSentToSale(this.address);
 
@@ -476,6 +461,7 @@ export default {
       this.address = this.$route.params.address;
       this.search();
       this.initCountryData();
+      this.initWithdrawTokensAvailable();
       this.initWithDrawRefundAvailable();
     }
   },

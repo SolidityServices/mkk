@@ -234,7 +234,7 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 d-flex flex-row align-items-center">
               <div class="input-cb mr-3">
-                <input type="checkbox" v-model="pool.strictlyTrustlessPool" id="trustlessPool" name=""/>
+                <input type="checkbox" v-model="pool.strictlyTrustlessPool" id="trustlessPool" name="" :disabled="true"/>
                 <label for="trustlessPool"></label>
               </div>
               <label class="blue-18-reg mb-0" for="trustlessPool">Trustless Pool</label>
@@ -247,29 +247,31 @@
             </button>
           </div>
 
-          <hr class="blue-hr-fullw my-5 w-100">
+          <div v-if="!disabled && pool.strictlyTrustlessPool">
+            <hr class="blue-hr-fullw my-5 w-100">
 
-          <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled && pool.strictlyTrustlessPool">
-            <div class="col-12 col-md-7">
-              <input type="text" class="form-control input-text" v-model="sendToSaleWithCalldataSig"/>
+            <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled && pool.strictlyTrustlessPool">
+              <div class="col-12 col-md-7">
+                <input type="text" class="form-control input-text" v-model="sendToSaleWithCalldataSig"/>
+              </div>
+
+              <div class="col-12 col-md-5 d-flex flex-row flex-wrap">
+                <button class="btn blue-submit px-4 w-100" @click="sendSaleParticipateWithCalldata">
+                  Send Sale Participate With Calldata
+                </button>
+              </div>
             </div>
 
-            <div class="col-12 col-md-5 d-flex flex-row flex-wrap">
-              <button class="btn blue-submit px-4 w-100" @click="sendSaleParticipateWithCalldata">
-                Send Sale Participate With Calldata
-              </button>
-            </div>
-          </div>
+            <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled && pool.strictlyTrustlessPool">
+              <div class="col-12 col-md-7">
+                <input type="text" class="form-control input-text" v-model="withdrawFromSaleWithCalldataSig"/>
+              </div>
 
-          <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled && pool.strictlyTrustlessPool">
-            <div class="col-12 col-md-7">
-              <input type="text" class="form-control input-text" v-model="withdrawFromSaleWithCalldataSig"/>
-            </div>
-
-            <div class="col-12 col-md-5 d-flex flex-row flex-wrap">
-              <button class="btn blue-submit px-4 w-100" @click="sendSaleWithdrawRequestWithCalldata">
-                Send Sale Withdraw Request With Calldata
-              </button>
+              <div class="col-12 col-md-5 d-flex flex-row flex-wrap">
+                <button class="btn blue-submit px-4 w-100" @click="sendSaleWithdrawRequestWithCalldata">
+                  Send Sale Withdraw Request With Calldata
+                </button>
+              </div>
             </div>
           </div>
 
@@ -312,15 +314,16 @@
 
           <hr class="blue-hr-fullw my-5 w-100">
 
-          <div class="w-100">
-            <div class="col-12 d-flex flex-row mt-3 flex-wrap">
-              <div class="col-12 blue-18-reg">Admin addresses:</div>
-              <div class="col-12">{{ adminAddressesText }}</div>
+          <div v-if="!disabled">
+            <div class="w-100">
+              <div class="col-12 d-flex flex-row mt-3 flex-wrap">
+                <div class="col-12 blue-18-reg">Admin addresses:</div>
+                <div class="col-12">{{ adminAddressesText }}</div>
+              </div>
             </div>
-          </div>
 
-          <!--v-if="!disabled && isCreator"-->
-          <div class="w-100">
+            <!--v-if="!disabled && isCreator"-->
+            <div class="w-100">
               <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
                 <div class="col-12 col-md-8 mb-2 mb-lg-0">
                   <multiselect
@@ -342,31 +345,32 @@
                   </button>
                 </div>
               </div>
-          </div>
+            </div>
 
-          <div class="w-100">
-            <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
-              <div class="col-12 col-md-8 mb-2 mb-lg-0">
-                <multiselect
-                        class="w-100"
-                        v-validate="'eth-address-array'"
-                        data-vv-name="Add Admin addresses"
-                        v-model="adminAddressesToRemove"
-                        :multiple="true"
-                        :options="adminAddresses">
-                </multiselect>
-                <span v-if="errors.has('Admin addresses')" v-text="errors.first('Admin addresses')" class="text-danger"></span>
-              </div>
+            <div class="w-100">
+              <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
+                <div class="col-12 col-md-8 mb-2 mb-lg-0">
+                  <multiselect
+                          class="w-100"
+                          v-validate="'eth-address-array'"
+                          data-vv-name="Add Admin addresses"
+                          v-model="adminAddressesToRemove"
+                          :multiple="true"
+                          :options="adminAddresses">
+                  </multiselect>
+                  <span v-if="errors.has('Admin addresses')" v-text="errors.first('Admin addresses')" class="text-danger"></span>
+                </div>
 
-              <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
-                <button class="btn btn-block blue-submit px-4 w-100" @click="removeAdminAddresses">
-                  Remove Admin addresses
-                </button>
+                <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
+                  <button class="btn btn-block blue-submit px-4 w-100" @click="removeAdminAddresses">
+                    Remove Admin addresses
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
 
-          <hr class="blue-hr-fullw my-5 w-100">
+            <hr class="blue-hr-fullw my-5 w-100">
+          </div>
 
           <div class="w-100">
             <div class="col-12 d-flex flex-row mt-3 flex-wrap">
