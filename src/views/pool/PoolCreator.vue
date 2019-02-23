@@ -97,6 +97,7 @@
                 v-model="pool.poolDescription"
                 v-validate="'required'"
                 data-vv-name="Description"
+                placeholder="Please write a description"
               ></textarea>
               <span v-if="errors.has('Description')" v-text="errors.first('Description')" class="text-danger"></span>
             </div>
@@ -348,7 +349,6 @@ export default {
     return {
       loading: false,
       pool: null,
-      multiSelectCountries: [],
       datepickerOptions: {
         format: 'DD/MM/YYYY H:mm',
         useCurrent: false,
@@ -505,6 +505,7 @@ export default {
           openMewUrl(url);
         }
 
+        this.pool = new LocalPool();
         this.loading = false;
       } catch (e) {
         this.$notify({
