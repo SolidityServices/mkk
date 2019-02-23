@@ -727,7 +727,7 @@ export default {
       try {
         const date = moment(this.sendToSaleTime, this.datepickerOptions.format);
         const gasPrice = Web3.utils.toWei(this.sendToSaleGweiValue, 'gwei');
-        const response = await this.connectICO.automations.addSendToSale(this.address, date, gasPrice);
+        const response = await this.connectICO.automations.addSendToSale(this.pool.poolAddress, date, gasPrice);
 
         console.log(response);
       } catch (e) {
