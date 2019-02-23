@@ -61,7 +61,7 @@
             <div class="col-12 col-lg-8">
               <input type="text"
                      class="form-control input-text"
-                     v-model="pool.saleWithdrawFunctionSig"/>
+                     v-model="pool.saleParticipateFunctionSig"/>
             </div>
           </div>
 
@@ -97,7 +97,7 @@
                 v-model="pool.poolDescription"
                 v-validate="'required'"
                 data-vv-name="Description"
-              />
+              ></textarea>
               <span v-if="errors.has('Description')" v-text="errors.first('Description')" class="text-danger"></span>
             </div>
           </div>
@@ -183,9 +183,9 @@
           </div>
 
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Withdraw timelock</div>
+            <div class="col-12 col-lg-6 blue-18-reg">Withdraw timelock in hours</div>
             <div class="col-12 col-lg-6">
-              <input type="number" v-validate="'required|numeric|min_value:0'"
+              <input type="number" v-validate="'required|numeric|min_value:0|max_value:72'"
                      class="form-control input-text w-100" data-vv-name="Withdraw time lock"
                      v-model="pool.withdrawTimelock">
               <span v-if="errors.has('Withdraw time lock')" v-text="errors.first('Withdraw time lock')" class="text-danger"></span>
@@ -276,45 +276,8 @@
                 <span v-if="errors.has('Whitelist addresses')" v-text="errors.first('Whitelist addresses')" class="text-danger"></span>
               </div>
           </div>
-
-          <!--<div class="col-12 d-flex flex-column mt-3 flex-wrap">-->
-            <!--<div class="row mx-0">-->
-              <!--<div class="col-12 col-lg-4 blue-18-reg d-flex flex-row mt-2">-->
-                <!--<span>Admin addresses: </span>-->
-                <!--<span class="ml-2"><i class="fa fa-plus" @click="addAddress(pool.adminAddresses)"></i></span>-->
-              <!--</div>-->
-              <!--<div class="col-12 col-lg-8 d-flex flex-column">-->
-                <!--<div class="d-flex flex-row align-items-center mt-3 flex-shrink-0"-->
-                     <!--v-for="(adminAddress, index) in pool.adminAddresses" :key="index">-->
-                  <!--<input type="text" v-validate="'required|eth-address'" data-vv-name="Admin address"-->
-                         <!--class="form-control input-text w-100"-->
-                         <!--v-model="pool.adminAddresses[index]" placeholder="Admin address"/>-->
-                  <!--<i class="fa fa-minus ml-2 orange-18-reg" @click="removeAddress(pool.adminAddresses, index)"></i>-->
-                <!--</div>-->
-              <!--</div>-->
-            <!--</div>-->
-          <!--</div>-->
-
-          <!--<div class="col-12 d-flex flex-column mt-3 flex-wrap">-->
-            <!--<div class="row mx-0">-->
-              <!--<div class="col-12 col-lg-4 blue-18-reg d-flex flex-row mt-2">-->
-                <!--<span>Whitelist addresses: </span>-->
-                <!--<span class="ml-2"><i class="fa fa-plus" @click="addAddress(pool.whiteListAddresses)"></i></span>-->
-              <!--</div>-->
-              <!--<div class="d-flex flex-column col-12 col-lg-8">-->
-                <!--<div class="d-flex flex-row align-items-center mt-3 flex-shrink-0"-->
-                     <!--v-for="(whiteListAddress, index) in pool.whiteListAddresses" :key="index">-->
-                  <!--<input type="text" v-validate="'required|eth-address'" data-vv-name="Whitelist address"-->
-                         <!--class="form-control input-text w-100"-->
-                         <!--v-model="pool.whiteListAddresses[index]" placeholder="Whitelist address"/>-->
-                  <!--<i class="fa fa-minus ml-2 orange-18-reg" @click="removeAddress(pool.whiteListAddresses, index)"></i>-->
-                <!--</div>-->
-              <!--</div>-->
-            <!--</div>-->
-          <!--</div>-->
         </div>
       </div>
-
 
       <hr class="blue-hr-fullw my-5 w-100" v-if="calculatedFee">
 
@@ -345,12 +308,8 @@
       </div>
 
       <div class="d-flex flex-row justify-content-center my-5">
-        <button class="btn white-submit px-4 mr-3" @click="calculateFee" :disabled="submitDisabled">
-          Calculate fee
-        </button>
-        <button class="btn blue-submit px-4" @click="submit" :disabled="submitDisabled">
-          Submit
-        </button>
+        <button class="btn white-submit px-4 mr-3" @click="calculateFee" :disabled="submitDisabled">Calculate fee</button>
+        <button class="btn blue-submit px-4" @click="submit" :disabled="submitDisabled" v-text="submitText"></button>
       </div>
 
       <div class="d-flex flex-row justify-content-center my-5" v-if="poolAddress">
@@ -387,6 +346,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       pool: null,
       multiSelectCountries: [],
       datepickerOptions: {
@@ -405,7 +365,10 @@ export default {
   },
   computed: {
     submitDisabled() {
-      return !window.ethInitSuccess;
+      return !window.ethInitSuccess || this.loading;
+    },
+    submitText() {
+      return this.loading ? 'Creating new pool...' : 'Create new pool';
     },
     ...mapGetters([
       'connectICO',
@@ -428,55 +391,6 @@ export default {
           * this.pool.maxPoolAllocation / 1000
         ),
       };
-    },
-    async submit() {
-      const validationResponse = await this.$validator.validateAll();
-      if (!validationResponse) {
-        this.errors.items.forEach((item) => {
-          this.$notify({
-            type: 'error',
-            title: `${item.field}`,
-            text: `${item.msg}`,
-          });
-        });
-        return;
-      }
-
-      const transferDetails = await this.getTransferDetails();
-      if (typeof this.pool.saleStartDate === 'string') {
-        this.pool.saleStartDate = moment(this.pool.saleStartDate, this.datepickerOptions.format);
-      }
-      if (typeof this.pool.saleEndDate === 'string') {
-        this.pool.saleEndDate = moment(this.pool.saleEndDate, this.datepickerOptions.format);
-      }
-
-      try {
-        const response = await this.connectICO.poolFactory.createPool(this.pool, transferDetails.transferValue);
-
-        if (this.mode === 'mm') {
-          if (response) {
-            this.poolAddress = response;
-            this.$notify({
-              type: 'success',
-              title: 'Pool created!',
-              text: `${response}`,
-            });
-          }
-        } else if (this.mode === 'mew') {
-          const url = mewLinkBuilder(
-            this.connectICO.poolFactory.poolFactory.address,
-            response,
-            transferDetails.transferValue,
-            await window.web3.eth.net.getNetworkType(),
-          );
-          openMewUrl(url);
-        }
-      } catch (e) {
-        this.$notify({
-          type: 'error',
-          text: e.message,
-        });
-      }
     },
     async calculateFee() {
       this.calculatedFee = await this.getTransferDetails();
@@ -538,6 +452,66 @@ export default {
 
       if (!this.pool.whiteListAddresses.includes(address)) {
         this.pool.whiteListAddresses.push(address);
+      }
+    },
+    async submit() {
+      const validationResponse = await this.$validator.validateAll();
+
+      if (!validationResponse) {
+        this.errors.items.forEach((item) => {
+          this.$notify({
+            type: 'error',
+            title: `${item.field}`,
+            text: `${item.msg}`,
+          });
+        });
+        return;
+      }
+
+      this.loading = true;
+      this.$notify({
+        type: 'warn',
+        text: '<i class="fa fa-spin fa-circle-o-notch"></i> Creating new pool...',
+      });
+
+      const transferDetails = await this.getTransferDetails();
+
+      if (typeof this.pool.saleStartDate === 'string') {
+        this.pool.saleStartDate = moment(this.pool.saleStartDate, this.datepickerOptions.format);
+      }
+      if (typeof this.pool.saleEndDate === 'string') {
+        this.pool.saleEndDate = moment(this.pool.saleEndDate, this.datepickerOptions.format);
+      }
+
+      try {
+        const response = await this.connectICO.poolFactory.createPool(this.pool, transferDetails.transferValue);
+
+        if (this.mode === 'mm') {
+          if (response) {
+            this.poolAddress = response;
+            this.$notify({
+              type: 'success',
+              title: 'Pool created!',
+              text: `${response}`,
+            });
+          }
+        } else if (this.mode === 'mew') {
+          const url = mewLinkBuilder(
+            this.connectICO.poolFactory.poolFactory.address,
+            response,
+            transferDetails.transferValue,
+            await window.web3.eth.net.getNetworkType(),
+          );
+          openMewUrl(url);
+        }
+
+        this.loading = false;
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+        this.loading = false;
       }
     },
   },
