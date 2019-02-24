@@ -10,13 +10,16 @@ const pushOutToken = require('./pushOutToken.js');
 commander
   .option('-c, --contract <contractPath>', "define path to the folder, where the compiled smart contracts, (Automations.json, KYC.json, Pool.json) is located, default: '../build/conrracts'")
   .option('-m, --mnemonic <mnemonic>', 'define keystore path')
-  .option('-i, --account-index <accountIndex>', 'index of account derived from mnemonic , default is 0');
+  .option('-i, --account-index <accountIndex>', 'index of account derived from mnemonic , default is 0')
+  .option('-b, --first-block <firstBlock>', 'first block to watch events from, default is 0');
 
 commander
   .parse(process.argv);
 
 const constractAtrifactPath = commander.contractPath ? commander.contractPath : '../build/conrracts';
 const accountIndex = commander.accountIndex ? commander.accountIndex : 0;
+const firstBlock = commander.firstBlock ? commander.firstBlock : 0;
+
 
 // eslint-disable-next-line import/no-dynamic-require
 // eslint-disable-next-line import/no-dynamic-require
@@ -36,7 +39,7 @@ const accounts = web3.eth.getAccounts();
 const account = accounts[0];
 
 
-const poolContract = new Pool(web3.currentProvider, account, poolArtifact);
-const automationsContract = new Automations(web3.currentProvider, account, automationsArtifact);
+const poolContract = new Pool(web3.currentProvider, account, poolArtifact, firstBlock);
+const automationsContract = new Automations(web3.currentProvider, account, automationsArtifact, firstBlock);
 
 pushOutToken(automationsContract, poolContract);

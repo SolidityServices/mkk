@@ -2,11 +2,12 @@ import TruffleContract from 'truffle-contract';
 import promisifyEvent from './promisifyEvent';
 
 export default class Automations {
-  constructor(provider, account, web3, automationsArtifact) {
+  constructor(provider, account, web3, automationsArtifact, firstBlock) {
     this.automations = TruffleContract(automationsArtifact);
     this.automations.setProvider(provider);
     this.account = account;
     this.web3 = web3;
+    this.firstBlock = firstBlock;
   }
 
   async emitPushOutTokenCompleted(pool, recipient) {
@@ -24,7 +25,7 @@ export default class Automations {
     const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
 
     const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('newPushOutToken', {
-      fromBlock: 0,
+      fromBlock: this.firstBlock,
       toBlock: 'latest',
     }, callback));
 
@@ -42,7 +43,7 @@ export default class Automations {
     const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
 
     const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('newSendToSale', {
-      fromBlock: 0,
+      fromBlock: this.firstBlock,
       toBlock: 'latest',
     }, callback));
 
@@ -60,7 +61,7 @@ export default class Automations {
     const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
 
     const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('completedPushOutToken', {
-      fromBlock: 0,
+      fromBlock: this.firstBlock,
       toBlock: 'latest',
     }, callback));
 
@@ -78,7 +79,7 @@ export default class Automations {
     const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
 
     const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('completedSendToSale', {
-      fromBlock: 0,
+      fromBlock: this.firstBlock,
       toBlock: 'latest',
     }, callback));
 

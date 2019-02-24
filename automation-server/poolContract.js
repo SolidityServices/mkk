@@ -2,11 +2,12 @@ import TruffleContract from 'truffle-contract';
 import promisifyEvent from './promisifyEvent';
 
 export default class Pool {
-  constructor(provider, account, web3, poolArtifact) {
+  constructor(provider, account, web3, poolArtifact, firstBlock) {
     this.pool = TruffleContract(poolArtifact);
     this.pool.setProvider(provider);
     this.account = account;
     this.web3 = web3;
+    this.firstBlock = firstBlock;
   }
 
   /**
@@ -40,7 +41,7 @@ export default class Pool {
   async getTokensRecievedEvent(poolAddress) {
     const instanceRawWeb3 = new this.web3.eth.Contract(this.pool.abi, poolAddress);
     const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('tokensReceived', {
-      fromBlock: 0,
+      fromBlock: this.firstBlock,
       toBlock: 'latest',
     }, callback));
 
