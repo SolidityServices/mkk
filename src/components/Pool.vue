@@ -28,14 +28,16 @@
                  class="form-control input-text"
                  :disabled="disabled"
                  v-model="pool.saleAddress" placeholder="Sale ETH address"/>
+          <span v-if="errors.has('Sale ETH address')" v-text="errors.first('Sale ETH address')" class="text-danger"></span>
         </div>
 
         <div class="d-flex flex-column col-12">
           <div class="blue-24-16-bold py-3 pl-4"> Token address (optional):</div>
-          <input type="text" v-validate="'eth-address'" data-vv-name="Sale ETH address"
+          <input type="text" v-validate="'eth-address'" data-vv-name="Token address"
                  class="form-control input-text"
                  :disabled="disabled"
                  v-model="pool.tokenAddress" placeholder="Token ETH address"/>
+          <span v-if="errors.has('Token address')" v-text="errors.first('Token address')" class="text-danger"></span>
         </div>
       </div>
 
@@ -100,7 +102,8 @@
                 v-model="pool.poolDescription"
                 v-validate="'required'"
                 data-vv-name="Description"
-              />
+              ></textarea>
+              <span v-if="errors.has('Description')" v-text="errors.first('Description')" class="text-danger"></span>
             </div>
           </div>
 
@@ -122,6 +125,7 @@
                      min="0"
                      max="100"
                      v-model="pool.creatorFeeRate">
+              <span v-if="errors.has('Creator fee')" v-text="errors.first('Creator fee')" class="text-danger"></span>
             </div>
           </div>
 
@@ -162,6 +166,7 @@
                      :disabled="disabled"
                      data-vv-name="Minimum pool goal"
                      v-model="pool.minPoolGoal">
+              <span v-if="errors.has('Minimum pool goal')" v-text="errors.first('Minimum pool goal')" class="text-danger"></span>
             </div>
           </div>
 
@@ -174,6 +179,7 @@
                      :disabled="disabled"
                      data-vv-name="Max allocation"
                      v-model="pool.maxPoolAllocation">
+              <span v-if="errors.has('Max allocation')" v-text="errors.first('Max allocation')" class="text-danger"></span>
             </div>
           </div>
 
@@ -195,6 +201,7 @@
                      :disabled="disabled"
                      data-vv-name="Withdraw time lock"
                      v-model="pool.withdrawTimelock">
+              <span v-if="errors.has('Withdraw time lock')" v-text="errors.first('Withdraw time lock')" class="text-danger"></span>
             </div>
           </div>
 
@@ -207,6 +214,7 @@
                      :disabled="disabled"
                      data-vv-name="Minimum contribution"
                      v-model="pool.minContribution"/>
+              <span v-if="errors.has('Minimum contribution')" v-text="errors.first('Minimum contribution')" class="text-danger"></span>
             </div>
           </div>
 
@@ -219,6 +227,17 @@
                      :disabled="disabled"
                      data-vv-name="Maximum contribution"
                      v-model="pool.maxContribution"/>
+              <span v-if="errors.has('Maximum contribution')" v-text="errors.first('Maximum contribution')" class="text-danger"></span>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
+            <div class="col-12 col-lg-6 d-flex flex-row align-items-center">
+              <div class="input-cb mr-3">
+                <input type="checkbox" v-model="pool.strictlyTrustlessPool" id="trustlessPool" name="" :disabled="true"/>
+                <label for="trustlessPool"></label>
+              </div>
+              <label class="blue-18-reg mb-0" for="trustlessPool">Trustless Pool</label>
             </div>
           </div>
 
@@ -228,83 +247,223 @@
             </button>
           </div>
 
-          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap" v-if="!disabled">
-            <div class="col-12 col-lg-6 blue-18-reg">Country blacklist:</div>
-            <div class="col-12 col-lg-6">
-              <b-form-select
-                multiple
-                v-model="selectedCountries"
-                class="form-control input-dd"
-                :disabled="disabled"
-                value-field="alpha3Code"
-                text-field="name"
-                :options="countries"
-              />
-            </div>
-          </div>
+          <div v-if="!disabled && pool.strictlyTrustlessPool">
+            <hr class="blue-hr-fullw my-5 w-100">
 
-          <div class="col-12 col-md-6 d-flex flex-column mt-3 flex-wrap" v-if="!disabled">
-            <div class="d-flex flex-row flex-wrap" v-if="!disabled">
-              <div class="col-12 col-lg-6 blue-18-reg">Selected countries:</div>
-              <div class="col-12 col-lg-6">{{ selectedCountriesText }}</div>
-            </div>
-          </div>
-
-          <div class="w-100 d-flex flex-row align-items-center mt-3 flex-wrap justify-content-center" v-if="!disabled">
-            <button class="btn white-submit px-4 mr-3" @click="addCountryToBlacklist">
-              Add country
-            </button>
-            <button class="btn white-submit px-4 mr-3" @click="removeCountryFromBlacklist">
-              Remove country
-            </button>
-          </div>
-
-
-          <div class="col-12 d-flex flex-column mt-3 flex-wrap" v-if="!disabled && isCreator">
-            <div class="row mx-0 mt-3">
-              <div class="col-12 col-lg-3 blue-18-reg d-flex flex-row">
-                <span>Admin address: </span>
+            <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled && pool.strictlyTrustlessPool">
+              <div class="col-12 col-md-7">
+                <input type="text" class="form-control input-text" v-model="sendToSaleWithCalldataSig"/>
               </div>
-              <div class="col-12 col-lg-9 d-flex flex-row">
-                <input type="text" v-validate="'required|eth-address'" data-vv-name="Admin address"
-                       class="form-control input-text w-100"
-                       v-model="newAdminAddress" placeholder="Admin address"/>
+
+              <div class="col-12 col-md-5 d-flex flex-row flex-wrap">
+                <button class="btn blue-submit px-4 w-100" @click="sendSaleParticipateWithCalldata">
+                  Send Sale Participate With Calldata
+                </button>
+              </div>
+            </div>
+
+            <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled && pool.strictlyTrustlessPool">
+              <div class="col-12 col-md-7">
+                <input type="text" class="form-control input-text" v-model="withdrawFromSaleWithCalldataSig"/>
+              </div>
+
+              <div class="col-12 col-md-5 d-flex flex-row flex-wrap">
+                <button class="btn blue-submit px-4 w-100" @click="sendSaleWithdrawRequestWithCalldata">
+                  Send Sale Withdraw Request With Calldata
+                </button>
               </div>
             </div>
           </div>
 
-          <div class="w-100 d-flex flex-row align-items-center mt-2 flex-wrap justify-content-center" v-if="!disabled && isCreator">
-            <button class="btn white-submit px-4 mr-3" @click="addAdminAddress">
-              Add address
-            </button>
-            <button class="btn white-submit px-4 mr-3" @click="removeAdminAddress">
-              Remove address
-            </button>
+          <hr class="blue-hr-fullw my-5 w-100">
+
+          <div class="col-12 d-flex flex-row mt-3 flex-wrap">
+            <div class="col-12 col-lg-3 blue-18-reg mb-1">Pool Country blacklist:</div>
+            <div class="col-12 col-lg-9">{{ blacklistedCountriesText }}</div>
           </div>
 
-          <div class="col-12 d-flex flex-column mt-3 flex-wrap" v-if="!disabled">
-            <div class="row mx-0 mt-3">
-              <div class="col-12 col-lg-3 blue-18-reg d-flex flex-row">
-                <span>Whitelist addresses: </span>
+          <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
+              <div class="col-12 col-md-8 mb-2 mb-lg-0">
+                <country-select
+                        multiple
+                        v-model="countriesToAdd"
+                        :options="selectableCountries"/>
               </div>
-              <div class="d-flex flex-row col-12 col-lg-9">
-                <input type="text" v-validate="'eth-address'" data-vv-name="Whitelist address"
-                       class="form-control input-text w-100"
-                       :disabled="disabled"
-                       v-model="newWhitelistAddress" placeholder="Whitelist address"/>
+
+              <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
+                <button class="btn blue-submit px-4 w-100" @click="addToBlacklist">
+                  Add to blacklist
+                </button>
+              </div>
+          </div>
+
+          <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
+            <div class="col-12 col-md-8  mb-2 mb-lg-0">
+              <country-select
+                      multiple
+                      v-model="countriesToRemove"
+                      :options="blacklistedCountries"/>
+            </div>
+
+            <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
+              <button class="btn blue-submit px-4 w-100" @click="removeFromBlacklist">
+                Remove from blacklist
+              </button>
+            </div>
+          </div>
+
+          <hr class="blue-hr-fullw my-5 w-100">
+
+          <div v-if="!disabled">
+            <div class="w-100">
+              <div class="col-12 d-flex flex-row mt-3 flex-wrap">
+                <div class="col-12 blue-18-reg">Admin addresses:</div>
+                <div class="col-12">{{ adminAddressesText }}</div>
+              </div>
+            </div>
+
+            <!--v-if="!disabled && isCreator"-->
+            <div class="w-100">
+              <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
+                <div class="col-12 col-md-8 mb-2 mb-lg-0">
+                  <multiselect
+                          class="w-100"
+                          v-validate="'eth-address-array'"
+                          data-vv-name="Admin addresses"
+                          v-model="adminAddressesToAdd"
+                          :multiple="true"
+                          :options="[]"
+                          :taggable="true"
+                          @tag="addAdminAddressToAdd">
+                  </multiselect>
+                  <span v-if="errors.has('Add Admin addresses')" v-text="errors.first('Add Admin addresses')" class="text-danger"></span>
+                </div>
+
+                <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
+                  <button class="btn btn-block blue-submit px-4 w-100" @click="addAdminAddresses">
+                    Add Admin addresses
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="w-100">
+              <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
+                <div class="col-12 col-md-8 mb-2 mb-lg-0">
+                  <multiselect
+                          class="w-100"
+                          v-validate="'eth-address-array'"
+                          data-vv-name="Add Admin addresses"
+                          v-model="adminAddressesToRemove"
+                          :multiple="true"
+                          :options="adminAddresses">
+                  </multiselect>
+                  <span v-if="errors.has('Admin addresses')" v-text="errors.first('Admin addresses')" class="text-danger"></span>
+                </div>
+
+                <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
+                  <button class="btn btn-block blue-submit px-4 w-100" @click="removeAdminAddresses">
+                    Remove Admin addresses
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <hr class="blue-hr-fullw my-5 w-100">
+          </div>
+
+          <div class="w-100">
+            <div class="col-12 d-flex flex-row mt-3 flex-wrap">
+              <div class="col-12 blue-18-reg">Whitelist addresses:</div>
+              <div class="col-12">{{ whitelistAddressesText }}</div>
+            </div>
+          </div>
+
+          <!--v-if="!disabled"-->
+          <div class="w-100">
+            <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
+              <div class="col-12 col-md-8 mb-2 mb-lg-0">
+                <multiselect
+                        class="w-100"
+                        v-validate="'eth-address-array'"
+                        data-vv-name="Add Whitelist addresses"
+                        v-model="whitelistAddressesToAdd"
+                        :multiple="true"
+                        :options="[]"
+                        :taggable="true"
+                        @tag="addWhitelistAddressToAdd">
+                </multiselect>
+                <span v-if="errors.has('Add Whitelist addresses')" v-text="errors.first('Add Whitelist addresses')" class="text-danger"></span>
+              </div>
+
+              <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
+                <button class="btn btn-block blue-submit px-4 w-100" @click="addWhitelistAddresses">
+                  Add Whitelist addresses
+                </button>
               </div>
             </div>
           </div>
 
-          <div class="w-100 d-flex flex-row align-items-center mt-2 flex-wrap justify-content-center" v-if="!disabled">
-            <button class="btn white-submit px-4 mr-3" @click="addWhitelistAddress">
-              Add address
-            </button>
-            <button class="btn white-submit px-4 mr-3" @click="removeWhitelistAddress">
-              Remove address
-            </button>
+          <div class="w-100">
+            <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
+              <div class="col-12 col-md-8 mb-2 mb-lg-0">
+                <multiselect
+                        class="w-100"
+                        v-validate="'eth-address-array'"
+                        data-vv-name="Whitelist addresses"
+                        v-model="whitelistAddressesToRemove"
+                        :multiple="true"
+                        :options="whitelistAddresses">
+                </multiselect>
+                <span v-if="errors.has('Whitelist addresses')" v-text="errors.first('Whitelist addresses')" class="text-danger"></span>
+              </div>
+
+              <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
+                <button class="btn btn-block blue-submit px-4 w-100" @click="removeWhitelistAddresses">
+                  Remove Whitelist addresses
+                </button>
+              </div>
+            </div>
           </div>
 
+          <hr class="blue-hr-fullw my-5 w-100">
+
+          <div class="w-100">
+            <div class="o-border d-inline "></div>
+            <div class="d-inline blue-36-20-bold"> Automations
+              <hr align="left" class="blue-hr-2">
+            </div>
+          </div>
+
+          <div class="w-100">
+            <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
+              <div class="col-12 col-md-3 d-flex justify-content-end">
+                <div class="d-lg-inline-block orange-18-bold pr-2 px-0">Add auto send to sale GAS price in GWEI:</div>
+              </div>
+
+              <div class="col-12 col-md-3 mb-2 mb-lg-0">
+                <input type="number" v-validate="`required|decimal`"
+                       step="0.000001"
+                       class="form-control input-text w-100" data-vv-name="Gwei amount"
+                       v-model="sendToSaleGweiValue">
+                <span v-if="errors.has('Gwei amount')" v-text="errors.first('Gwei amount')" class="text-danger"></span>
+              </div>
+
+              <div class="col-12 col-md-3 mb-2 mb-lg-0">
+                <date-picker v-model="sendToSaleTime"
+                             :config="datepickerOptions"
+                             class="form-control input-text w-100"
+                             :disabled="disabled"
+                ></date-picker>
+              </div>
+
+              <div class="col-12 col-md-3 d-flex flex-row flex-wrap">
+                <button class="btn px-4 blue-submit btn-block" @click="addSendToSale">Add auto send to sale</button>
+              </div>
+            </div>
+          </div>
+
+          <hr class="blue-hr-fullw my-5 w-100">
         </div>
       </div>
     </div>
@@ -315,11 +474,16 @@
 import { mapGetters } from 'vuex';
 import moment from 'moment';
 import datePicker from 'vue-bootstrap-datetimepicker';
+import Multiselect from 'vue-multiselect';
+import Web3 from 'web3';
 import LocalPool from '../model/LocalPool';
+import CountrySelect from './form/CountrySelect.vue';
 
 export default {
   components: {
     datePicker,
+    Multiselect,
+    CountrySelect,
   },
   props: {
     pool: {
@@ -344,10 +508,25 @@ export default {
       },
       poolAddress: null,
       showFuncSig: false,
-      selectedCountries: [],
-      newAdminAddress: '',
-      newWhitelistAddress: '',
+      selectableCountries: [],
+      blacklistedCountries: [],
+      countriesToAdd: [],
+      countriesToRemove: [],
+      adminAddresses: [],
+      adminAddressesToAdd: [],
+      adminAddressesToRemove: [],
+      whitelistAddresses: [],
+      whitelistAddressesToAdd: [],
+      whitelistAddressesToRemove: [],
+      sendToSaleTime: '',
+      sendToSaleGweiValue: 0,
+      sendToSaleWithCalldataSig: '{}',
+      withdrawFromSaleWithCalldataSig: '{}',
     };
+  },
+  mounted() {
+    this.initCountryData();
+    this.initAddresses();
   },
   computed: {
     submitDisabled() {
@@ -357,14 +536,185 @@ export default {
       'connectICO',
       'countries',
     ]),
-    selectedCountriesText() {
-      return this.selectedCountries ? this.selectedCountries.join(', ') : '';
+    blacklistedCountriesText() {
+      return this.blacklistedCountries.map(country => country.alpha3Code).join(', ');
     },
-    countryBlackListText() {
-      return this.pool.countryBlackList ? this.pool.countryBlackList.join(', ') : '';
+    adminAddressesText() {
+      return this.adminAddresses.join(', ');
+    },
+    whitelistAddressesText() {
+      return this.whitelistAddresses.join(', ');
     },
   },
   methods: {
+    async initAddresses() {
+      this.adminAddressesToAdd = [];
+      this.adminAddressesToRemove = [];
+      this.whitelistAddressesToAdd = [];
+      this.whitelistAddressesToRemove = [];
+      this.adminAddresses = await this.connectICO.pool.getAdmins(this.pool.poolAddress);
+      this.whitelistAddresses = await this.connectICO.pool.getWhitelist(this.pool.poolAddress);
+    },
+    async addAdminAddressToAdd(address) {
+      const isEthAddress = await this.$validator.validate('Add Admin addresses', [address]);
+      const isKycAddress = await this.connectICO.KYC.checkKYC(address);
+
+      if (!isKycAddress) {
+        const field = this.$validator.fields.find({ name: 'Add Admin addresses' });
+
+        this.$validator.errors.add({
+          id: field.id,
+          field: 'Add Admin addresses',
+          msg: 'The given address is not a KYC Address',
+        });
+
+        field.setFlags({
+          invalid: true,
+          valid: false,
+          validated: true,
+        });
+      }
+
+      if (!isEthAddress || !isKycAddress) {
+        return;
+      }
+
+      if (!this.adminAddressesToAdd.includes(address)) {
+        this.adminAddressesToAdd.push(address);
+      }
+    },
+    async addAdminAddresses() {
+      try {
+        await this.connectICO.pool.addAdmin(this.pool.poolAddress, this.adminAddressesToAdd);
+        await this.initAddresses();
+
+        this.$notify({
+          type: 'success',
+          text: 'Admin addresses successfully added!',
+        });
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
+    },
+    async removeAdminAddresses() {
+      try {
+        await this.connectICO.pool.removeAdmin(this.pool.poolAddress, this.adminAddressesToRemove);
+        await this.initAddresses();
+
+        this.$notify({
+          type: 'success',
+          text: 'Admin addresses successfully removed!',
+        });
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
+    },
+    async addWhitelistAddressToAdd(address) {
+      const isEthAddress = await this.$validator.validate('Add Whitelist addresses', [address]);
+      const isKycAddress = await this.connectICO.KYC.checkKYC(address);
+
+      if (!isKycAddress) {
+        const field = this.$validator.fields.find({ name: 'Add Whitelist addresses' });
+
+        this.$validator.errors.add({
+          id: field.id,
+          field: 'Add Whitelist addresses',
+          msg: 'The given address is not a KYC Address',
+        });
+
+        field.setFlags({
+          invalid: true,
+          valid: false,
+          validated: true,
+        });
+      }
+
+      if (!isEthAddress || !isKycAddress) {
+        return;
+      }
+
+      if (!this.whitelistAddressesToAdd.includes(address)) {
+        this.whitelistAddressesToAdd.push(address);
+      }
+    },
+    async addWhitelistAddresses() {
+      try {
+        await this.connectICO.pool.addWhitelist(this.pool.poolAddress, this.whitelistAddressesToAdd);
+        await this.initAddresses();
+
+        this.$notify({
+          type: 'success',
+          text: 'Whitelist addresses successfully added!',
+        });
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
+    },
+    async removeWhitelistAddresses() {
+      try {
+        await this.connectICO.pool.removeWhitelist(this.pool.poolAddress, this.whitelistAddressesToRemove);
+        await this.initAddresses();
+
+        this.$notify({
+          type: 'success',
+          text: 'Whitelist addresses successfully removed!',
+        });
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
+    },
+    async initCountryData() {
+      const data = await this.connectICO.pool.getKycCountryBlacklist(this.pool.poolAddress);
+
+      this.countriesToAdd = [];
+      this.countriesToRemove = data || [];
+      this.selectableCountries = (data) ? this.countries.filter(option => !data.includes(option.alpha3Code)) : [];
+      this.blacklistedCountries = (data) ? this.countries.filter(option => data.includes(option.alpha3Code)) : [];
+    },
+    async addToBlacklist() {
+      try {
+        await this.connectICO.pool.addCountryBlacklist(this.pool.poolAddress, this.countriesToAdd);
+        await this.initCountryData();
+
+        this.$notify({
+          type: 'success',
+          text: 'Countries successfully added to blacklist.',
+        });
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
+    },
+    async removeFromBlacklist() {
+      try {
+        await this.connectICO.pool.removeCountryBlacklist(this.pool.poolAddress, this.countriesToRemove);
+        await this.initCountryData();
+
+        this.$notify({
+          type: 'success',
+          text: 'Countries successfully removed from blacklist.',
+        });
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
+    },
     async getTransferDetails() {
       const factoryParams = await this.connectICO.poolFactory.getAllPoolFactoryParams();
       return {
@@ -376,6 +726,20 @@ export default {
           * this.pool.maxPoolAllocation / 1000
         ),
       };
+    },
+    async addSendToSale() {
+      try {
+        const date = moment(this.sendToSaleTime, this.datepickerOptions.format);
+        const gasPrice = Web3.utils.toWei(this.sendToSaleGweiValue, 'gwei');
+        const response = await this.connectICO.automations.addSendToSale(this.pool.poolAddress, date, gasPrice);
+
+        console.log(response);
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+        });
+      }
     },
     async submit() {
       const validationResponse = await this.$validator.validateAll();
@@ -414,9 +778,11 @@ export default {
         });
       }
     },
-    async addCountryToBlacklist() {
+    async sendSaleParticipateWithCalldata() {
       try {
-        await this.connectICO.pool.addCountryBlacklist(this.pool.poolAddress, this.selectedCountries);
+        const response = await this.connectICO.pool.sendToSaleWithCalldataParameter(this.pool.poolAddress, this.sendToSaleWithCalldataSig);
+
+        console.log(response);
       } catch (e) {
         this.$notify({
           type: 'error',
@@ -424,49 +790,13 @@ export default {
         });
       }
     },
-    async removeCountryFromBlacklist() {
+    async sendSaleWithdrawRequestWithCalldata() {
       try {
-        await this.connectICO.pool.removeCountryBlacklist(this.pool.poolAddress, this.selectedCountries);
-      } catch (e) {
-        this.$notify({
-          type: 'error',
-          text: e.message,
-        });
-      }
-    },
-    async addAdminAddress() {
-      try {
-        await this.connectICO.pool.addAdmin(this.pool.poolAddress, [this.newAdminAddress]);
-      } catch (e) {
-        this.$notify({
-          type: 'error',
-          text: e.message,
-        });
-      }
-    },
-    async removeAdminAddress() {
-      try {
-        await this.connectICO.pool.removeAdmin(this.pool.poolAddress, [this.newAdminAddress]);
-      } catch (e) {
-        this.$notify({
-          type: 'error',
-          text: e.message,
-        });
-      }
-    },
-    async addWhitelistAddress() {
-      try {
-        await this.connectICO.pool.addWhitelist(this.pool.poolAddress, [this.newAdminAddress]);
-      } catch (e) {
-        this.$notify({
-          type: 'error',
-          text: e.message,
-        });
-      }
-    },
-    async removeWhitelistAddress() {
-      try {
-        await this.connectICO.pool.removeWhitelist(this.pool.poolAddress, [this.newAdminAddress]);
+        console.log(this.address);
+
+        const response = await this.connectICO.pool.withdrawFromSaleWithCalldataParameter(this.pool.poolAddress, this.sendToSaleWithCalldataSig);
+
+        console.log(response);
       } catch (e) {
         this.$notify({
           type: 'error',

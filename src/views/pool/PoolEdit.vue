@@ -16,7 +16,6 @@
       <button class="btn blue-submit px-4 mx-3" @click="creatorWithdraw">
         Creator withdraw
       </button>
-
     </div>
 
     <div class="d-flex flex-row justify-content-center col-12 col-lg-6 m-auto pt-3">

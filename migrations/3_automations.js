@@ -4,6 +4,6 @@ var Automations = artifacts.require('./Automations.sol')
 
 module.exports = function (deployer) {
 
-    deployer.deploy(Automations, 0x0, 0)
+    deployer.deploy(Automations, 0x0, 0, 0)
 
 }

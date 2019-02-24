@@ -27,13 +27,15 @@
           <input type="text" v-validate="'required|eth-address'" data-vv-name="Sale ETH address"
                  class="form-control input-text"
                  v-model="pool.saleAddress" placeholder="0x0000000000000000000000000000000000000000"/>
+          <span v-if="errors.has('Sale ETH address')" v-text="errors.first('Sale ETH address')" class="text-danger"></span>
         </div>
 
         <div class="d-flex flex-column col-12">
           <div class="blue-24-16-bold py-3 pl-4"> Token address (optional):</div>
-          <input type="text" v-validate="'eth-address'" data-vv-name="Sale ETH address"
+          <input type="text" v-validate="'eth-address'" data-vv-name="Token address"
                  class="form-control input-text"
                  v-model="pool.tokenAddress" placeholder="0x0000000000000000000000000000000000000000"/>
+          <span v-if="errors.has('Token address')" v-text="errors.first('Token address')" class="text-danger"></span>
         </div>
       </div>
 
@@ -59,7 +61,7 @@
             <div class="col-12 col-lg-8">
               <input type="text"
                      class="form-control input-text"
-                     v-model="pool.saleWithdrawFunctionSig"/>
+                     v-model="pool.saleParticipateFunctionSig"/>
             </div>
           </div>
 
@@ -95,7 +97,9 @@
                 v-model="pool.poolDescription"
                 v-validate="'required'"
                 data-vv-name="Description"
-              />
+                placeholder="Please write a description"
+              ></textarea>
+              <span v-if="errors.has('Description')" v-text="errors.first('Description')" class="text-danger"></span>
             </div>
           </div>
 
@@ -116,6 +120,7 @@
                      min="0"
                      max="100"
                      v-model="pool.creatorFeeRate">
+              <span v-if="errors.has('Creator fee')" v-text="errors.first('Creator fee')" class="text-danger"></span>
             </div>
           </div>
 
@@ -153,6 +158,7 @@
                      step="0.000001"
                      class="form-control input-text w-100" data-vv-name="Minimum pool goal"
                      v-model="pool.minPoolGoal">
+              <span v-if="errors.has('Minimum pool goal')" v-text="errors.first('Minimum pool goal')" class="text-danger"></span>
             </div>
           </div>
 
@@ -163,6 +169,7 @@
                      step="0.000001"
                      class="form-control input-text w-100" data-vv-name="Max allocation"
                      v-model="pool.maxPoolAllocation">
+              <span v-if="errors.has('Max allocation')" v-text="errors.first('Max allocation')" class="text-danger"></span>
             </div>
           </div>
 
@@ -177,11 +184,12 @@
           </div>
 
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Withdraw timelock</div>
+            <div class="col-12 col-lg-6 blue-18-reg">Withdraw timelock in hours</div>
             <div class="col-12 col-lg-6">
-              <input type="number" v-validate="'required|numeric|min_value:0'"
+              <input type="number" v-validate="'required|numeric|min_value:0|max_value:72'"
                      class="form-control input-text w-100" data-vv-name="Withdraw time lock"
                      v-model="pool.withdrawTimelock">
+              <span v-if="errors.has('Withdraw time lock')" v-text="errors.first('Withdraw time lock')" class="text-danger"></span>
             </div>
           </div>
 
@@ -192,6 +200,7 @@
                      step="0.000001"
                      class="form-control input-text w-100" data-vv-name="Minimum contribution"
                      v-model="pool.minContribution"/>
+              <span v-if="errors.has('Minimum contribution')" v-text="errors.first('Minimum contribution')" class="text-danger"></span>
             </div>
           </div>
 
@@ -202,67 +211,74 @@
                      step="0.000001"
                      class="form-control input-text" data-vv-name="Maximum contribution"
                      v-model="pool.maxContribution"/>
+              <span v-if="errors.has('Maximum contribution')" v-text="errors.first('Maximum contribution')" class="text-danger"></span>
             </div>
           </div>
 
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Country blacklist:</div>
-            <div class="col-12 col-lg-6">
-              <b-form-select
-                multiple
-                v-model="pool.countryBlackList"
-                class="form-control input-dd"
-                value-field="alpha3Code"
-                text-field="name"
-                :options="countries"
-              />
+            <div class="col-12 col-lg-6 d-flex flex-row align-items-center">
+              <div class="input-cb mr-3">
+                <input type="checkbox" v-model="pool.strictlyTrustlessPool" id="trustlessPool" name=""/>
+                <label for="trustlessPool"></label>
+              </div>
+              <label class="blue-18-reg mb-0" for="trustlessPool">Trustless Pool</label>
             </div>
           </div>
 
-          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Selected countries:</div>
-            <div class="col-12 col-lg-6">{{pool.countryBlackList.join(', ')}}</div>
-          </div>
-
-
-          <div class="col-12 d-flex flex-column mt-3 flex-wrap">
-            <div class="row mx-0">
-              <div class="col-12 col-lg-4 blue-18-reg d-flex flex-row mt-2">
-                <span>Admin addresses: </span>
-                <span class="ml-2"><i class="fa fa-plus" @click="addAddress(pool.adminAddresses)"></i></span>
-              </div>
-              <div class="col-12 col-lg-8 d-flex flex-column">
-                <div class="d-flex flex-row align-items-center mt-3 flex-shrink-0"
-                     v-for="(adminAddress, index) in pool.adminAddresses" :key="index">
-                  <input type="text" v-validate="'required|eth-address'" data-vv-name="Admin address"
-                         class="form-control input-text w-100"
-                         v-model="pool.adminAddresses[index]" placeholder="Admin address"/>
-                  <i class="fa fa-minus ml-2 orange-18-reg" @click="removeAddress(pool.adminAddresses, index)"></i>
+          <div class="col-12 mt-3">
+            <div class="row">
+              <div class="col-12 col-md-6 d-flex flex-row flex-wrap">
+                <div class="col-12 blue-18-reg mb-1">Country blacklist:</div>
+                <div class="col-12">
+                  <country-select
+                          multiple
+                          v-model="pool.countryBlackList"
+                          :options="countries"/>
                 </div>
               </div>
+
+              <div class="col-12 col-md-6 d-flex flex-row flex-wrap">
+                <div class="col-12 blue-18-reg mb-1">Selected countries:</div>
+                <div class="col-12">{{pool.countryBlackList.join(', ')}}</div>
+              </div>
             </div>
           </div>
 
-          <div class="col-12 d-flex flex-column mt-3 flex-wrap">
-            <div class="row mx-0">
-              <div class="col-12 col-lg-4 blue-18-reg d-flex flex-row mt-2">
-                <span>Whitelist addresses: </span>
-                <span class="ml-2"><i class="fa fa-plus" @click="addAddress(pool.whiteListAddresses)"></i></span>
+          <div class="col-12 d-flex mt-3 align-items-center">
+              <div class="col-12 col-lg-3 blue-18-reg">Admin addresses:</div>
+
+              <div class="col-12 col-lg-9">
+                  <multiselect
+                          v-validate="'eth-address-array'"
+                          data-vv-name="Admin addresses"
+                          v-model="pool.adminAddresses"
+                          :multiple="true"
+                          :options="[]"
+                          :taggable="true"
+                          @tag="addAdminAddress">
+                  </multiselect>
+                <span v-if="errors.has('Admin addresses')" v-text="errors.first('Admin addresses')" class="text-danger"></span>
               </div>
-              <div class="d-flex flex-column col-12 col-lg-8">
-                <div class="d-flex flex-row align-items-center mt-3 flex-shrink-0"
-                     v-for="(whiteListAddress, index) in pool.whiteListAddresses" :key="index">
-                  <input type="text" v-validate="'required|eth-address'" data-vv-name="Whitelist address"
-                         class="form-control input-text w-100"
-                         v-model="pool.whiteListAddresses[index]" placeholder="Whitelist address"/>
-                  <i class="fa fa-minus ml-2 orange-18-reg" @click="removeAddress(pool.whiteListAddresses, index)"></i>
-                </div>
+          </div>
+
+          <div class="col-12 d-flex mt-3 align-items-center">
+              <div class="col-12 col-lg-3 blue-18-reg">Whitelist addresses:</div>
+
+              <div class="col-12 col-lg-9">
+                  <multiselect
+                          v-validate="'eth-address-array'"
+                          data-vv-name="Whitelist addresses"
+                          v-model="pool.whiteListAddresses"
+                          :multiple="true"
+                          :options="[]"
+                          :taggable="true"
+                          @tag="addWhitelistAddress">
+                  </multiselect>
+                <span v-if="errors.has('Whitelist addresses')" v-text="errors.first('Whitelist addresses')" class="text-danger"></span>
               </div>
-            </div>
           </div>
         </div>
       </div>
-
 
       <hr class="blue-hr-fullw my-5 w-100" v-if="calculatedFee">
 
@@ -293,12 +309,8 @@
       </div>
 
       <div class="d-flex flex-row justify-content-center my-5">
-        <button class="btn white-submit px-4 mr-3" @click="calculateFee" :disabled="submitDisabled">
-          Calculate fee
-        </button>
-        <button class="btn blue-submit px-4" @click="submit" :disabled="submitDisabled">
-          Submit
-        </button>
+        <button class="btn white-submit px-4 mr-3" @click="calculateFee" :disabled="submitDisabled">Calculate fee</button>
+        <button class="btn blue-submit px-4" @click="submit" :disabled="submitDisabled" v-text="submitText"></button>
       </div>
 
       <div class="d-flex flex-row justify-content-center my-5" v-if="poolAddress">
@@ -321,6 +333,8 @@
 import { mapGetters } from 'vuex';
 import moment from 'moment';
 import datePicker from 'vue-bootstrap-datetimepicker';
+import Multiselect from 'vue-multiselect';
+import CountrySelect from '../../components/form/CountrySelect.vue';
 import LocalPool from '../../model/LocalPool';
 import mewLinkBuilder from '../../utils/mewLinkBuilder';
 import openMewUrl from '../../utils/openMewUrl';
@@ -328,9 +342,12 @@ import openMewUrl from '../../utils/openMewUrl';
 export default {
   components: {
     datePicker,
+    Multiselect,
+    CountrySelect,
   },
   data() {
     return {
+      loading: false,
       pool: null,
       datepickerOptions: {
         format: 'DD/MM/YYYY H:mm',
@@ -348,7 +365,10 @@ export default {
   },
   computed: {
     submitDisabled() {
-      return !window.ethInitSuccess;
+      return !window.ethInitSuccess || this.loading;
+    },
+    submitText() {
+      return this.loading ? 'Creating new pool...' : 'Create new pool';
     },
     ...mapGetters([
       'connectICO',
@@ -357,6 +377,9 @@ export default {
     ]),
   },
   methods: {
+    setCountries(countries) {
+      console.log(countries);
+    },
     async getTransferDetails() {
       const factoryParams = await this.connectICO.poolFactory.getAllPoolFactoryParams();
       return {
@@ -369,8 +392,71 @@ export default {
         ),
       };
     },
+    async calculateFee() {
+      this.calculatedFee = await this.getTransferDetails();
+    },
+    saleStartDateChanged(event) {
+      this.pool.saleEndDate = moment(event.date.add(7, 'days'), this.datepickerOptions.format);
+    },
+    async addAdminAddress(address) {
+      const isEthAddress = await this.$validator.validate('Admin addresses', [address]);
+      const isKycAddress = await this.connectICO.KYC.checkKYC(address);
+
+      if (!isKycAddress) {
+        const field = this.$validator.fields.find({ name: 'Admin addresses' });
+
+        this.$validator.errors.add({
+          id: field.id,
+          field: 'Admin addresses',
+          msg: 'The given address is not a KYC Address',
+        });
+
+        field.setFlags({
+          invalid: true,
+          valid: false,
+          validated: true,
+        });
+      }
+
+      if (!isEthAddress || !isKycAddress) {
+        return;
+      }
+
+      if (!this.pool.adminAddresses.includes(address)) {
+        this.pool.adminAddresses.push(address);
+      }
+    },
+    async addWhitelistAddress(address) {
+      const isEthAddress = await this.$validator.validate('Whitelist addresses', [address]);
+      const isKycAddress = await this.connectICO.KYC.checkKYC(address);
+
+      if (!isKycAddress) {
+        const field = this.$validator.fields.find({ name: 'Whitelist addresses' });
+
+        this.$validator.errors.add({
+          id: field.id,
+          field: 'Whitelist addresses',
+          msg: 'The given address is not a KYC Address',
+        });
+
+        field.setFlags({
+          invalid: true,
+          valid: false,
+          validated: true,
+        });
+      }
+
+      if (!isEthAddress || !isKycAddress) {
+        return;
+      }
+
+      if (!this.pool.whiteListAddresses.includes(address)) {
+        this.pool.whiteListAddresses.push(address);
+      }
+    },
     async submit() {
       const validationResponse = await this.$validator.validateAll();
+
       if (!validationResponse) {
         this.errors.items.forEach((item) => {
           this.$notify({
@@ -382,7 +468,14 @@ export default {
         return;
       }
 
+      this.loading = true;
+      this.$notify({
+        type: 'warn',
+        text: '<i class="fa fa-spin fa-circle-o-notch"></i> Creating new pool...',
+      });
+
       const transferDetails = await this.getTransferDetails();
+
       if (typeof this.pool.saleStartDate === 'string') {
         this.pool.saleStartDate = moment(this.pool.saleStartDate, this.datepickerOptions.format);
       }
@@ -411,24 +504,16 @@ export default {
           );
           openMewUrl(url);
         }
+
+        this.pool = new LocalPool();
+        this.loading = false;
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
         });
+        this.loading = false;
       }
-    },
-    async calculateFee() {
-      this.calculatedFee = await this.getTransferDetails();
-    },
-    removeAddress(object, index) {
-      object.splice(index, 1);
-    },
-    addAddress(object) {
-      object.push('');
-    },
-    saleStartDateChanged(event) {
-      this.pool.saleEndDate = moment(event.date.add(7, 'days'), this.datepickerOptions.format);
     },
   },
 };

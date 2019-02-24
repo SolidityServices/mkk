@@ -1127,7 +1127,7 @@ export default class Pool {
       fromBlock: 0,
       toBlock: 'latest',
     }, callback));
-    const hexResult = this.getActiveListItems2(logs);
+    const hexResult = this.getActiveListItems(logs);
     return hexResult.map(item => this.web3.utils.hexToUtf8(item));
   }
 
