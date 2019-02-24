@@ -31,10 +31,10 @@ export default class Pool {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @param {string} recipientAddress address to push out their coins
    */
-  async pushOutToken(poolAddress, recipientAddress) {
+  async pushOutToken(poolAddress, recipientAddress, _gasPrice) {
     const instance = await this.pool.at(poolAddress);
 
-    return instance.pushOutToken(recipientAddress, { from: this.account });
+    return instance.pushOutToken(recipientAddress, { from: this.account, gasPrice: _gasPrice });
   }
 
   async getTokensRecievedEvent(poolAddress) {

@@ -19,8 +19,8 @@ export default class Automations {
     return instance.emitPushOutTokenCompleted(pool, { from: this.account });
   }
 
-  async getNewPushOutTokenEvent(poolAddress) {
-    const instance = await this.pool.at(poolAddress);
+  async getNewPushOutTokenEvent() {
+    const instance = await this.automations.deployed();
     const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
 
     const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('newPushOutToken', {
@@ -31,14 +31,14 @@ export default class Automations {
     return logs;
   }
 
-  async watchNewPushOutTokenEvent(poolAddress, callback) {
-    const instance = await this.pool.at(poolAddress);
+  async watchNewPushOutTokenEvent(callback) {
+    const instance = await this.automations.deployed();
     const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
     instanceRawWeb3.event.newPushOutToken({ fromBlock: 0, toBlock: 'latest' }).on('data', callback);
   }
 
-  async getNewSendToSaleEvent(poolAddress) {
-    const instance = await this.pool.at(poolAddress);
+  async getNewSendToSaleEvent() {
+    const instance = await this.automations.deployed();
     const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
 
     const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('newSendToSale', {
@@ -49,14 +49,14 @@ export default class Automations {
     return logs;
   }
 
-  async watchNewSendToSaleEvent(poolAddress, callback) {
-    const instance = await this.pool.at(poolAddress);
+  async watchNewSendToSaleEvent(callback) {
+    const instance = await this.automations.deployed();
     const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
     instanceRawWeb3.event.newSendToSale({ fromBlock: 0, toBlock: 'latest' }).on('data', callback);
   }
 
-  async getCompletedPushOutTokenEvent(poolAddress) {
-    const instance = await this.pool.at(poolAddress);
+  async getCompletedPushOutTokenEvent() {
+    const instance = await this.automations.deployed();
     const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
 
     const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('completedPushOutToken', {
@@ -67,14 +67,14 @@ export default class Automations {
     return logs;
   }
 
-  async watchCompletedPushOutTokenEvent(poolAddress, callback) {
-    const instance = await this.pool.at(poolAddress);
+  async watchCompletedPushOutTokenEvent(callback) {
+    const instance = await this.automations.deployed();
     const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
     instanceRawWeb3.event.completedPushOutToken({ fromBlock: 0, toBlock: 'latest' }).on('data', callback);
   }
 
-  async getCompletedSendToSaleEvent(poolAddress) {
-    const instance = await this.pool.at(poolAddress);
+  async getCompletedSendToSaleEvent() {
+    const instance = await this.automations.deployed();
     const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
 
     const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('completedSendToSale', {
@@ -85,8 +85,8 @@ export default class Automations {
     return logs;
   }
 
-  async watchCompletedSendToSaleEvent(poolAddress, callback) {
-    const instance = await this.pool.at(poolAddress);
+  async watchCompletedSendToSaleEvent(callback) {
+    const instance = await this.automations.deployed();
     const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
     instanceRawWeb3.event.completedSendToSale({ fromBlock: 0, toBlock: 'latest' }).on('data', callback);
   }

@@ -15,5 +15,13 @@ export default async function (automationsInstance) {
     delete unprocessedPushOutToken[recipientAddress];
   });
 
-  return unprocessedPushOutToken;
+  const recipientsByPools = {};
+
+  unprocessedPushOutToken.keys().forEach((recipientAddress) => {
+    const poolAddress = unprocessedPushOutToken[recipientAddress].pool;
+    if (recipientsByPools[poolAddress]) recipientsByPools[poolAddress].push(recipientAddress);
+    else recipientsByPools[poolAddress] = new Array(recipientAddress);
+  });
+
+  return { unprocessedPushOutToken, recipientsByPools };
 }

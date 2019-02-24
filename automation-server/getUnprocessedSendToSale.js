@@ -17,9 +17,10 @@ export default async function (automationsInstance) {
 
   const sendToSaleTimes = {};
 
-  unprocessedSendToSale.keys().forEach((element) => {
-    if (sendToSaleTimes[unprocessedSendToSale[element].time]) sendToSaleTimes[unprocessedSendToSale[element].time].push(unprocessedSendToSale[element].pool);
-    else sendToSaleTimes[unprocessedSendToSale[element].time] = [unprocessedSendToSale[element].pool];
+  unprocessedSendToSale.keys().forEach((poolAddress) => {
+    const sendToSaleTime = unprocessedSendToSale[poolAddress].time;
+    if (sendToSaleTimes[sendToSaleTime]) sendToSaleTimes[sendToSaleTime].push(poolAddress);
+    else sendToSaleTimes[sendToSaleTime] = new Array(poolAddress);
   });
 
   return { unprocessedSendToSale, sendToSaleTimes };
