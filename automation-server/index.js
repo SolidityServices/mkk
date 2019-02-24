@@ -2,10 +2,12 @@
 
 const commander = require('commander');
 const web3Init = require('./web3Init.js');
-const Pool = require('./poolContract.js');
-const Automations = require('./automationsContract.js');
+const pool = require('./poolContract.js');
+const automations = require('./automationsContract.js');
 const infura = require('./infura.json');
 const pushOutToken = require('./pushOutToken.js');
+const sendToSale = require('./sendToSale.js');
+
 
 commander
   .option('-c, --contract <contractPath>', "define path to the folder, where the compiled smart contracts, (Automations.json, KYC.json, Pool.json) is located, default: '../build/conrracts'")
@@ -34,12 +36,18 @@ if (infura.network === 'ganache') {
   providerUrl = `https://${infura.network}.infura.io/v3/${infura.apiKey}`;
 }
 
-const web3 = web3Init(providerUrl, accountIndex);
-const accounts = web3.eth.getAccounts();
-const account = accounts[0];
+let account;
+let web3;
 
+web3Init.init(providerUrl, accountIndex).then((_web3) => {
+  web3 = _web3;
+  const accounts = web3.eth.getAccounts();
+  // eslint-disable-next-line prefer-destructuring
+  account = accounts[0];
 
-const poolContract = new Pool(web3.currentProvider, account, poolArtifact, firstBlock);
-const automationsContract = new Automations(web3.currentProvider, account, automationsArtifact, firstBlock);
+  const poolContract = new pool.Pool(web3.currentProvider, account, poolArtifact, firstBlock);
+  const automationsContract = new automations.Automations(web3.currentProvider, account, automationsArtifact, firstBlock);
 
-pushOutToken(automationsContract, poolContract);
+  pushOutToken.process(automationsContract, poolContract);
+  sendToSale.process(automationsContract, poolContract);
+});

@@ -4,7 +4,7 @@ const commander = require('commander');
 const express = require('express');
 const httpKycHandler = require('./httpKycHandler.js');
 const web3Init = require('./web3Init.js');
-const KYC = require('./kycContract.js');
+const kyc = require('./kycContract.js');
 const infura = require('./infura.json');
 
 const app = express();
@@ -21,7 +21,7 @@ commander
 
 
 // set default values
-const constractAtrifactPath = commander.contractPath ? commander.contractPath : '../build/conrracts';
+const constractAtrifactPath = commander.contractPath ? commander.contractPath : '../build/contracts';
 const accountIndex = commander.accountIndex ? commander.accountIndex : 0;
 const port = commander.port ? commander.port : 8080;
 
@@ -35,10 +35,15 @@ if (infura.network === 'ganache') {
   providerUrl = `https://${infura.network}.infura.io/v3/${infura.apiKey}`;
 }
 
-const web3 = web3Init(providerUrl, accountIndex);
-const accounts = web3.eth.getAccounts();
-const account = accounts[0];
+let account;
+let web3;
 
-const kycInstance = new KYC(providerUrl, account, kycArtifact);
+web3Init.init(providerUrl, accountIndex).then((_web3) => {
+  web3 = _web3;
+  const accounts = web3.eth.getAccounts();
+  // eslint-disable-next-line prefer-destructuring
+  account = accounts[0];
+  const kycInstance = new kyc.KYC(web3.currentProvider, account, kycArtifact);
 
-httpKycHandler(app, kycInstance, port);
+  httpKycHandler.hadnle(app, kycInstance, port);
+});

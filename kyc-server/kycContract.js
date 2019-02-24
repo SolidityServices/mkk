@@ -1,6 +1,6 @@
 import TruffleContract from 'truffle-contract';
 
-export default class KYC {
+class KYC {
   constructor(provider, account, kycArtifact) {
     this.kyc = TruffleContract(kycArtifact);
     this.kyc.setProvider(provider);
@@ -17,3 +17,5 @@ export default class KYC {
     return instance.addKYCAddresses(kycAddresses, country, { from: this.account });
   }
 }
+
+module.exports.KYC = KYC;

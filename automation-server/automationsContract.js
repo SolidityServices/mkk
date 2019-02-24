@@ -1,7 +1,7 @@
 import TruffleContract from 'truffle-contract';
 import promisifyEvent from './promisifyEvent';
 
-export default class Automations {
+class Automations {
   constructor(provider, account, web3, automationsArtifact, firstBlock) {
     this.automations = TruffleContract(automationsArtifact);
     this.automations.setProvider(provider);
@@ -24,7 +24,7 @@ export default class Automations {
     const instance = await this.automations.deployed();
     const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
 
-    const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('newPushOutToken', {
+    const logs = await promisifyEvent.promisify(callback => instanceRawWeb3.getPastEvents('newPushOutToken', {
       fromBlock: this.firstBlock,
       toBlock: 'latest',
     }, callback));
@@ -42,7 +42,7 @@ export default class Automations {
     const instance = await this.automations.deployed();
     const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
 
-    const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('newSendToSale', {
+    const logs = await promisifyEvent.promisify(callback => instanceRawWeb3.getPastEvents('newSendToSale', {
       fromBlock: this.firstBlock,
       toBlock: 'latest',
     }, callback));
@@ -60,7 +60,7 @@ export default class Automations {
     const instance = await this.automations.deployed();
     const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
 
-    const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('completedPushOutToken', {
+    const logs = await promisifyEvent.promisify(callback => instanceRawWeb3.getPastEvents('completedPushOutToken', {
       fromBlock: this.firstBlock,
       toBlock: 'latest',
     }, callback));
@@ -78,7 +78,7 @@ export default class Automations {
     const instance = await this.automations.deployed();
     const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
 
-    const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('completedSendToSale', {
+    const logs = await promisifyEvent.promisify(callback => instanceRawWeb3.getPastEvents('completedSendToSale', {
       fromBlock: this.firstBlock,
       toBlock: 'latest',
     }, callback));
@@ -92,3 +92,5 @@ export default class Automations {
     instanceRawWeb3.event.completedSendToSale({ fromBlock: 0, toBlock: 'latest' }).on('data', callback);
   }
 }
+
+module.exports.Automations = Automations;

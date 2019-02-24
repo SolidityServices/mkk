@@ -10,25 +10,27 @@ function processPoolEntry(time, poolAddress, gasPrice, poolContract, automations
   });
 }
 
-export default async function (automationsContract, poolContract) {
-  const unprocessedSendToSale = await getUnprocessedSendToSale(automationsContract);
+module.exports = {
+  async process(automationsContract, poolContract) {
+    const unprocessedSendToSale = await getUnprocessedSendToSale.getElements(automationsContract);
 
-  automationsContract.watchNewSendToSaleEvent((error, result) => {
-    if (!error) {
-      const poolAddress = result.returnValues.pool;
-      unprocessedSendToSale[poolAddress] = {
-        time: result.returnValues.time,
-        gasPrice: result.returnValues.gasPrice,
-      };
-      processPoolEntry(result.returnValues.time, poolAddress, unprocessedSendToSale, poolContract, automationsContract);
+    automationsContract.watchNewSendToSaleEvent((error, result) => {
+      if (!error) {
+        const poolAddress = result.returnValues.pool;
+        unprocessedSendToSale[poolAddress] = {
+          time: result.returnValues.time,
+          gasPrice: result.returnValues.gasPrice,
+        };
+        processPoolEntry(result.returnValues.time, poolAddress, unprocessedSendToSale, poolContract, automationsContract);
 
-      console.log(result);
-    } else {
-      console.log(error);
-    }
-  });
-  unprocessedSendToSale.keys().array.forEach((poolAddress) => {
-    const { time, gasPrice } = unprocessedSendToSale[poolAddress];
-    processPoolEntry(time, poolAddress, gasPrice, unprocessedSendToSale, poolContract, automationsContract);
-  });
-}
+        console.log(result);
+      } else {
+        console.log(error);
+      }
+    });
+    unprocessedSendToSale.keys().array.forEach((poolAddress) => {
+      const { time, gasPrice } = unprocessedSendToSale[poolAddress];
+      processPoolEntry(time, poolAddress, gasPrice, unprocessedSendToSale, poolContract, automationsContract);
+    });
+  },
+};
