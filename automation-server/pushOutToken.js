@@ -1,7 +1,7 @@
 const getUnprocessedPushOutToken = require('./getUnprocessedPushOutToken.js');
 
 function processPoolEntry(poolAddress, unprocessedPushOutToken, recipientsByPools, poolContract, automationsContract) {
-  poolContract.watchTokensRecievedEvent(poolAddress, (error, result) => {
+  poolContract.watchTokensRecievedEventOnce(poolAddress, (error, result) => {
     if (!error) {
       const recipientAddressArray = recipientsByPools[poolAddress];
       recipientAddressArray.forEach((recipientAddress) => {
@@ -16,7 +16,6 @@ function processPoolEntry(poolAddress, unprocessedPushOutToken, recipientsByPool
     }
   });
 }
-
 
 export default async function (automationsContract, poolContract) {
   const { unprocessedPushOutToken, recipientsByPools } = await getUnprocessedPushOutToken(automationsContract);

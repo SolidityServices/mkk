@@ -50,8 +50,8 @@ export default class Pool {
     }));
   }
 
-  async watchTokensRecievedEvent(poolAddress, callback) {
+  async watchTokensRecievedEventOnce(poolAddress, callback) {
     const instanceRawWeb3 = new this.web3.eth.Contract(this.pool.abi, poolAddress);
-    instanceRawWeb3.event.tokensReceived({ fromBlock: 0, toBlock: 'latest' }).on('data', callback);
+    instanceRawWeb3.event.once('tokensReceived', { fromBlock: 0, toBlock: 'latest' }, callback);
   }
 }
