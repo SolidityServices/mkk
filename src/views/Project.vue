@@ -444,7 +444,7 @@ export default {
     },
     async addPushOutToken() {
       try {
-        const gasPrice = Web3.utils.toWei(this.autoTokenWithDrawGweiValue, 'gwei');
+        const gasPrice = Web3.utils.toWei(Web3.toBigNumber(this.autoTokenWithDrawGweiValue), 'gwei');
         const response = await this.connectICO.automations.addPushOutToken(this.address, this.connectICO.account, gasPrice);
 
         console.log(response);
@@ -477,7 +477,7 @@ export default {
 
     this.$validator.extend('max-withdraw', {
       getMessage: field => `The ${field} must bigger than 0 and lesser or equal ${this.userContribution}.`,
-      validate: value => value > 0 && value <= this.userContribution,
+      validate: value => value > 0 && value <= (this.userContribution - this.pool.minContribution),
     }, {
       immediate: false,
     });
