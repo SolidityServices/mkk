@@ -18,11 +18,12 @@ module.exports = function (deployer) {
   var countryList = ['HUN', 'HUN', 'HUN', 'HUN'];
 
   deployer.deploy(KYC).then(function(){
-    return deployer.deploy(PoolFactory, KYC.address, web3.utils.toWei(flatFee.toString()), maxAllocationFeeRate, maxCreatorFeeRate, providerFeeRate)
+    deployer.deploy(PoolFactory, KYC.address, web3.utils.toWei(flatFee.toString()), maxAllocationFeeRate, maxCreatorFeeRate, providerFeeRate)
   }).then(function(){
     if(addressList.length > 0) KYC.deployed().then(instance => {
-      console.log("adding kyc addresses: " + addressList)
-      return instance.addKYCAddresses(addressList, countryList);
+      instance.addKYCAddresses(addressList, countryList).then(() => {
+        instance.addAdmin(addressList);
+      });
     })
   })
 
