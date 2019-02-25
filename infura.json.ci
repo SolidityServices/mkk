@@ -1,5 +1,5 @@
 {
   "mnemonic": "MNEMONIC_VALUE",
-  "apiKey": "INFURA_APIKEY_VALUE"
+  "apiKey": "INFURA_APIKEY_VALUE",
   "network": "INFURA_NETWORK_VALUE"
 }
