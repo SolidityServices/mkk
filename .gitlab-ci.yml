@@ -31,7 +31,7 @@ install_npm:
   - ssh-keyscan -t rsa gitlab.codecluster.tk >> ~/.ssh/known_hosts || true
   - npm install -g truffle@4.1.14
   - npm install
-  - truffle migrate --network rinkeby
+  - truffle migrate --network kovan
   - npm run build
   - echo -e "sha $CI_COMMIT_SHA\ntag ${CONTAINER_TAG}\nbuild_time $(date)"  >> dist/version
 
