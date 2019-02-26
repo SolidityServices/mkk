@@ -13,7 +13,7 @@ module.exports = {
       providerUrl = `https://${infura.network}.infura.io/v3/${infura.apiKey}`;
     }
     const provider = new HDWalletProvider(infura.mnemonic, providerUrl, accountNumber);
-    console.log(`provider: ${provider}`);
+    console.log(`provider: ${providerUrl}`);
     const web3 = new Web3(provider);
     return web3;
   },
