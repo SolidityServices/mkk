@@ -478,6 +478,8 @@ import Multiselect from 'vue-multiselect';
 import Web3 from 'web3';
 import LocalPool from '../model/LocalPool';
 import CountrySelect from './form/CountrySelect.vue';
+import mewLinkBuilder from '../utils/mewLinkBuilder';
+import openMewUrl from '../utils/openMewUrl';
 
 export default {
   components: {
@@ -733,6 +735,18 @@ export default {
         const gasPrice = Web3.utils.toWei(Web3.toBigNumber(this.sendToSaleGweiValue), 'gwei');
         const response = await this.connectICO.automations.addSendToSale(this.pool.poolAddress, date, gasPrice);
 
+        if (this.mode === 'mm') {
+          this.$notify({
+            type: 'success',
+            text: 'Auto send to sale successfully added!',
+          });
+        } else if (this.mode === 'mew') {
+          const gasCost = await this.connectICO.automations.getSendToSaleGasCost();
+          const value = gasPrice * gasCost;
+          const url = mewLinkBuilder(this.address, response, value, await window.web3.eth.net.getNetworkType());
+          openMewUrl(url);
+        }
+
         console.log(response);
       } catch (e) {
         this.$notify({
@@ -782,6 +796,16 @@ export default {
       try {
         const response = await this.connectICO.pool.sendToSaleWithCalldataParameter(this.pool.poolAddress, this.sendToSaleWithCalldataSig);
 
+        if (this.mode === 'mm') {
+          this.$notify({
+            type: 'success',
+            text: 'Successful Send to Sale Participate With Calldata!',
+          });
+        } else if (this.mode === 'mew') {
+          const url = mewLinkBuilder(this.address, response, 0, await window.web3.eth.net.getNetworkType());
+          openMewUrl(url);
+        }
+
         console.log(response);
       } catch (e) {
         this.$notify({
@@ -795,6 +819,16 @@ export default {
         console.log(this.address);
 
         const response = await this.connectICO.pool.withdrawFromSaleWithCalldataParameter(this.pool.poolAddress, this.sendToSaleWithCalldataSig);
+
+        if (this.mode === 'mm') {
+          this.$notify({
+            type: 'success',
+            text: 'Successful Send to Sale Withdraw Request With Calldata!',
+          });
+        } else if (this.mode === 'mew') {
+          const url = mewLinkBuilder(this.address, response, 0, await window.web3.eth.net.getNetworkType());
+          openMewUrl(url);
+        }
 
         console.log(response);
       } catch (e) {
