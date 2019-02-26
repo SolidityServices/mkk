@@ -53,7 +53,7 @@ class Pool {
 
   async watchTokensRecievedEventOnce(poolAddress, callback) {
     const instanceRawWeb3 = new this.web3.eth.Contract(this.pool.abi, poolAddress);
-    instanceRawWeb3.event.once('tokensReceived', { fromBlock: 0, toBlock: 'latest' }, callback);
+    instanceRawWeb3.events.once('tokensReceived', { fromBlock: 0, toBlock: 'latest' }, callback);
   }
 }
 

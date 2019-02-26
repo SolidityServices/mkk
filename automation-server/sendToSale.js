@@ -1,18 +1,24 @@
 const schedule = require('node-schedule');
 const getUnprocessedSendToSale = require('./getUnprocessedSendToSale.js');
 
-function processPoolEntry(time, poolAddress, gasPrice, poolContract, automationsContract) {
+async function processPoolEntry(time, poolAddress, gasPrice, poolContract, automationsContract) {
   const date = new Date(time * 1000);
-  schedule.scheduleJob(date, () => {
+  schedule.scheduleJob(date, async () => {
+    console.log(`send to sale time triggered scheduler - time: ${time} , poolAddress: ${poolAddress} , gasPrice: ${gasPrice}`);
     // eslint-disable-next-line prefer-destructuring
-    await poolContract.SendToSale(poolAddress, gasPrice);
-    automationsContract.emitPushSendToSaleCompleted(poolAddress);
+    console.log('sending Pool.sendToSale tx... Result:');
+    const result1 = await poolContract.sendToSale(poolAddress, gasPrice);
+    console.log(result1);
+    console.log('sending Automations.emitPushSendToSaleCompleted tx... Result:');
+    const result2 = await automationsContract.emitPushSendToSaleCompleted(poolAddress);
+    console.log(result2);
   });
 }
 
 module.exports = {
   async process(automationsContract, poolContract) {
     const unprocessedSendToSale = await getUnprocessedSendToSale.getElements(automationsContract);
+    console.log(`send to sale events to process: ${JSON.stringify(unprocessedSendToSale)}`);
 
     automationsContract.watchNewSendToSaleEvent((error, result) => {
       if (!error) {
@@ -23,14 +29,16 @@ module.exports = {
         };
         processPoolEntry(result.returnValues.time, poolAddress, unprocessedSendToSale, poolContract, automationsContract);
 
-        console.log(result);
+        console.log(`New send to sale event to process: ${result}`);
       } else {
         console.log(error);
       }
     });
-    unprocessedSendToSale.keys().array.forEach((poolAddress) => {
+
+    Object.keys(unprocessedSendToSale).forEach((poolAddress) => {
       const { time, gasPrice } = unprocessedSendToSale[poolAddress];
       processPoolEntry(time, poolAddress, gasPrice, unprocessedSendToSale, poolContract, automationsContract);
     });
+    console.log('Watching for new events to process and waiting for scheduler to be triggered by send to sale times...');
   },
 };

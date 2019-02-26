@@ -10,6 +10,11 @@ class Automations {
     this.firstBlock = firstBlock;
   }
 
+  async getAddress() {
+    const instance = await this.automations.deployed();
+    return instance.address;
+  }
+
   async emitPushOutTokenCompleted(pool, recipient) {
     const instance = await this.automations.deployed();
     return instance.emitPushOutTokenCompleted(pool, recipient, { from: this.account });
@@ -35,7 +40,7 @@ class Automations {
   async watchNewPushOutTokenEvent(callback) {
     const instance = await this.automations.deployed();
     const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
-    instanceRawWeb3.event.newPushOutToken({ fromBlock: 0, toBlock: 'latest' }).on('data', callback);
+    instanceRawWeb3.events.newPushOutToken({ fromBlock: 0, toBlock: 'latest' }).on('data', callback);
   }
 
   async getNewSendToSaleEvent() {
@@ -53,7 +58,7 @@ class Automations {
   async watchNewSendToSaleEvent(callback) {
     const instance = await this.automations.deployed();
     const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
-    instanceRawWeb3.event.newSendToSale({ fromBlock: 0, toBlock: 'latest' }).on('data', callback);
+    instanceRawWeb3.events.newSendToSale({ fromBlock: 0, toBlock: 'latest' }).on('data', callback);
   }
 
   async getCompletedPushOutTokenEvent() {
@@ -71,7 +76,7 @@ class Automations {
   async watchCompletedPushOutTokenEvent(callback) {
     const instance = await this.automations.deployed();
     const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
-    instanceRawWeb3.event.completedPushOutToken({ fromBlock: 0, toBlock: 'latest' }).on('data', callback);
+    instanceRawWeb3.events.completedPushOutToken({ fromBlock: 0, toBlock: 'latest' }).on('data', callback);
   }
 
   async getCompletedSendToSaleEvent() {
@@ -89,7 +94,7 @@ class Automations {
   async watchCompletedSendToSaleEvent(callback) {
     const instance = await this.automations.deployed();
     const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);
-    instanceRawWeb3.event.completedSendToSale({ fromBlock: 0, toBlock: 'latest' }).on('data', callback);
+    instanceRawWeb3.events.completedSendToSale({ fromBlock: 0, toBlock: 'latest' }).on('data', callback);
   }
 }
 

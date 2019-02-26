@@ -18,7 +18,7 @@ module.exports = {
 
     const recipientsByPools = {};
 
-    unprocessedPushOutToken.keys().forEach((recipientAddress) => {
+    Object.keys(unprocessedPushOutToken).forEach((recipientAddress) => {
       const poolAddress = unprocessedPushOutToken[recipientAddress].pool;
       if (recipientsByPools[poolAddress]) recipientsByPools[poolAddress].push(recipientAddress);
       else recipientsByPools[poolAddress] = new Array(recipientAddress);

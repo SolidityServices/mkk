@@ -16,14 +16,6 @@ module.exports = {
       delete unprocessedSendToSale[poolAddress];
     });
 
-    const sendToSaleTimes = {};
-
-    unprocessedSendToSale.keys().forEach((poolAddress) => {
-      const sendToSaleTime = unprocessedSendToSale[poolAddress].time;
-      if (sendToSaleTimes[sendToSaleTime]) sendToSaleTimes[sendToSaleTime].push(poolAddress);
-      else sendToSaleTimes[sendToSaleTime] = new Array(poolAddress);
-    });
-
-    return { unprocessedSendToSale, sendToSaleTimes };
+    return unprocessedSendToSale;
   },
 };
