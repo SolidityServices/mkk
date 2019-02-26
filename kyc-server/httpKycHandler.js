@@ -1,24 +1,36 @@
+import Web3 from 'web3';
+
 const express = require('express');
 
+
 module.exports = {
-  async hadnle(app, kycInstance, port) {
+  async handle(app, kycInstance, port) {
     app.use(express.json());
 
     let kycObjectList = {};
 
-    app.post('/kyc', (request, response) => {
+    app.post('/kyc', async (request, response) => {
       kycObjectList = request.body;
       const addressList = [];
       const countryList = [];
+      console.log(`incoming request: ${kycObjectList}`);
+
       kycObjectList.forEach((element) => {
         addressList.push(element.address);
-        countryList.push(element.country);
+        countryList.push(Web3.utils.utf8ToHex(element.country.toUpperCase()));
       });
-      kycInstance.addKYCAddresses(addressList, countryList);
-      console.log(kycObjectList); // your JSON
-      response.send(request.body); // echo the result back
+
+      console.log('sending transaction...');
+      const reciept = await kycInstance.addKYCAddresses(addressList, countryList);
+      console.log(reciept); // your JSON
+      response.send(reciept); // echo the result back
     });
 
-    app.listen(port);
+    try {
+      app.listen(port);
+      console.log(`listening at port: ${port}`);
+    } catch (e) {
+      console.log(`error: ${e}`);
+    }
   },
 };
