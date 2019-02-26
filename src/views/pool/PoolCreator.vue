@@ -155,7 +155,7 @@
             <div class="col-12 col-lg-6 blue-18-reg">Minimum pool goal in ETH</div>
             <div class="col-12 col-lg-6">
               <input type="number" v-validate="'required|decimal|min_value:0'"
-                     step="0.000001"
+                     step=0.01
                      class="form-control input-text w-100" data-vv-name="Minimum pool goal"
                      v-model="pool.minPoolGoal">
               <span v-if="errors.has('Minimum pool goal')" v-text="errors.first('Minimum pool goal')" class="text-danger"></span>
@@ -166,7 +166,8 @@
             <div class="col-12 col-lg-6 blue-18-reg">Max allocation in ETH</div>
             <div class="col-12 col-lg-6">
               <input type="number" v-validate="'required|decimal|min_value:0'"
-                     step="0.000001"
+                     step=0.01
+                     min=0.01
                      class="form-control input-text w-100" data-vv-name="Max allocation"
                      v-model="pool.maxPoolAllocation">
               <span v-if="errors.has('Max allocation')" v-text="errors.first('Max allocation')" class="text-danger"></span>
@@ -197,7 +198,7 @@
             <div class="col-12 col-lg-6 blue-18-reg">Minimum ETH contribution (optional)</div>
             <div class="col-12 col-lg-6">
               <input type="number" v-validate="'decimal|min_value:0'" min="0"
-                     step="0.000001"
+                     step=0.000001
                      class="form-control input-text w-100" data-vv-name="Minimum contribution"
                      v-model="pool.minContribution"/>
               <span v-if="errors.has('Minimum contribution')" v-text="errors.first('Minimum contribution')" class="text-danger"></span>
@@ -208,7 +209,7 @@
             <div class="col-12 col-lg-6 blue-18-reg">Maximum ETH contribution (optional)</div>
             <div class="col-12 col-lg-6">
               <input type="number" v-validate="'decimal|min_value:0'" min="0"
-                     step="0.000001"
+                     step=0.000001
                      class="form-control input-text" data-vv-name="Maximum contribution"
                      v-model="pool.maxContribution"/>
               <span v-if="errors.has('Maximum contribution')" v-text="errors.first('Maximum contribution')" class="text-danger"></span>
@@ -292,18 +293,18 @@
         <div class="d-flex flex-row flex-wrap">
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-6 orange-18-reg">Flat fee:</div>
-            <div class="col-6 orange-18-reg text-right text-lg-left">{{ calculatedFee.flatFee }}</div>
+            <div class="col-6 orange-18-reg text-right text-lg-left">{{ calculatedFee.flatFee }} ETH</div>
           </div>
 
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-6 orange-18-reg">Pool fee:</div>
-            <div class="col-6 orange-18-reg text-right text-lg-left">{{ calculatedFee.poolFee }}</div>
+            <div class="col-6 orange-18-reg text-right text-lg-left">{{ calculatedFee.poolFee }} ETH</div>
           </div>
         </div>
         <div class="d-flex flex-row flex-wrap justify-content-center">
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-6 orange-18-reg">Transfer value:</div>
-            <div class="col-6 orange-18-reg text-right text-lg-left">{{ calculatedFee.transferValue }}</div>
+            <div class="col-6 orange-18-reg text-right text-lg-left">{{ calculatedFee.transferValue }} ETH</div>
           </div>
         </div>
       </div>
@@ -384,16 +385,26 @@ export default {
       const factoryParams = await this.connectICO.poolFactory.getAllPoolFactoryParams();
       return {
         flatFee: factoryParams.flatFee,
-        poolFee: factoryParams.maxAllocationFeeRate * this.pool.maxPoolAllocation / 1000,
+        poolFee: parseInt(await window.web3.utils.toWei((factoryParams.maxAllocationFeeRate * this.pool.maxPoolAllocation / 1000).toString(), 'ether'), 10),
         transferValue: (
           factoryParams.flatFee
-          + factoryParams.maxAllocationFeeRate
-          * this.pool.maxPoolAllocation / 1000
+          + parseInt(await window.web3.utils.toWei((factoryParams.maxAllocationFeeRate * this.pool.maxPoolAllocation / 1000).toString(), 'ether'), 10)
+        ),
+      };
+    },
+    async getTransferDetailsETH() {
+      const factoryParams = await this.connectICO.poolFactory.getAllPoolFactoryParams();
+      return {
+        flatFee: parseFloat(await window.web3.utils.fromWei(factoryParams.flatFee.toString(), 'ether'), 10),
+        poolFee: factoryParams.maxAllocationFeeRate * this.pool.maxPoolAllocation / 1000,
+        transferValue: (
+          parseFloat(await window.web3.utils.fromWei(factoryParams.flatFee.toString(), 'ether'), 10)
+          + factoryParams.maxAllocationFeeRate * this.pool.maxPoolAllocation / 1000
         ),
       };
     },
     async calculateFee() {
-      this.calculatedFee = await this.getTransferDetails();
+      this.calculatedFee = await this.getTransferDetailsETH();
     },
     saleStartDateChanged(event) {
       this.pool.saleEndDate = moment(event.date.add(7, 'days'), this.datepickerOptions.format);

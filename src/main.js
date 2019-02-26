@@ -2,6 +2,7 @@ import Vue from 'vue';
 import BootstrapVue from 'bootstrap-vue';
 import VeeValidate, { Validator } from 'vee-validate';
 import Notifications from 'vue-notification';
+import VueCountdown from '@chenfengyuan/vue-countdown';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import Web3 from 'web3';
@@ -34,6 +35,7 @@ Validator.extend('eth-address-array', {
 Vue.use(VeeValidate);
 Vue.use(BootstrapVue);
 Vue.use(Notifications);
+Vue.component(VueCountdown.name, VueCountdown);
 
 Vue.config.productionTip = false;
 

@@ -72,6 +72,8 @@ export default {
       try {
         const response = await this.connectICO.pool.sendToSale(this.pool.poolAddress);
 
+        console.log(response);
+
         if (this.mode === 'mm') {
           this.$notify({
             type: 'success',
@@ -96,6 +98,8 @@ export default {
     async stopPool() {
       try {
         const response = await this.connectICO.pool.stopPool(this.pool.poolAddress);
+
+        console.log(response);
 
         if (this.mode === 'mm') {
           this.$notify({
@@ -122,6 +126,8 @@ export default {
       try {
         const response = await this.connectICO.pool.areTokensReceivedConfirmed(this.pool.poolAddress);
 
+        console.log(response);
+
         if (this.mode === 'mm') {
           this.$notify({
             type: 'success',
@@ -147,6 +153,8 @@ export default {
       try {
         const response = await this.connectICO.pool.creatorWithdraw(this.pool.poolAddress);
 
+        console.log(response);
+
         if (this.mode === 'mm') {
           this.$notify({
             type: 'success',
@@ -171,6 +179,8 @@ export default {
     async pushOutTokens() {
       try {
         const response = await this.connectICO.pool.pushOutToken(this.pool.poolAddress, this.recipientAddress);
+
+        console.log(response);
 
         if (this.mode === 'mm') {
           this.$notify({
