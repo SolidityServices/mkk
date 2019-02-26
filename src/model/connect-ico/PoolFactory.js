@@ -164,7 +164,7 @@ export default class PoolFactory {
           pool.poolDescription,
         ],
         [
-          pool.creatorFeeRate * 100, // convert percentage to integer
+          pool.creatorFeeRate * 10, // convert percentage to "per thousandth"
           Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
           Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
           pool.minContribution * 1000000000000000000, // convert ether to wei
@@ -182,7 +182,7 @@ export default class PoolFactory {
         pool.countryBlackList,
         {
           from: this.account,
-          value: transferValue * 1000000000000000000, // convert ether to wei
+          value: transferValue, // convert ether to wei
         },
       ).params[0].data;
     }
@@ -198,7 +198,7 @@ export default class PoolFactory {
         pool.poolDescription,
       ],
       [
-        pool.creatorFeeRate * 100, // convert percentage to integer
+        pool.creatorFeeRate * 10, // convert percentage to integer
         Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
         Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
         pool.minContribution * 1000000000000000000, // convert ether to wei
@@ -216,7 +216,7 @@ export default class PoolFactory {
       pool.countryBlackList,
       {
         from: this.account,
-        value: transferValue * 1000000000000000000, // convert ether to wei
+        value: transferValue, // convert ether to wei
       },
     );
 
