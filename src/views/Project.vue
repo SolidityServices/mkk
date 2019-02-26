@@ -23,7 +23,6 @@
             <p>
               {{pool.poolDescription}}
             </p>
-
           </div>
 
           <hr class="blue-hr-fullw my-5">
@@ -35,7 +34,7 @@
             <hr align="left" class="blue-hr-2">
           </div>
           <div class="row mx-0">
-            <div class="col-12 col-lg-4 pt-3">
+            <div class="col-12 col-lg-6 pt-3">
               <div class="blue-18-bold">Parameters</div>
               <div class="row pt-3">
                 <div class="py-1 col-8 blue-18-reg">Fee</div>
@@ -76,6 +75,15 @@
           <div class="d-flex flex-row mt-5 flex-wrap">
               <div class="col-12 col-lg-3 blue-18-reg mb-1">Pool Country blacklist:</div>
               <div class="col-12 col-lg-9">{{ blacklistedCountriesText }}</div>
+          </div>
+
+          <div class="d-flex flex-row mt-3 flex-wrap">
+            <div class="col-12 col-lg-3 blue-18-reg mb-1">Time until end of sale:</div>
+            <div class="col-12 col-lg-9">
+              <countdown :time="timeUntilSaleEnd" :interval="1000" tag="p">
+                <template slot-scope="props">{{ props.days }} days, {{ props.hours }} hours, {{ props.minutes }} minutes, {{ props.seconds }} seconds. </template>
+              </countdown>
+            </div>
           </div>
 
           <hr class="blue-hr-fullw my-5">
@@ -204,6 +212,7 @@ import { mapGetters } from 'vuex';
 import RangeSlider from 'vue-range-slider';
 import 'vue-range-slider/dist/vue-range-slider.css';
 import Web3 from 'web3';
+import moment from 'moment';
 import LocalPool from '../model/LocalPool';
 import Pool from '../components/Pool.vue';
 import mewLinkBuilder from '../utils/mewLinkBuilder';
@@ -244,6 +253,13 @@ export default {
     ]),
     blacklistedCountriesText() {
       return this.blacklistedCountries.join(', ');
+    },
+    timeUntilSaleEnd() {
+      if (this.pool && this.pool.saleEndDate) {
+        return moment(this.pool.saleEndDate, 'DD/MM/YYYY HH:mm:ss').diff(moment(moment(), 'DD/MM/YYYY HH:mm:ss'));
+      }
+
+      return 0;
     },
   },
   methods: {

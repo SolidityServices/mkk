@@ -19,6 +19,11 @@ export default class KYC {
     return instance.checkKYC(address, { from: this.account });
   }
 
+  async isAdmin(address) {
+    const instance = await this.kyc.deployed();
+    return instance.admins(address, { from: this.account });
+  }
+
   /**
    * Add a new pool admin address (only creator)
    *   *

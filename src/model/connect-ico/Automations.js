@@ -3,11 +3,12 @@ import automationsArtifact from '../../../build/contracts/Automations.json';
 import promisifyEvent from '../../utils/promisifyEvent';
 
 export default class Automations {
-  constructor(provider, account, web3) {
+  constructor(provider, account, web3, mode) {
     this.automations = TruffleContract(automationsArtifact);
     this.automations.setProvider(provider);
     this.account = account;
     this.web3 = web3;
+    this.mode = mode;
   }
 
   async getAddress() {
@@ -32,31 +33,61 @@ export default class Automations {
 
   async addPushOutToken(pool, recipient, gasPrice) {
     const instance = await this.automations.deployed();
+
+    if (this.mode === 'mew') {
+      return instance.addPushOutToken.request(pool, recipient, gasPrice, { from: this.account }).params[0].data;
+    }
+
     return instance.addPushOutToken(pool, recipient, gasPrice, { from: this.account });
   }
 
   async addSendToSale(pool, time, gasPrice) {
     const instance = await this.automations.deployed();
+
+    if (this.mode === 'mew') {
+      return instance.addSendToSale.request(pool, time, gasPrice, { from: this.account }).params[0].data;
+    }
+
     return instance.addSendToSale(pool, time, gasPrice, { from: this.account });
   }
 
   async emitPushOutTokenCompleted(pool, recipient) {
     const instance = await this.automations.deployed();
+
+    if (this.mode === 'mew') {
+      return instance.emitPushOutTokenCompleted.request(pool, recipient, { from: this.account }).params[0].data;
+    }
+
     return instance.emitPushOutTokenCompleted(pool, recipient, { from: this.account });
   }
 
   async emitSendToSaleCompleted(pool) {
     const instance = await this.automations.deployed();
+
+    if (this.mode === 'mew') {
+      return instance.emitPushOutTokenCompleted.request(pool, { from: this.account }).params[0].data;
+    }
+
     return instance.emitPushOutTokenCompleted(pool, { from: this.account });
   }
 
   async setPushServer(pushServer) {
     const instance = await this.automations.deployed();
+
+    if (this.mode === 'mew') {
+      return instance.setPushServer.request(pushServer, { from: this.account }).params[0].data;
+    }
+
     return instance.setPushServer(pushServer, { from: this.account });
   }
 
   async setPushGasCost(pushGasCost) {
     const instance = await this.automations.deployed();
+
+    if (this.mode === 'mew') {
+      return instance.setPushGasCost.request(pushGasCost, { from: this.account }).params[0].data;
+    }
+
     return instance.setPushGasCost(pushGasCost, { from: this.account });
   }
 

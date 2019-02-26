@@ -11,7 +11,7 @@ export default new Vuex.Store({
   state: {
     connectICO: null,
     countries,
-    mode: 'mew',
+    mode: 'mm',
   },
   mutations: {
     async setConnectICO(state) {
