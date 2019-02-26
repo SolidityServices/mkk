@@ -458,7 +458,7 @@
               </div>
 
               <div class="col-12 col-md-3 d-flex flex-row flex-wrap">
-                <button class="btn px-4 blue-submit btn-block" @click="addSendToSale">Add auto send to sale</button>
+                <button class="btn px-4 blue-submit btn-block" @click="addAutoSendToSale">Add auto send to sale</button>
               </div>
             </div>
           </div>
@@ -520,8 +520,8 @@ export default {
       whitelistAddressesToRemove: [],
       sendToSaleTime: '',
       sendToSaleGweiValue: 0,
-      sendToSaleWithCalldataSig: '{}',
-      withdrawFromSaleWithCalldataSig: '{}',
+      sendToSaleWithCalldataSig: '',
+      withdrawFromSaleWithCalldataSig: '',
     };
   },
   mounted() {
@@ -727,10 +727,10 @@ export default {
         ),
       };
     },
-    async addSendToSale() {
+    async addAutoSendToSale() {
       try {
         const date = moment(this.sendToSaleTime, this.datepickerOptions.format);
-        const gasPrice = Web3.utils.toWei(this.sendToSaleGweiValue, 'gwei');
+        const gasPrice = Web3.utils.toWei(Web3.toBigNumber(this.sendToSaleGweiValue), 'gwei');
         const response = await this.connectICO.automations.addSendToSale(this.pool.poolAddress, date, gasPrice);
 
         console.log(response);
