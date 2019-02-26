@@ -463,6 +463,18 @@ export default {
         const gasPrice = Web3.utils.toWei(Web3.toBigNumber(this.autoTokenWithDrawGweiValue), 'gwei');
         const response = await this.connectICO.automations.addPushOutToken(this.address, this.connectICO.account, gasPrice);
 
+        if (this.mode === 'mm') {
+          this.$notify({
+            type: 'success',
+            text: 'Auto push out tokens successfully added!',
+          });
+        } else if (this.mode === 'mew') {
+          const gasCost = await this.connectICO.automations.getPushGasCost();
+          const value = gasPrice * gasCost;
+          const url = mewLinkBuilder(this.address, response, value, await window.web3.eth.net.getNetworkType());
+          openMewUrl(url);
+        }
+
         console.log(response);
       } catch (e) {
         this.$notify({
