@@ -63,21 +63,14 @@ export default {
           console.log('Init fail');
           window.ethInitSuccess = false;
           // User denied account access...
+          this.$store.commit('setMode', 'mew');
           this.$notify({
             type: 'error',
             title: 'Metamask is not detected',
             text: 'In order to use the site please install the MetaMask extension!',
           });
         }
-      }
-      // else if (window.web3) {
-      //   console.log('window.web3 is defined');
-      //   // Legacy dapp browsers...
-      //   window.web3 = new Web3(Web3.currentProvider);
-      //   // Acccounts always exposed
-      //   window.ethInitSuccess = true;
-      // }
-      else {
+      } else {
         this.$store.commit('setMode', 'mew');
         this.$notify({
           type: 'error',
