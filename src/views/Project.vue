@@ -255,7 +255,11 @@ export default {
       return this.blacklistedCountries.join(', ');
     },
     timeUntilSaleEnd() {
-      return moment(this.pool.saleEndDate, 'DD/MM/YYYY HH:mm:ss').diff(moment(moment(), 'DD/MM/YYYY HH:mm:ss'));
+      if (this.pool && this.pool.saleEndDate) {
+        return moment(this.pool.saleEndDate, 'DD/MM/YYYY HH:mm:ss').diff(moment(moment(), 'DD/MM/YYYY HH:mm:ss'));
+      }
+
+      return 0;
     },
   },
   methods: {
