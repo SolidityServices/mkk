@@ -100,7 +100,7 @@ export default class PoolFactory {
     const instance = await this.poolFactory.deployed();
 
     if (this.mode === 'mew') {
-      const response = await instance.setParams.request(
+      const calldata = await instance.setParams.request(
         poolFactory.ownerAddress,
         poolFactory.kycContractAddress,
         poolFactory.flatFee,
@@ -110,11 +110,23 @@ export default class PoolFactory {
         poolFactory.useWhitelist,
         [true, true, true, true, true, true],
         { from: this.account },
-      );
+      ).params[0].data;
+
+      const gaslimit = await instance.setParams(
+        poolFactory.ownerAddress,
+        poolFactory.kycContractAddress,
+        poolFactory.flatFee,
+        poolFactory.maxAllocationFeeRate,
+        poolFactory.maxCreatorFeeRate,
+        poolFactory.providerFeeRate,
+        poolFactory.useWhitelist,
+        [true, true, true, true, true, true],
+        { from: this.account },
+      ).estimateGas();
 
       return {
-        callData: response.params[0].data,
-        gasLimit: response.estimateGas() * 2,
+        callData: calldata,
+        gasLimit: gaslimit * 2,
       };
     }
 
@@ -158,7 +170,7 @@ export default class PoolFactory {
     const instance = await this.poolFactory.deployed();
 
     if (this.mode === 'mew') {
-      const response = await instance.createPool.request(
+      const calldata = await instance.createPool.request(
         [
           pool.saleAddress,
           pool.tokenAddress,
@@ -189,11 +201,44 @@ export default class PoolFactory {
           from: this.account,
           value: transferValue, // convert ether to wei
         },
-      );
+      ).params[0].data;
+
+      const gaslimit = await instance.createPool(
+        [
+          pool.saleAddress,
+          pool.tokenAddress,
+        ],
+        [
+          functionSigToCalldata(pool.saleParticipateFunctionSig),
+          functionSigToCalldata(pool.saleWithdrawFunctionSig),
+          pool.poolDescription,
+        ],
+        [
+          pool.creatorFeeRate * 10, // convert percentage to "per thousandth"
+          Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
+          Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
+          pool.minContribution * 1000000000000000000, // convert ether to wei
+          pool.maxContribution * 1000000000000000000, // convert ether to wei
+          pool.minPoolGoal * 1000000000000000000, // convert ether to wei
+          pool.maxPoolAllocation * 1000000000000000000, // convert ether to wei
+          pool.withdrawTimelock * 60 * 60, // convert to unix time
+        ],
+        [
+          pool.whitelistPool ? 1 : 0,
+          pool.strictlyTrustlessPool ? 1 : 0,
+        ],
+        pool.adminAddresses,
+        pool.whiteListAddresses,
+        pool.countryBlackList,
+        {
+          from: this.account,
+          value: transferValue, // convert ether to wei
+        },
+      ).estimateGas();
 
       return {
-        callData: response.params[0].data,
-        gasLimit: response.estimateGas() * 2,
+        callData: calldata,
+        gasLimit: gaslimit * 2,
       };
     }
 
@@ -251,11 +296,12 @@ export default class PoolFactory {
     const instance = await this.poolFactory.deployed();
 
     if (this.mode === 'mew') {
-      const response = await instance.withdraw.request({ from: this.account });
+      const calldata = await instance.withdraw.request({ from: this.account }).params[0].data;
+      const gaslimit = await instance.withdraw.request({ from: this.account }).estimateGas();
 
       return {
-        callData: response.params[0].data,
-        gasLimit: response.estimateGas() * 2,
+        callData: calldata,
+        gasLimit: gaslimit * 2,
       };
     }
 
