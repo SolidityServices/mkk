@@ -254,6 +254,7 @@ export default class Pool {
    * @return {boolean} true: confirmed, false: not confirmed yet
    */
   async areTokensReceivedConfirmed(poolAddress) {
+    // @TODO mew
     const instance = await this.pool.at(poolAddress);
     const result = await instance.poolStats.call({ from: this.account });
     return result[3];
@@ -426,7 +427,12 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.addAdmin.request(adminAddressList, { from: this.account }).params[0].data;
+      const response = await instance.addAdmin.request(adminAddressList, { from: this.account });
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.addAdmin(adminAddressList, { from: this.account });
@@ -469,7 +475,12 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.removeAdmin.request(adminAddressList, { from: this.account }).params[0].data;
+      const response = await instance.removeAdmin.request(adminAddressList, { from: this.account });
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.removeAdmin(adminAddressList, { from: this.account });
@@ -487,7 +498,12 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.addWhitelist.request(whitelistAddressList, { from: this.account }).params[0].data;
+      const response = await instance.addWhitelist.request(whitelistAddressList, { from: this.account });
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.addWhitelist(whitelistAddressList, { from: this.account });
@@ -530,7 +546,12 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.removeWhitelist.request(whitelistAddressList, { from: this.account }).params[0].data;
+      const response = await instance.removeWhitelist.request(whitelistAddressList, { from: this.account });
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.removeWhitelist(whitelistAddressList, { from: this.account });
@@ -548,7 +569,12 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.addCountryBlacklist.request(countryCodeList, { from: this.account }).params[0].data;
+      const response = await instance.addCountryBlacklist.request(countryCodeList, { from: this.account });
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.addCountryBlacklist(countryCodeList, { from: this.account });
@@ -591,7 +617,12 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.removeCountryBlacklist.request(countryCodeList, { from: this.account }).params[0].data;
+      const response = await instance.removeCountryBlacklist.request(countryCodeList, { from: this.account });
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.removeCountryBlacklist(countryCodeList, { from: this.account });
@@ -610,10 +641,15 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.contribute.request({
+      const response = await instance.contribute.request({
         from: this.account,
-        value: amount * 1000000000000000000, // convert ether to wei,
-      }).params[0].data;
+        value: amount * 1000000000000000000, // @TODO convert ether to wei,
+      });
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.contribute({
@@ -633,8 +669,14 @@ export default class Pool {
   async withdraw(poolAddress, amount) {
     const instance = await this.pool.at(poolAddress);
 
+    // @TODO convert amount
     if (this.mode === 'mew') {
-      return instance.withdraw.request(amount * 1000000000000000000, { from: this.account }).params[0].data;
+      const response = await instance.withdraw.request(amount * 1000000000000000000, { from: this.account });
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.withdraw(amount * 1000000000000000000, { from: this.account });
@@ -652,7 +694,12 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.withdrawRefund.request({ from: this.account }).params[0].data;
+      const response = await instance.withdrawRefund.request({ from: this.account });
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.withdrawRefund({ from: this.account });
@@ -670,7 +717,12 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.withdrawToken.request({ from: this.account }).params[0].data;
+      const response = await instance.withdrawToken.request({ from: this.account });
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.withdrawToken({ from: this.account });
@@ -688,7 +740,12 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.withdrawCustomToken.request(tokenAddress, { from: this.account }).params[0].data;
+      const response = await instance.withdrawCustomToken.request(tokenAddress, { from: this.account });
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.withdrawCustomToken(tokenAddress, { from: this.account });
@@ -707,7 +764,12 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.pushOutToken.request(recipientAddress, { from: this.account }).params[0].data;
+      const response = await instance.pushOutToken.request(recipientAddress, { from: this.account });
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.pushOutToken(recipientAddress, { from: this.account });
@@ -737,7 +799,12 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.confirmTokensReceived.request(tokensExpected, { from: this.account }).params[0].data;
+      const response = await instance.confirmTokensReceived.request(tokensExpected, { from: this.account });
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.confirmTokensReceived(tokensExpected, { from: this.account });
@@ -754,7 +821,12 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.sendToSale.request({ from: this.account }).params[0].data;
+      const response = await instance.sendToSale.request({ from: this.account });
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.sendToSale({ from: this.account });
@@ -771,7 +843,12 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.stopPool.request({ from: this.account }).params[0].data;
+      const response = await instance.stopPool.request({ from: this.account });
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.stopPool({ from: this.account });
@@ -788,7 +865,12 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.sendToSaleWithCalldata.request({ from: this.account }).params[0].data;
+      const response = await instance.sendToSaleWithCalldata.request({ from: this.account });
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.sendToSaleWithCalldata({ from: this.account });
@@ -805,7 +887,12 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.withdrawFromSaleWithCalldata.request({ from: this.account }).params[0].data;
+      const response = await instance.withdrawFromSaleWithCalldata.request({ from: this.account });
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.withdrawFromSaleWithCalldata({ from: this.account });
@@ -823,7 +910,12 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.sendToSaleWithCalldataParameter.request(functionSigToCalldata(functionSignature), { from: this.account }).params[0].data;
+      const response = await instance.sendToSaleWithCalldataParameter.request(functionSigToCalldata(functionSignature), { from: this.account });
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.sendToSaleWithCalldataParameter(functionSigToCalldata(functionSignature), { from: this.account });
@@ -841,8 +933,14 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.withdrawFromSaleWithCalldataParameter.request(functionSigToCalldata(functionSignature), { from: this.account }).params[0].data;
+      const response = await instance.withdrawFromSaleWithCalldataParameter.request(functionSigToCalldata(functionSignature), { from: this.account });
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
+
     return instance.withdrawFromSaleWithCalldataParameter(functionSigToCalldata(functionSignature), { from: this.account });
   }
 
@@ -857,7 +955,12 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.providerWithdraw.request({ from: this.account }).params[0].data;
+      const response = await instance.providerWithdraw.request({ from: this.account });
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.providerWithdraw({ from: this.account });
@@ -874,7 +977,12 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.creatorWithdraw.request({ from: this.account }).params[0].data;
+      const response = await instance.creatorWithdraw.request({ from: this.account });
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.creatorWithdraw({ from: this.account });
@@ -893,7 +1001,7 @@ export default class Pool {
     const instance = await this.pool.at(pool.poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.setParamsCreator.request(
+      const response = await instance.setParamsCreator.request(
         pool.creator,
         pool.creatorFeeRate * 100, // convert percentage to integer
         Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
@@ -907,7 +1015,12 @@ export default class Pool {
         pool.tokenAddress,
         [true, true, true, true, true, true, true, true, true, true, true],
         { from: this.account },
-      ).params[0].data;
+      );
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.setParamsCreator(
@@ -975,13 +1088,18 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.setParamsProvider.request(
+      const response = await instance.setParamsProvider.request(
         provider,
         providerFeeRate,
         maxPoolAllocation,
         toUpdate,
         { from: this.account },
-      ).params[0].data;
+      );
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.setParamsProvider(
@@ -1005,13 +1123,18 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.setParams.request(
+      const response = await instance.setParams.request(
         providerAddress,
         0,
         0,
         [true, false, false],
         { from: this.account },
-      ).params[0].data;
+      );
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.setParams(
@@ -1035,13 +1158,18 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.setParams.request(
+      const response = await instance.setParams.request(
         0x0,
         providerFeeRate,
         0,
         [false, true, false],
         { from: this.account },
-      ).params[0].data;
+      );
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.setParams(
@@ -1065,13 +1193,18 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.setParams.request(
+      const response = await instance.setParams.request(
         0x0,
         0,
         maxPoolAllocation,
         [false, false, true],
         { from: this.account },
-      ).params[0].data;
+      );
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.setParams(
@@ -1087,7 +1220,12 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.setSaleParticipateCalldata.request(functionSigToCalldata(functionSignature), { from: this.account }).params[0].data;
+      const response = await instance.setSaleParticipateCalldata.request(functionSigToCalldata(functionSignature), { from: this.account });
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.setSaleParticipateCalldata(functionSigToCalldata(functionSignature), { from: this.account });
@@ -1097,7 +1235,12 @@ export default class Pool {
     const instance = await this.pool.at(poolAddress);
 
     if (this.mode === 'mew') {
-      return instance.setSaleWithdrawCalldata.request(functionSigToCalldata(functionSignature), { from: this.account }).params[0].data;
+      const response = await instance.setSaleWithdrawCalldata.request(functionSigToCalldata(functionSignature), { from: this.account });
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.setSaleWithdrawCalldata(functionSigToCalldata(functionSignature), { from: this.account });

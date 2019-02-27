@@ -742,8 +742,8 @@ export default {
           });
         } else if (this.mode === 'mew') {
           const gasCost = await this.connectICO.automations.getSendToSaleGasCost();
-          const value = gasPrice * gasCost;
-          const url = mewLinkBuilder(this.address, response, value, await window.web3.eth.net.getNetworkType());
+          const value = Web3.toBigNumber(gasPrice * gasCost).toString();
+          const url = mewLinkBuilder(this.address, response.callData, value, await window.web3.eth.net.getNetworkType(), response.gasLimit);
           openMewUrl(url);
         }
 
@@ -802,7 +802,7 @@ export default {
             text: 'Successful Send to Sale Participate With Calldata!',
           });
         } else if (this.mode === 'mew') {
-          const url = mewLinkBuilder(this.address, response, 0, await window.web3.eth.net.getNetworkType());
+          const url = mewLinkBuilder(this.address, response.callData, 0, await window.web3.eth.net.getNetworkType(), response.gasLimit);
           openMewUrl(url);
         }
 
@@ -826,7 +826,7 @@ export default {
             text: 'Successful Send to Sale Withdraw Request With Calldata!',
           });
         } else if (this.mode === 'mew') {
-          const url = mewLinkBuilder(this.address, response, 0, await window.web3.eth.net.getNetworkType());
+          const url = mewLinkBuilder(this.address, response.callData, 0, await window.web3.eth.net.getNetworkType(), response.gasLimit);
           openMewUrl(url);
         }
 

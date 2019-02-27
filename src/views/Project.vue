@@ -299,9 +299,10 @@ export default {
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
             this.connectICO.pool.pool.address,
-            response,
+            response.callData,
             this.depositAmount,
             await window.web3.eth.net.getNetworkType(),
+            response.gasLimit,
           );
           openMewUrl(url);
         }
@@ -330,9 +331,10 @@ export default {
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
             this.connectICO.pool.pool.address,
-            response,
+            response.callData,
             this.withdrawAmount,
             await window.web3.eth.net.getNetworkType(),
+            response.gasLimit,
           );
           openMewUrl(url);
         }
@@ -354,9 +356,10 @@ export default {
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
             this.connectICO.pool.pool.address,
-            response,
+            response.callData,
             0,
             await window.web3.eth.net.getNetworkType(),
+            response.gasLimit,
           );
           openMewUrl(url);
         }
@@ -379,9 +382,10 @@ export default {
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
             this.connectICO.pool.pool.address,
-            response,
+            response.callData,
             0,
             await window.web3.eth.net.getNetworkType(),
+            response.gasLimit,
           );
           openMewUrl(url);
         }
@@ -403,9 +407,10 @@ export default {
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
             this.connectICO.pool.pool.address,
-            response,
+            response.callData,
             0,
             await window.web3.eth.net.getNetworkType(),
+            response.gasLimit,
           );
           openMewUrl(url);
         }
@@ -471,7 +476,7 @@ export default {
         } else if (this.mode === 'mew') {
           const gasCost = await this.connectICO.automations.getPushGasCost();
           const value = gasPrice * gasCost;
-          const url = mewLinkBuilder(this.address, response, value, await window.web3.eth.net.getNetworkType());
+          const url = mewLinkBuilder(this.address, response.callData, value, await window.web3.eth.net.getNetworkType(), response.gasLimit);
           openMewUrl(url);
         }
 

@@ -100,7 +100,7 @@ export default class PoolFactory {
     const instance = await this.poolFactory.deployed();
 
     if (this.mode === 'mew') {
-      return instance.setParams.request(
+      const response = await instance.setParams.request(
         poolFactory.ownerAddress,
         poolFactory.kycContractAddress,
         poolFactory.flatFee,
@@ -110,7 +110,12 @@ export default class PoolFactory {
         poolFactory.useWhitelist,
         [true, true, true, true, true, true],
         { from: this.account },
-      ).params[0].data;
+      );
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.setParams(
@@ -153,7 +158,7 @@ export default class PoolFactory {
     const instance = await this.poolFactory.deployed();
 
     if (this.mode === 'mew') {
-      return instance.createPool.request(
+      const response = await instance.createPool.request(
         [
           pool.saleAddress,
           pool.tokenAddress,
@@ -184,7 +189,12 @@ export default class PoolFactory {
           from: this.account,
           value: transferValue, // convert ether to wei
         },
-      ).params[0].data;
+      );
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     const receipt = await instance.createPool(
@@ -241,7 +251,12 @@ export default class PoolFactory {
     const instance = await this.poolFactory.deployed();
 
     if (this.mode === 'mew') {
-      return instance.withdraw.request({ from: this.account }).params[0].data;
+      const response = await instance.withdraw.request({ from: this.account });
+
+      return {
+        callData: response.params[0].data,
+        gasLimit: response.estimateGas() * 2,
+      };
     }
 
     return instance.withdraw({ from: this.account });

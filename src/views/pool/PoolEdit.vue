@@ -82,9 +82,10 @@ export default {
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
             this.address,
-            response,
+            response.callData,
             0,
             await window.web3.eth.net.getNetworkType(),
+            response.gasLimit,
           );
           openMewUrl(url);
         }
@@ -109,9 +110,10 @@ export default {
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
             this.address,
-            response,
+            response.callData,
             0,
             await window.web3.eth.net.getNetworkType(),
+            response.gasLimit,
           );
           openMewUrl(url);
         }
@@ -134,11 +136,13 @@ export default {
             text: response,
           });
         } else if (this.mode === 'mew') {
+          // @TODO
           const url = mewLinkBuilder(
             this.address,
-            response,
+            response.callData,
             0,
             await window.web3.eth.net.getNetworkType(),
+            response.gasLimit,
           );
           openMewUrl(url);
         }
@@ -163,9 +167,10 @@ export default {
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
             this.address,
-            response,
+            response.callData,
             0,
             await window.web3.eth.net.getNetworkType(),
+            response.gasLimit,
           );
           openMewUrl(url);
         }
@@ -190,9 +195,10 @@ export default {
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
             this.address,
-            response,
+            response.callData,
             0,
             await window.web3.eth.net.getNetworkType(),
+            response.gasLimit,
           );
           openMewUrl(url);
         }
