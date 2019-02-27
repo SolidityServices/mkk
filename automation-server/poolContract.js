@@ -1,12 +1,13 @@
 import TruffleContract from 'truffle-contract';
 import promisifyEvent from './promisifyEvent';
 
-export default class Pool {
-  constructor(provider, account, web3, poolArtifact) {
+class Pool {
+  constructor(provider, account, web3, poolArtifact, firstBlock) {
     this.pool = TruffleContract(poolArtifact);
     this.pool.setProvider(provider);
     this.account = account;
     this.web3 = web3;
+    this.firstBlock = firstBlock;
   }
 
   /**
@@ -31,16 +32,16 @@ export default class Pool {
    * @param {string} poolAddress address of the Pool this function iteracts with
    * @param {string} recipientAddress address to push out their coins
    */
-  async pushOutToken(poolAddress, recipientAddress) {
+  async pushOutToken(poolAddress, recipientAddress, _gasPrice) {
     const instance = await this.pool.at(poolAddress);
 
-    return instance.pushOutToken(recipientAddress, { from: this.account });
+    return instance.pushOutToken(recipientAddress, { from: this.account, gasPrice: _gasPrice });
   }
 
   async getTokensRecievedEvent(poolAddress) {
     const instanceRawWeb3 = new this.web3.eth.Contract(this.pool.abi, poolAddress);
-    const logs = await promisifyEvent(callback => instanceRawWeb3.getPastEvents('tokensReceived', {
-      fromBlock: 0,
+    const logs = await promisifyEvent.promisify(callback => instanceRawWeb3.getPastEvents('tokensReceived', {
+      fromBlock: this.firstBlock,
       toBlock: 'latest',
     }, callback));
 
@@ -50,8 +51,10 @@ export default class Pool {
     }));
   }
 
-  async watchTokensRecievedEvent(poolAddress, callback) {
+  async watchTokensRecievedEventOnce(poolAddress, callback) {
     const instanceRawWeb3 = new this.web3.eth.Contract(this.pool.abi, poolAddress);
-    instanceRawWeb3.event.tokensReceived({ fromBlock: 0, toBlock: 'latest' }).on('data', callback);
+    instanceRawWeb3.events.once('tokensReceived', { fromBlock: 0, toBlock: 'latest' }, callback);
   }
 }
+
+module.exports.Pool = Pool;

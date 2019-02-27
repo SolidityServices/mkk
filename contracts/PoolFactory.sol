@@ -63,6 +63,9 @@ contract PoolFactory is Ownable {
         if (params.useWhitelist) require(whitelist[msg.sender], "createPool(...): Error, tx was not initiated by whitelisted address");
         require(msg.value >= SafeMath.add(params.flatFee, SafeMath.mul(params.maxAllocationFeeRate, uints[6]) / 1000), "createPool(...): Error, not enough value for fees");
         require(params.maxCreatorFeeRate >= uints[0], "createPool(...): Error, pool fee rate is greater than max allowed");
+        require(uints[1] <= uints[2], "createPool(): Error, saleStartDate > saleEndDate");
+        require(uints[3] <= uints[4] || uints[4] == 0, "createPool(): Error, minContribution > maxContribution");
+        require(uints[5] <= uints[6], "createPool(): Error, minPoolGoal > maxPoolAllocation");
         address poolAddress = new Pool(
             [params.kycContractAddress, owner, msg.sender, addresses[0], addresses[1]],
             bytes32s,

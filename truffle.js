@@ -8,7 +8,7 @@ module.exports = {
       host: 'localhost',
       port: 8545,
       network_id: '*',
-      gas: 6500000,
+      gas: 6720000,
     },
     rinkeby: {
       provider() {
@@ -20,7 +20,7 @@ module.exports = {
         return wallet;
       },
       network_id: 4,
-      gas: 6500000,
+      gas: 7000000,
       gasPrice: 1000000000, // 1 gwei
     },
     kovan: {
@@ -33,7 +33,7 @@ module.exports = {
         return wallet;
       },
       network_id: 42,
-      gas: 6500000,
+      gas: 7000000,
       gasPrice: 1000000000, // 1 gwei
     },
     ropsten: {
@@ -46,7 +46,7 @@ module.exports = {
         return wallet;
       },
       network_id: 3,
-      gas: 6500000,
+      gas: 7000000,
       gasPrice: 20000000000, // 20 gwei
     },
   },

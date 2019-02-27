@@ -4,17 +4,25 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "babel-node ./index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/core": "^7.3.3",
+    "@babel/node": "^7.2.2",
+    "babel-preset-env": "^1.7.0",
     "commander": "^2.19.0",
     "dotenv": "^6.2.0",
+    "node-schedule": "^1.3.2",
     "truffle-contract": "^4.0.5",
     "truffle-hdwallet-provider": "^1.0.4",
     "truffle-hdwallet-provider-privkey": "^0.3.0",
-    "web3": "^1.0.0-beta.46"
+    "web3": "1.0.0-beta.37"
+  },
+  "bin": {
+    "automations-server": "./index.js"
   }
 }
