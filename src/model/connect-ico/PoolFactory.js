@@ -206,7 +206,7 @@ export default class PoolFactory {
         },
       ).params[0].data;
 
-      const gaslimit = await instance.createPool(
+      const gaslimit = await instance.createPool.estimateGas(
         [
           pool.saleAddress,
           pool.tokenAddress,
@@ -237,7 +237,7 @@ export default class PoolFactory {
           from: this.account,
           value: transferValue,
         },
-      ).estimateGas();
+      );
 
       return {
         callData: calldata,
