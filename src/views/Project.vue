@@ -266,6 +266,22 @@ export default {
     async initCountryData() {
       this.blacklistedCountries = await this.connectICO.pool.getKycCountryBlacklist(this.address);
     },
+    async reloadPool() {
+      console.log('Reload pool called.');
+
+      if (await this.connectICO.poolFactory.checkIfPoolExists(this.address)) {
+        console.log('Pool reload init');
+        this.pool = new LocalPool(this.address);
+        await this.fetchContributions();
+        console.log('Pool contributions fetched.');
+      } else {
+        this.$notify({
+          type: 'error',
+          title: 'Not found!',
+          text: 'Pool not found by the given address!',
+        });
+      }
+    },
     async search() {
       if (await this.connectICO.poolFactory.checkIfPoolExists(this.address)) {
         this.pool = new LocalPool(this.address);
@@ -496,6 +512,12 @@ export default {
       this.initCountryData();
       this.initWithdrawTokensAvailable();
       this.initWithDrawRefundAvailable();
+
+      const self = this;
+
+      this.connectICO.pool.watchContributionEvents(this.address, null, () => {
+        self.reloadPool();
+      });
     }
   },
   beforeUpdate() {
