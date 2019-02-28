@@ -280,13 +280,13 @@ contract Pool {
 
     function sendToSale() public onlyAdmin{
         require(!poolStats.stopped,  "sendToSale(): Error, the pool was stopped");
-        require(params.saleParticipateCalldata.length == 0, "sendToSale(): Error, participation function signature is given, 'sendToSaleWithCalldata()' has to be used");
+        require(params.saleParticipateCalldata == 0x0, "sendToSale(): Error, participation function signature is given, 'sendToSaleWithCalldata()' has to be used");
         require(!poolStats.sentToSale, "sendToSale(): Error, the pools funds were already sent to the sale");
         require(now >= params.saleStartDate, "sendToSale(): Error, sale hasn't started yet");
         require(block.timestamp < params.saleEndDate, "sendToSale(): Error, the sale has ended");
         require(calculateNetContribution() >= params.minPoolGoal, "sendToSale(): Not enough funds collected for sale");
         takeFees();
-        params.saleAddress.transfer(calculateNetContribution());
+        require(params.saleAddress.call.value(calculateNetContribution())(), "Error, transaction failed");
         poolStats.sentToSale = true;
     }
 

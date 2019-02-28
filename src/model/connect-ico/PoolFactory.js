@@ -169,6 +169,9 @@ export default class PoolFactory {
   async createPool(pool, transferValue) {
     const instance = await this.poolFactory.deployed();
 
+    const saleParticipateFunctionSig = await functionSigToCalldata(pool.saleParticipateFunctionSig);
+    const saleWithdrawFunctionSig = await functionSigToCalldata(pool.saleWithdrawFunctionSig);
+
     if (this.mode === 'mew') {
       const calldata = await instance.createPool.request(
         [
@@ -176,8 +179,8 @@ export default class PoolFactory {
           pool.tokenAddress,
         ],
         [
-          functionSigToCalldata(pool.saleParticipateFunctionSig),
-          functionSigToCalldata(pool.saleWithdrawFunctionSig),
+          saleParticipateFunctionSig,
+          saleWithdrawFunctionSig,
           pool.poolDescription,
         ],
         [
@@ -199,7 +202,7 @@ export default class PoolFactory {
         pool.countryBlackList,
         {
           from: this.account,
-          value: transferValue, // convert ether to wei
+          value: transferValue,
         },
       ).params[0].data;
 
@@ -209,8 +212,8 @@ export default class PoolFactory {
           pool.tokenAddress,
         ],
         [
-          functionSigToCalldata(pool.saleParticipateFunctionSig),
-          functionSigToCalldata(pool.saleWithdrawFunctionSig),
+          saleParticipateFunctionSig,
+          saleWithdrawFunctionSig,
           pool.poolDescription,
         ],
         [
@@ -232,7 +235,7 @@ export default class PoolFactory {
         pool.countryBlackList,
         {
           from: this.account,
-          value: transferValue, // convert ether to wei
+          value: transferValue,
         },
       ).estimateGas();
 
@@ -248,8 +251,8 @@ export default class PoolFactory {
         pool.tokenAddress,
       ],
       [
-        functionSigToCalldata(pool.saleParticipateFunctionSig),
-        functionSigToCalldata(pool.saleWithdrawFunctionSig),
+        saleParticipateFunctionSig,
+        saleWithdrawFunctionSig,
         pool.poolDescription,
       ],
       [
