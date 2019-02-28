@@ -929,10 +929,11 @@ export default class Pool {
    */
   async sendToSaleWithCalldataParameter(poolAddress, functionSignature) {
     const instance = await this.pool.at(poolAddress);
+    const functionCalldata = await functionSigToCalldata(functionSignature);
 
     if (this.mode === 'mew') {
-      const calldata = await instance.sendToSaleWithCalldataParameter.request(functionSigToCalldata(functionSignature), { from: this.account }).params[0].data;
-      const gaslimit = await instance.sendToSaleWithCalldataParameter(functionSigToCalldata(functionSignature), { from: this.account }).estimateGas();
+      const calldata = await instance.sendToSaleWithCalldataParameter.request(functionCalldata, { from: this.account }).params[0].data;
+      const gaslimit = await instance.sendToSaleWithCalldataParameter(functionCalldata, { from: this.account }).estimateGas();
 
       return {
         callData: calldata,
@@ -940,7 +941,7 @@ export default class Pool {
       };
     }
 
-    return instance.sendToSaleWithCalldataParameter(functionSigToCalldata(functionSignature), { from: this.account });
+    return instance.sendToSaleWithCalldataParameter(functionCalldata, { from: this.account });
   }
 
   /**
@@ -953,10 +954,11 @@ export default class Pool {
    */
   async withdrawFromSaleWithCalldataParameter(poolAddress, functionSignature) {
     const instance = await this.pool.at(poolAddress);
+    const functionCalldata = await functionSigToCalldata(functionSignature);
 
     if (this.mode === 'mew') {
-      const calldata = await instance.withdrawFromSaleWithCalldataParameter.request(functionSigToCalldata(functionSignature), { from: this.account }).params[0].data;
-      const gaslimit = await instance.withdrawFromSaleWithCalldataParameter(functionSigToCalldata(functionSignature), { from: this.account }).estimateGas();
+      const calldata = await instance.withdrawFromSaleWithCalldataParameter.request(functionCalldata, { from: this.account }).params[0].data;
+      const gaslimit = await instance.withdrawFromSaleWithCalldataParameter(functionCalldata, { from: this.account }).estimateGas();
 
       return {
         callData: calldata,
@@ -964,7 +966,7 @@ export default class Pool {
       };
     }
 
-    return instance.withdrawFromSaleWithCalldataParameter(functionSigToCalldata(functionSignature), { from: this.account });
+    return instance.withdrawFromSaleWithCalldataParameter(functionCalldata, { from: this.account });
   }
 
   /**
@@ -1291,10 +1293,11 @@ export default class Pool {
 
   async setSaleParticipateCalldata(poolAddress, functionSignature) {
     const instance = await this.pool.at(poolAddress);
+    const functionCalldata = await functionSigToCalldata(functionSignature);
 
     if (this.mode === 'mew') {
-      const calldata = await instance.setSaleParticipateCalldata.request(functionSigToCalldata(functionSignature), { from: this.account }).params[0].data;
-      const gaslimit = await instance.setSaleParticipateCalldata(functionSigToCalldata(functionSignature), { from: this.account }).estimateGas();
+      const calldata = await instance.setSaleParticipateCalldata.request(functionCalldata, { from: this.account }).params[0].data;
+      const gaslimit = await instance.setSaleParticipateCalldata(functionCalldata, { from: this.account }).estimateGas();
 
       return {
         callData: calldata,
@@ -1302,15 +1305,16 @@ export default class Pool {
       };
     }
 
-    return instance.setSaleParticipateCalldata(functionSigToCalldata(functionSignature), { from: this.account });
+    return instance.setSaleParticipateCalldata(functionCalldata, { from: this.account });
   }
 
   async setSaleWithdrawCalldata(poolAddress, functionSignature) {
     const instance = await this.pool.at(poolAddress);
+    const functionCalldata = await functionSigToCalldata(functionSignature);
 
     if (this.mode === 'mew') {
-      const calldata = await instance.setSaleWithdrawCalldata.request(functionSigToCalldata(functionSignature), { from: this.account }).params[0].data;
-      const gaslimit = await instance.setSaleWithdrawCalldata(functionSigToCalldata(functionSignature), { from: this.account }).estimateGas();
+      const calldata = await instance.setSaleWithdrawCalldata.request(functionCalldata, { from: this.account }).params[0].data;
+      const gaslimit = await instance.setSaleWithdrawCalldata(functionCalldata, { from: this.account }).estimateGas();
 
       return {
         callData: calldata,
@@ -1318,7 +1322,7 @@ export default class Pool {
       };
     }
 
-    return instance.setSaleWithdrawCalldata(functionSigToCalldata(functionSignature), { from: this.account });
+    return instance.setSaleWithdrawCalldata(functionCalldata, { from: this.account });
   }
 
   async getAdmins(poolAddress) {
