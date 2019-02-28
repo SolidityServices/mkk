@@ -474,6 +474,7 @@ export default {
             type: 'error',
             title: `${item.field}`,
             text: `${item.msg}`,
+            duration: -1,
           });
         });
         return;
@@ -483,6 +484,7 @@ export default {
       this.$notify({
         type: 'warn',
         text: '<i class="fa fa-spin fa-circle-o-notch"></i> Creating new pool...',
+        duration: -1,
       });
 
       const transferDetails = await this.getTransferDetails();
@@ -504,6 +506,7 @@ export default {
               type: 'success',
               title: 'Pool created!',
               text: `${response}`,
+              duration: -1,
             });
           }
         } else if (this.mode === 'mew') {

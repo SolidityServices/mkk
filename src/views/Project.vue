@@ -279,6 +279,7 @@ export default {
           type: 'error',
           title: 'Not found!',
           text: 'Pool not found by the given address!',
+          duration: -1,
         });
       }
     },
@@ -299,6 +300,7 @@ export default {
             type: 'success',
             title: 'Successful deposit!',
             text: `${this.depositAmount} ETH`,
+            duration: -1,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
@@ -334,6 +336,7 @@ export default {
             type: 'success',
             title: 'Successful withdraw!',
             text: `${this.withdrawAmount} ETH`,
+            duration: -1,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
@@ -362,6 +365,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Tokens successfully withdrawn!',
+            duration: -1,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
@@ -391,6 +395,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Refund successfully withdrawn!',
+            duration: -1,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
@@ -419,6 +424,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Token successfully withdrawn!',
+            duration: -1,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
@@ -493,6 +499,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Auto push out tokens successfully added!',
+            duration: -1,
           });
         } else if (this.mode === 'mew') {
           const gasCost = await this.connectICO.automations.getPushGasCost();

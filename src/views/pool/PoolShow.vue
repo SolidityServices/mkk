@@ -229,6 +229,7 @@ export default {
           type: 'error',
           title: 'Not found!',
           text: 'Pool not found by the given address!',
+          duration: -1,
         });
       }
     },
