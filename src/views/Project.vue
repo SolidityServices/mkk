@@ -245,6 +245,7 @@ export default {
     userMaxDeposit: 0,
     autoTokenWithDrawDate: '',
     autoTokenWithDrawGweiValue: 0,
+    isStopped: false,
   }),
   computed: {
     ...mapGetters([
@@ -265,6 +266,9 @@ export default {
   methods: {
     async initCountryData() {
       this.blacklistedCountries = await this.connectICO.pool.getKycCountryBlacklist(this.address);
+    },
+    async initIsStopped() {
+      this.isStopped = await this.connectICO.pool.isStopped(this.address);
     },
     async search() {
       if (await this.connectICO.poolFactory.checkIfPoolExists(this.address)) {
@@ -455,7 +459,6 @@ export default {
         userContribution /= 1000000000000000000;
 
         this.userContribution = userContribution;
-        this.userMaxDeposit = parseFloat(this.pool.maxContribution) - parseFloat(userContribution);
       } catch (e) {
         this.$notify({
           type: 'error',
@@ -493,6 +496,7 @@ export default {
     if (this.$route.params.address) {
       this.address = this.$route.params.address;
       this.search();
+      this.initIsStopped();
       this.initCountryData();
       this.initWithdrawTokensAvailable();
       this.initWithDrawRefundAvailable();
@@ -502,15 +506,54 @@ export default {
     this.initUserContributions();
 
     this.$validator.extend('max-deposit', {
-      getMessage: field => `The ${field} must between ${this.pool.minContribution} and ${this.userMaxDeposit}.`,
-      validate: value => value >= this.pool.minContribution && value <= this.userMaxDeposit,
+      getMessage: (field) => {
+        if (this.pool.maxContribution > 0) {
+          return `The ${field} must between ${this.pool.minContribution} and ${parseFloat(this.pool.maxContribution) - parseFloat(this.userContribution)}.`;
+        }
+
+        if (this.pool.maxPoolAllocation > 0) {
+          return `The ${field} must between ${this.pool.minContribution} and ${parseFloat(this.pool.maxPoolAllocation)}.`;
+        }
+
+        return `The ${field} must bigger than ${this.pool.minContribution}`;
+      },
+      validate: (value) => {
+        if (this.pool.maxContribution > 0) {
+          return value >= this.pool.minContribution && value <= parseFloat(this.pool.maxContribution) - parseFloat(this.userContribution);
+        }
+
+        if (this.pool.maxPoolAllocation > 0) {
+          return value >= this.pool.minContribution && value <= parseFloat(this.pool.maxPoolAllocation);
+        }
+
+        return value >= this.pool.minContribution;
+      },
     }, {
       immediate: false,
     });
 
     this.$validator.extend('max-withdraw', {
-      getMessage: field => `The ${field} must bigger than 0 and lesser or equal ${this.userContribution}.`,
-      validate: value => value > 0 && value <= (this.userContribution - this.pool.minContribution),
+      getMessage: (field) => {
+        if (this.isStopped) {
+          return `The ${field} must bigger than 0 and lesser or equal ${this.userContribution}.`;
+        }
+        if (this.userContribution > 0) {
+          return `The ${field} must bigger than 0 and lesser or equal ${this.userContribution - this.pool.minContribution}.`;
+        }
+
+        return 'You must deposit ETH first if you want a withdraw';
+      },
+      validate: (value) => {
+        if (this.isStopped) {
+          return value > 0 && value <= this.userContribution;
+        }
+
+        if (this.userContribution > 0) {
+          return value > 0 && value <= (this.userContribution - this.pool.minContribution);
+        }
+
+        return value > 0 && value <= 0;
+      },
     }, {
       immediate: false,
     });
