@@ -13,6 +13,7 @@ commander
   .option('-c, --contract <contractPath>', "define path to the folder, where the compiled smart contracts, (Automations.json, KYC.json, Pool.json) is located, default: '../build/conrracts'")
   .option('-m, --mnemonic <mnemonic>', 'define keystore path')
   .option('-i, --account-index <accountIndex>', 'index of account derived from mnemonic , default is 0')
+  .option('-g, --gas-price <gasPrice>', 'gasPrice in GWEI, default is 1')
   .option('-p, --port <port>', 'port, default is 8081');
 
 commander
@@ -22,6 +23,7 @@ commander
 // set default values
 const constractAtrifactPath = commander.contractPath ? commander.contractPath : '../build/contracts';
 const accountIndex = commander.accountIndex ? commander.accountIndex : 0;
+const gasPrice = commander.gasPrice ? commander.gasPrice : 1;
 const port = commander.port ? commander.port : 8081;
 
 // eslint-disable-next-line import/no-dynamic-require
@@ -34,7 +36,7 @@ const kycArtifact = require(`${constractAtrifactPath}/KYC.json`);
   const account = accounts[0];
   console.log('web3 initalized OK');
   console.log(`account: ${account}`);
-  const kycInstance = new kyc.KYC(web3.currentProvider, account, kycArtifact);
+  const kycInstance = new kyc.KYC(web3.currentProvider, account, kycArtifact, gasPrice);
 
   httpKycHandler.handle(app, kycInstance, port);
 })();

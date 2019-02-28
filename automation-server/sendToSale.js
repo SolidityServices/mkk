@@ -10,7 +10,7 @@ async function processPoolEntry(time, poolAddress, gasPrice, poolContract, autom
     const result1 = await poolContract.sendToSale(poolAddress, gasPrice);
     console.log(result1);
     console.log('sending Automations.emitPushSendToSaleCompleted tx... Result:');
-    const result2 = await automationsContract.emitPushSendToSaleCompleted(poolAddress);
+    const result2 = await automationsContract.emitPushSendToSaleCompleted(poolAddress, gasPrice);
     console.log(result2);
   });
 }

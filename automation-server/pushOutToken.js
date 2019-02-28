@@ -16,7 +16,7 @@ async function processPoolEntry(poolAddress, unprocessedPushOutToken, recipients
         const result1 = await poolContract.pushOutToken(poolAddress, recipientAddress, gasPrice);
         console.log(result1);
         console.log('sending Automations.emitPushOutTokenCompleted tx... Result:');
-        const result2 = await automationsContract.emitPushOutTokenCompleted(poolAddress, recipientAddress);
+        const result2 = await automationsContract.emitPushOutTokenCompleted(poolAddress, recipientAddress, gasPrice);
         console.log(result2);
       });
     } else {
