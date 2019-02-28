@@ -82,11 +82,12 @@ export default class Pool {
    * @return {boolean} is admin
    */
 
-  async isAdmin(poolAddress, address) {
+  /*
+   async isAdmin(poolAddress, address) {
     const instance = await this.pool.at(poolAddress);
     return instance.admins.call(address, { from: this.account });
   }
-
+*/
   /**
    * Check if the given address is on the whitelist of the pool
    *
@@ -96,10 +97,12 @@ export default class Pool {
    * @param {string} address address to check
    * @return {boolean} is on whitelist
    */
+  /*
   async isOnWhitelist(poolAddress, address) {
     const instance = await this.pool.at(poolAddress);
     return instance.whitelist.call(address, { from: this.account });
   }
+  */
 
   /**
    * Check a country code if its on blacklist for the pool
@@ -110,10 +113,12 @@ export default class Pool {
    * @param {string} countryCode 3 letter country code (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3)
    * @return {boolean} is on blacklist
    */
+  /*
   async isOnCountryBlacklist(poolAddress, countryCode) {
     const instance = await this.pool.at(poolAddress);
     return instance.kycCountryBlacklist.call(countryCode, { from: this.account });
   }
+  */
 
   /**
    * Get all ETH balance of a given pool contract
