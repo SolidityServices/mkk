@@ -519,14 +519,14 @@ export default {
       },
       validate: (value) => {
         if (this.pool.maxContribution > 0) {
-          return value >= this.pool.minContribution && value <= parseFloat(this.pool.maxContribution) - parseFloat(this.userContribution);
+          return value > 0 && value >= this.pool.minContribution && value <= parseFloat(this.pool.maxContribution) - parseFloat(this.userContribution);
         }
 
         if (this.pool.maxPoolAllocation > 0) {
-          return value >= this.pool.minContribution && value <= parseFloat(this.pool.maxPoolAllocation);
+          return value > 0 && value >= this.pool.minContribution && value <= parseFloat(this.pool.maxPoolAllocation);
         }
 
-        return value >= this.pool.minContribution;
+        return value > 0 && value >= this.pool.minContribution;
       },
     }, {
       immediate: false,
