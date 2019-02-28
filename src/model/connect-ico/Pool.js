@@ -839,7 +839,7 @@ export default class Pool {
 
     if (this.mode === 'mew') {
       const calldata = await instance.sendToSale.request({ from: this.account }).params[0].data;
-      const gaslimit = await instance.sendToSale({ from: this.account }).estimateGas();
+      const gaslimit = await instance.sendToSale.estimateGas({ from: this.account });
 
       return {
         callData: calldata,

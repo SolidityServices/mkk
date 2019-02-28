@@ -245,6 +245,7 @@ export default {
     userMaxDeposit: 0,
     autoTokenWithDrawDate: '',
     autoTokenWithDrawGweiValue: 0,
+    isStopped: false,
   }),
   computed: {
     ...mapGetters([
@@ -266,6 +267,9 @@ export default {
     async initCountryData() {
       this.blacklistedCountries = await this.connectICO.pool.getKycCountryBlacklist(this.address);
     },
+    async initIsStopped() {
+      this.isStopped = await this.connectICO.pool.isStopped(this.address);
+    },
     async search() {
       if (await this.connectICO.poolFactory.checkIfPoolExists(this.address)) {
         this.pool = new LocalPool(this.address);
@@ -275,6 +279,7 @@ export default {
           type: 'error',
           title: 'Not found!',
           text: 'Pool not found by the given address!',
+          duration: -1,
         });
       }
     },
@@ -295,6 +300,7 @@ export default {
             type: 'success',
             title: 'Successful deposit!',
             text: `${this.depositAmount} ETH`,
+            duration: -1,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
@@ -310,7 +316,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async withdraw() {
@@ -327,6 +336,7 @@ export default {
             type: 'success',
             title: 'Successful withdraw!',
             text: `${this.withdrawAmount} ETH`,
+            duration: -1,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
@@ -342,7 +352,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async withdrawTokens() {
@@ -352,6 +365,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Tokens successfully withdrawn!',
+            duration: -1,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
@@ -367,7 +381,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async withdrawRefund() {
@@ -378,6 +395,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Refund successfully withdrawn!',
+            duration: -1,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
@@ -393,7 +411,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async withdrawCustomToken() {
@@ -403,6 +424,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Token successfully withdrawn!',
+            duration: -1,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
@@ -418,7 +440,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async initWithdrawCustomTokenAvailable() {
@@ -455,12 +480,14 @@ export default {
         userContribution /= 1000000000000000000;
 
         this.userContribution = userContribution;
-        this.userMaxDeposit = parseFloat(this.pool.maxContribution) - parseFloat(userContribution);
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async addPushOutToken() {
@@ -472,6 +499,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Auto push out tokens successfully added!',
+            duration: -1,
           });
         } else if (this.mode === 'mew') {
           const gasCost = await this.connectICO.automations.getPushGasCost();
@@ -485,7 +513,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
   },
@@ -493,6 +524,7 @@ export default {
     if (this.$route.params.address) {
       this.address = this.$route.params.address;
       this.search();
+      this.initIsStopped();
       this.initCountryData();
       this.initWithdrawTokensAvailable();
       this.initWithDrawRefundAvailable();
@@ -502,15 +534,54 @@ export default {
     this.initUserContributions();
 
     this.$validator.extend('max-deposit', {
-      getMessage: field => `The ${field} must between ${this.pool.minContribution} and ${this.userMaxDeposit}.`,
-      validate: value => value >= this.pool.minContribution && value <= this.userMaxDeposit,
+      getMessage: (field) => {
+        if (this.pool.maxContribution > 0) {
+          return `The ${field} must between ${this.pool.minContribution} and ${parseFloat(this.pool.maxContribution) - parseFloat(this.userContribution)}.`;
+        }
+
+        if (this.pool.maxPoolAllocation > 0) {
+          return `The ${field} must between ${this.pool.minContribution} and ${parseFloat(this.pool.maxPoolAllocation)}.`;
+        }
+
+        return `The ${field} must bigger than ${this.pool.minContribution}`;
+      },
+      validate: (value) => {
+        if (this.pool.maxContribution > 0) {
+          return value > 0 && value >= this.pool.minContribution && value <= parseFloat(this.pool.maxContribution) - parseFloat(this.userContribution);
+        }
+
+        if (this.pool.maxPoolAllocation > 0) {
+          return value > 0 && value >= this.pool.minContribution && value <= parseFloat(this.pool.maxPoolAllocation);
+        }
+
+        return value > 0 && value >= this.pool.minContribution;
+      },
     }, {
       immediate: false,
     });
 
     this.$validator.extend('max-withdraw', {
-      getMessage: field => `The ${field} must bigger than 0 and lesser or equal ${this.userContribution}.`,
-      validate: value => value > 0 && value <= (this.userContribution - this.pool.minContribution),
+      getMessage: (field) => {
+        if (this.isStopped) {
+          return `The ${field} must bigger than 0 and lesser or equal ${this.userContribution}.`;
+        }
+        if (this.userContribution > 0) {
+          return `The ${field} must bigger than 0 and lesser or equal ${this.userContribution - this.pool.minContribution}.`;
+        }
+
+        return 'You must deposit ETH first if you want a withdraw';
+      },
+      validate: (value) => {
+        if (this.isStopped) {
+          return value > 0 && value <= this.userContribution;
+        }
+
+        if (this.userContribution > 0) {
+          return value > 0 && value <= (this.userContribution - this.pool.minContribution);
+        }
+
+        return value > 0 && value <= 0;
+      },
     }, {
       immediate: false,
     });
