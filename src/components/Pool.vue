@@ -598,7 +598,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async removeAdminAddresses() {
@@ -614,7 +617,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async addWhitelistAddressToAdd(address) {
@@ -658,7 +664,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async removeWhitelistAddresses() {
@@ -674,7 +683,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async initCountryData() {
@@ -698,7 +710,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async removeFromBlacklist() {
@@ -714,7 +729,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async getTransferDetails() {
@@ -752,7 +770,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async submit() {
@@ -789,7 +810,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async sendSaleParticipateWithCalldata() {
@@ -811,7 +835,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async sendSaleWithdrawRequestWithCalldata() {
@@ -835,7 +862,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
   },

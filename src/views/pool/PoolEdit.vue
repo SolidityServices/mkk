@@ -93,7 +93,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async stopPool() {
@@ -121,7 +124,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async confirmTokensReceived() {
@@ -150,7 +156,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async creatorWithdraw() {
@@ -178,7 +187,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async pushOutTokens() {
@@ -206,7 +218,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
   },

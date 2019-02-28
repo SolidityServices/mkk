@@ -314,7 +314,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async withdraw() {
@@ -346,7 +349,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async withdrawTokens() {
@@ -371,7 +377,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async withdrawRefund() {
@@ -397,7 +406,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async withdrawCustomToken() {
@@ -422,7 +434,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async initWithdrawCustomTokenAvailable() {
@@ -463,7 +478,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async addPushOutToken() {
@@ -488,7 +506,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
   },

@@ -523,7 +523,11 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
+
         this.loading = false;
       }
     },
