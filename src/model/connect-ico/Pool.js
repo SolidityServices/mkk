@@ -1402,7 +1402,7 @@ export default class Pool {
     const instanceRawWeb3 = new this.web3.eth.Contract(this.pool.abi, poolAddress);
     const eventFilter = {};
     if (contributorAddress) eventFilter.contributor = contributorAddress;
-    instanceRawWeb3.event.contributed({ filter: eventFilter, fromBlock: 0, toBlock: 'latest' }).on('data', callback);
+    instanceRawWeb3.events.contributed({ filter: eventFilter, fromBlock: 0, toBlock: 'latest' }).on('data', callback);
   }
 
   async getTokensRecievedEvent(poolAddress) {

@@ -98,8 +98,10 @@ export default {
 
       return item.saleEndDate <= now;
     },
-    isStoppedPool(item) {
-      return item.isStopped;
+    async isStoppedPool(item) {
+      const isStopped = await this.connectICO.pool.isStopped(item.poolAddress);
+
+      return isStopped;
     },
   },
   computed: {

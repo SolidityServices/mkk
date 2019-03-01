@@ -58,15 +58,18 @@ export default {
   },
   methods: {
     async search() {
-      if (await this.connectICO.poolFactory.checkIfPoolExists(this.address)) {
+      try {
+        await this.connectICO.pool.pool.at(this.address);
         this.pool = new LocalPool(this.address);
-      } else {
+      } catch (e) {
         this.$notify({
           type: 'error',
           title: 'Not found!',
           text: 'Pool not found by the given address!',
           duration: -1,
         });
+
+        console.log(e);
       }
     },
     async sendFundsToSale() {
