@@ -1,4 +1,4 @@
-import TruffleContract from 'truffle-contract';
+const TruffleContract = require('truffle-contract');
 
 class KYC {
   constructor(provider, account, kycArtifact, gasPrice) {
