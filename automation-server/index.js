@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-import TruffleContract from 'truffle-contract';
-
 const commander = require('commander');
 const web3Init = require('./web3Init.js');
 const pool = require('./poolContract.js');
@@ -13,7 +11,7 @@ const sendToSale = require('./sendToSale.js');
 
 commander
   .option('-c, --contract <contractPath>', "define path to the folder, where the compiled smart contracts, (Automations.json, KYC.json, Pool.json) is located, default: '../build/conrracts'")
-  .option('-m, --mnemonic <mnemonic>', 'define keystore path')
+  .option('-n, --network <network>', 'network name eg.: "main", "kovan", "rinkeby", "ganache", default comes from infura.json file, this can overwrite that')
   .option('-i, --account-index <accountIndex>', 'index of account derived from mnemonic , default is 0')
   .option('-b, --first-block <firstBlock>', 'first block to watch events from, default is 0');
 
@@ -33,7 +31,7 @@ const automationsArtifact = require(`${constractAtrifactPath}/Automations.json`)
 
 (async () => {
   console.log('initalizing web3...');
-  const web3 = await web3Init.init(accountIndex);
+  const web3 = await web3Init.init(accountIndex, commander.network);
   const accounts = await web3.eth.getAccounts();
   const account = accounts[0];
   console.log('web3 initalized OK');
