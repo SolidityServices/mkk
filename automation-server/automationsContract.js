@@ -15,14 +15,14 @@ class Automations {
     return instance.address;
   }
 
-  async emitPushOutTokenCompleted(pool, recipient) {
+  async emitPushOutTokenCompleted(pool, recipient, _gasPrice) {
     const instance = await this.automations.deployed();
-    return instance.emitPushOutTokenCompleted(pool, recipient, { from: this.account });
+    return instance.emitPushOutTokenCompleted(pool, recipient, { from: this.account, gasPrice: _gasPrice });
   }
 
-  async emitSendToSaleCompleted(pool) {
+  async emitSendToSaleCompleted(pool, _gasPrice) {
     const instance = await this.automations.deployed();
-    return instance.emitPushOutTokenCompleted(pool, { from: this.account });
+    return instance.emitPushOutTokenCompleted(pool, { from: this.account, gasPrice: _gasPrice });
   }
 
   async getNewPushOutTokenEvent() {

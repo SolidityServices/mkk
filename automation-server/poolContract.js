@@ -17,10 +17,10 @@ class Pool {
    *
    * @param {string} poolAddress address of the Pool this function interacts with
    */
-  async sendToSale(poolAddress) {
+  async sendToSale(poolAddress, _gasPrice) {
     const instance = await this.pool.at(poolAddress);
 
-    return instance.sendToSale({ from: this.account });
+    return instance.sendToSale({ from: this.account, gasPrice: _gasPrice  });
   }
 
   /**

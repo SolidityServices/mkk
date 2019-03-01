@@ -18,7 +18,6 @@ contract PoolFactory is Ownable {
 
     Params public params;
 
-    mapping (address => bool) public pools;
     mapping (address => bool) public whitelist;
 
 
@@ -59,13 +58,13 @@ contract PoolFactory is Ownable {
         address[] contributorWhitelist,
         bytes32[] countryBlacklist
     ) public payable {
-        require(KYC(params.kycContractAddress).checkKYC(msg.sender), "createPool(...): Error, tx was not initiated by KYC address");
-        if (params.useWhitelist) require(whitelist[msg.sender], "createPool(...): Error, tx was not initiated by whitelisted address");
-        require(msg.value >= SafeMath.add(params.flatFee, SafeMath.mul(params.maxAllocationFeeRate, uints[6]) / 1000), "createPool(...): Error, not enough value for fees");
-        require(params.maxCreatorFeeRate >= uints[0], "createPool(...): Error, pool fee rate is greater than max allowed");
-        require(uints[1] <= uints[2], "createPool(): Error, saleStartDate > saleEndDate");
-        require(uints[3] <= uints[4] || uints[4] == 0, "createPool(): Error, minContribution > maxContribution");
-        require(uints[5] <= uints[6], "createPool(): Error, minPoolGoal > maxPoolAllocation");
+        require(KYC(params.kycContractAddress).checkKYC(msg.sender), "createPool: tx by not KYC address");
+        if (params.useWhitelist) require(whitelist[msg.sender], "createPool: tx by not whitelisted address");
+        require(msg.value >= SafeMath.add(params.flatFee, SafeMath.mul(params.maxAllocationFeeRate, uints[6]) / 1000), "createPool: not enough tx value");
+        require(params.maxCreatorFeeRate >= uints[0], "createPool: fee rate > max");
+        require(uints[1] <= uints[2], "createPool: saleStartDate > saleEndDate");
+        require(uints[3] <= uints[4] || uints[4] == 0, "createPool: minContribution > maxContribution");
+        require(uints[5] <= uints[6], "createPool: minPoolGoal > maxPoolAllocation");
         address poolAddress = new Pool(
             [params.kycContractAddress, owner, msg.sender, addresses[0], addresses[1]],
             bytes32s,
@@ -77,7 +76,6 @@ contract PoolFactory is Ownable {
             contributorWhitelist,
             countryBlacklist
             );
-        pools[poolAddress] = true;
         emit poolCreated(poolAddress, msg.sender, addresses[0]);
     }
 
@@ -88,7 +86,7 @@ contract PoolFactory is Ownable {
 
     function addWhitelist(address[] addressList) public onlyOwner {
         for(uint i = 0; i < addressList.length; i++) {
-          require(KYC(params.kycContractAddress).checkKYC(addressList[i]), "addWhitelist(address[] addressList): Error, address is not a KYC address");
+          require(KYC(params.kycContractAddress).checkKYC(addressList[i]), "addWhitelist: not KYC address");
           whitelist[addressList[i]] = true;
           emit whitelistChange(addressList[i], true);
         }
@@ -136,7 +134,7 @@ contract PoolFactory is Ownable {
     }
 
     function () public payable {
-        revert("Error: fallback function");
+        revert("fallback function");
     }
 
 }

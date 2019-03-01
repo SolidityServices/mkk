@@ -1,9 +1,5 @@
-/* eslint-disable */
-var Automations = artifacts.require('./Automations.sol')
+const Automations = artifacts.require('./Automations.sol');
 
-
-module.exports = function (deployer) {
-
-    deployer.deploy(Automations, 0x0, 0, 0)
-
-}
+module.exports = (deployer) => {
+  deployer.deploy(Automations, 0x0, 0, 0);
+};

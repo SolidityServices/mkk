@@ -50,8 +50,8 @@ export default class Pool {
     const result2 = await instance.getParams2.call({ from: this.account });
 
     return {
-      saleParticipateFunctionSig: this.web3.utils.hexToUtf8(result2[2]),
-      saleWithdrawFunctionSig: this.web3.utils.hexToUtf8(result2[3]),
+      saleParticipateFunctionSig: result2[2],
+      saleWithdrawFunctionSig: result2[3],
       poolDescription: this.web3.utils.hexToUtf8(result2[4]),
       saleAddress: result2[5].toString(),
       tokenAddress: result2[6].toString(),
@@ -82,11 +82,12 @@ export default class Pool {
    * @return {boolean} is admin
    */
 
-  async isAdmin(poolAddress, address) {
+  /*
+   async isAdmin(poolAddress, address) {
     const instance = await this.pool.at(poolAddress);
     return instance.admins.call(address, { from: this.account });
   }
-
+*/
   /**
    * Check if the given address is on the whitelist of the pool
    *
@@ -96,10 +97,12 @@ export default class Pool {
    * @param {string} address address to check
    * @return {boolean} is on whitelist
    */
+  /*
   async isOnWhitelist(poolAddress, address) {
     const instance = await this.pool.at(poolAddress);
     return instance.whitelist.call(address, { from: this.account });
   }
+  */
 
   /**
    * Check a country code if its on blacklist for the pool
@@ -110,10 +113,12 @@ export default class Pool {
    * @param {string} countryCode 3 letter country code (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3)
    * @return {boolean} is on blacklist
    */
+  /*
   async isOnCountryBlacklist(poolAddress, countryCode) {
     const instance = await this.pool.at(poolAddress);
     return instance.kycCountryBlacklist.call(countryCode, { from: this.account });
   }
+  */
 
   /**
    * Get all ETH balance of a given pool contract
@@ -839,7 +844,7 @@ export default class Pool {
 
     if (this.mode === 'mew') {
       const calldata = await instance.sendToSale.request({ from: this.account }).params[0].data;
-      const gaslimit = await instance.sendToSale({ from: this.account }).estimateGas();
+      const gaslimit = await instance.sendToSale.estimateGas({ from: this.account });
 
       return {
         callData: calldata,
@@ -929,10 +934,11 @@ export default class Pool {
    */
   async sendToSaleWithCalldataParameter(poolAddress, functionSignature) {
     const instance = await this.pool.at(poolAddress);
+    const functionCalldata = await functionSigToCalldata(functionSignature);
 
     if (this.mode === 'mew') {
-      const calldata = await instance.sendToSaleWithCalldataParameter.request(functionSigToCalldata(functionSignature), { from: this.account }).params[0].data;
-      const gaslimit = await instance.sendToSaleWithCalldataParameter(functionSigToCalldata(functionSignature), { from: this.account }).estimateGas();
+      const calldata = await instance.sendToSaleWithCalldataParameter.request(functionCalldata, { from: this.account }).params[0].data;
+      const gaslimit = await instance.sendToSaleWithCalldataParameter(functionCalldata, { from: this.account }).estimateGas();
 
       return {
         callData: calldata,
@@ -940,7 +946,7 @@ export default class Pool {
       };
     }
 
-    return instance.sendToSaleWithCalldataParameter(functionSigToCalldata(functionSignature), { from: this.account });
+    return instance.sendToSaleWithCalldataParameter(functionCalldata, { from: this.account });
   }
 
   /**
@@ -953,10 +959,11 @@ export default class Pool {
    */
   async withdrawFromSaleWithCalldataParameter(poolAddress, functionSignature) {
     const instance = await this.pool.at(poolAddress);
+    const functionCalldata = await functionSigToCalldata(functionSignature);
 
     if (this.mode === 'mew') {
-      const calldata = await instance.withdrawFromSaleWithCalldataParameter.request(functionSigToCalldata(functionSignature), { from: this.account }).params[0].data;
-      const gaslimit = await instance.withdrawFromSaleWithCalldataParameter(functionSigToCalldata(functionSignature), { from: this.account }).estimateGas();
+      const calldata = await instance.withdrawFromSaleWithCalldataParameter.request(functionCalldata, { from: this.account }).params[0].data;
+      const gaslimit = await instance.withdrawFromSaleWithCalldataParameter(functionCalldata, { from: this.account }).estimateGas();
 
       return {
         callData: calldata,
@@ -964,7 +971,7 @@ export default class Pool {
       };
     }
 
-    return instance.withdrawFromSaleWithCalldataParameter(functionSigToCalldata(functionSignature), { from: this.account });
+    return instance.withdrawFromSaleWithCalldataParameter(functionCalldata, { from: this.account });
   }
 
   /**
@@ -1291,10 +1298,11 @@ export default class Pool {
 
   async setSaleParticipateCalldata(poolAddress, functionSignature) {
     const instance = await this.pool.at(poolAddress);
+    const functionCalldata = await functionSigToCalldata(functionSignature);
 
     if (this.mode === 'mew') {
-      const calldata = await instance.setSaleParticipateCalldata.request(functionSigToCalldata(functionSignature), { from: this.account }).params[0].data;
-      const gaslimit = await instance.setSaleParticipateCalldata(functionSigToCalldata(functionSignature), { from: this.account }).estimateGas();
+      const calldata = await instance.setSaleParticipateCalldata.request(functionCalldata, { from: this.account }).params[0].data;
+      const gaslimit = await instance.setSaleParticipateCalldata(functionCalldata, { from: this.account }).estimateGas();
 
       return {
         callData: calldata,
@@ -1302,15 +1310,16 @@ export default class Pool {
       };
     }
 
-    return instance.setSaleParticipateCalldata(functionSigToCalldata(functionSignature), { from: this.account });
+    return instance.setSaleParticipateCalldata(functionCalldata, { from: this.account });
   }
 
   async setSaleWithdrawCalldata(poolAddress, functionSignature) {
     const instance = await this.pool.at(poolAddress);
+    const functionCalldata = await functionSigToCalldata(functionSignature);
 
     if (this.mode === 'mew') {
-      const calldata = await instance.setSaleWithdrawCalldata.request(functionSigToCalldata(functionSignature), { from: this.account }).params[0].data;
-      const gaslimit = await instance.setSaleWithdrawCalldata(functionSigToCalldata(functionSignature), { from: this.account }).estimateGas();
+      const calldata = await instance.setSaleWithdrawCalldata.request(functionCalldata, { from: this.account }).params[0].data;
+      const gaslimit = await instance.setSaleWithdrawCalldata(functionCalldata, { from: this.account }).estimateGas();
 
       return {
         callData: calldata,
@@ -1318,7 +1327,7 @@ export default class Pool {
       };
     }
 
-    return instance.setSaleWithdrawCalldata(functionSigToCalldata(functionSignature), { from: this.account });
+    return instance.setSaleWithdrawCalldata(functionCalldata, { from: this.account });
   }
 
   async getAdmins(poolAddress) {
