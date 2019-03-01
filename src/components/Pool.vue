@@ -593,12 +593,16 @@ export default {
         this.$notify({
           type: 'success',
           text: 'Admin addresses successfully added!',
+          duration: -1,
         });
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async removeAdminAddresses() {
@@ -609,12 +613,16 @@ export default {
         this.$notify({
           type: 'success',
           text: 'Admin addresses successfully removed!',
+          duration: -1,
         });
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async addWhitelistAddressToAdd(address) {
@@ -653,12 +661,16 @@ export default {
         this.$notify({
           type: 'success',
           text: 'Whitelist addresses successfully added!',
+          duration: -1,
         });
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async removeWhitelistAddresses() {
@@ -669,12 +681,16 @@ export default {
         this.$notify({
           type: 'success',
           text: 'Whitelist addresses successfully removed!',
+          duration: -1,
         });
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async initCountryData() {
@@ -693,12 +709,16 @@ export default {
         this.$notify({
           type: 'success',
           text: 'Countries successfully added to blacklist.',
+          duration: -1,
         });
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async removeFromBlacklist() {
@@ -709,12 +729,16 @@ export default {
         this.$notify({
           type: 'success',
           text: 'Countries successfully removed from blacklist.',
+          duration: -1,
         });
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async getTransferDetails() {
@@ -739,6 +763,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Auto send to sale successfully added!',
+            duration: -1,
           });
         } else if (this.mode === 'mew') {
           const gasCost = await this.connectICO.automations.getSendToSaleGasCost();
@@ -752,7 +777,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async submit() {
@@ -763,6 +791,7 @@ export default {
             type: 'error',
             title: `${item.field}`,
             text: `${item.msg}`,
+            duration: -1,
           });
         });
         return;
@@ -783,13 +812,17 @@ export default {
             type: 'success',
             title: 'Pool created!',
             text: `${response}`,
+            duration: -1,
           });
         }
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async sendSaleParticipateWithCalldata() {
@@ -800,6 +833,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Successful Send to Sale Participate With Calldata!',
+            duration: -1,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(this.address, response.callData, 0, await window.web3.eth.net.getNetworkType(), response.gasLimit);
@@ -811,7 +845,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async sendSaleWithdrawRequestWithCalldata() {
@@ -824,6 +861,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Successful Send to Sale Withdraw Request With Calldata!',
+            duration: -1,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(this.address, response.callData, 0, await window.web3.eth.net.getNetworkType(), response.gasLimit);
@@ -835,7 +873,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
   },

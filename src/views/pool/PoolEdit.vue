@@ -65,6 +65,7 @@ export default {
           type: 'error',
           title: 'Not found!',
           text: 'Pool not found by the given address!',
+          duration: -1,
         });
       }
     },
@@ -78,6 +79,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Successfully sent funds to sale!',
+            duration: -1,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
@@ -93,7 +95,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async stopPool() {
@@ -106,6 +111,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Pool successfully stopped!',
+            duration: -1,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
@@ -121,7 +127,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async confirmTokensReceived() {
@@ -134,6 +143,7 @@ export default {
           this.$notify({
             type: 'success',
             text: response,
+            duration: -1,
           });
         } else if (this.mode === 'mew') {
           // @TODO
@@ -150,7 +160,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async creatorWithdraw() {
@@ -163,6 +176,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Successful creator withdraw!',
+            duration: -1,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
@@ -178,7 +192,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async pushOutTokens() {
@@ -191,6 +208,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Successful sale token push out!',
+            duration: -1,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
@@ -206,7 +224,10 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
   },
