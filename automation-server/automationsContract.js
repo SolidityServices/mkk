@@ -1,5 +1,5 @@
-import TruffleContract from 'truffle-contract';
-import promisifyEvent from './promisifyEvent';
+const TruffleContract = require('truffle-contract');
+const promisifyEvent = require('./promisifyEvent');
 
 class Automations {
   constructor(provider, account, web3, automationsArtifact, firstBlock) {
