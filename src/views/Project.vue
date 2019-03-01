@@ -279,17 +279,19 @@ export default {
     async reloadPool() {
       console.log('Reload pool called.');
 
-      if (await this.connectICO.poolFactory.checkIfPoolExists(this.address)) {
-        console.log('Pool reload init');
+      try {
+        await this.connectICO.pool.pool.at(this.address);
         this.pool = new LocalPool(this.address);
         await this.fetchContributions();
-        console.log('Pool contributions fetched.');
-      } else {
+      } catch (e) {
         this.$notify({
           type: 'error',
           title: 'Not found!',
           text: 'Pool not found by the given address!',
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async search() {
