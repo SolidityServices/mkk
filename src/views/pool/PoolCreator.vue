@@ -484,7 +484,7 @@ export default {
       this.$notify({
         type: 'warn',
         text: '<i class="fa fa-spin fa-circle-o-notch"></i> Creating new pool...',
-        duration: -1,
+        duration: 10000,
       });
 
       const transferDetails = await this.getTransferDetails();
