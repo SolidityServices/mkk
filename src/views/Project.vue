@@ -48,6 +48,12 @@
 
                 <div class="py-1 col-8 blue-18-reg">Individual Max:</div>
                 <div class="py-1 col-4 orange-18-bold text-right">{{pool.maxContribution}} ETH</div>
+
+                <div class="py-1 col-8 blue-18-reg">Min pool goal:</div>
+                <div class="py-1 col-4 orange-18-bold text-right">{{pool.minPoolGoal}} ETH</div>
+
+                <div class="py-1 col-8 blue-18-reg">Max allocation:</div>
+                <div class="py-1 col-4 orange-18-bold text-right">{{pool.maxPoolAllocation}} ETH</div>
               </div>
             </div>
           </div>
@@ -271,16 +277,19 @@ export default {
       this.isStopped = await this.connectICO.pool.isStopped(this.address);
     },
     async search() {
-      if (await this.connectICO.poolFactory.checkIfPoolExists(this.address)) {
+      try {
+        await this.connectICO.pool.pool.at(this.address);
         this.pool = new LocalPool(this.address);
         await this.fetchContributions();
-      } else {
+      } catch (e) {
         this.$notify({
           type: 'error',
           title: 'Not found!',
           text: 'Pool not found by the given address!',
           duration: -1,
         });
+
+        console.log(e);
       }
     },
     async fetchContributions() {
