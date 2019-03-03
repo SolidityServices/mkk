@@ -26,6 +26,8 @@ module.exports = {
           console.log(`Tx reciept: ${JSON.stringify(reciept)}`); // your JSON
           response.send(reciept); // echo the result back
         });
+      }).catch((txError) => {
+        console.log(txError);
       });
     });
 

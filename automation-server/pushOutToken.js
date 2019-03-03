@@ -18,13 +18,17 @@ async function processPoolEntry(poolAddress, unprocessedPushOutToken, recipients
           web3.eth.getTransactionReceipt(txResult.tx).then((reciept) => {
             console.log(`Tx reciept: ${JSON.stringify(reciept)}`);
           });
+        }).catch((txError) => {
+          console.log(txError);
         });
         console.log('sending Automations.emitPushOutTokenCompleted tx... Result:');
-        await automationsContract.emitPushOutTokenCompleted(poolAddress, recipientAddress, gasPrice).then((txResult) => {
+        automationsContract.emitPushOutTokenCompleted(poolAddress, recipientAddress, gasPrice).then((txResult) => {
           console.log(`Tx hash: ${txResult.tx}`);
           web3.eth.getTransactionReceipt(txResult.tx).then((reciept) => {
             console.log(`Tx reciept: ${JSON.stringify(reciept)}`);
           });
+        }).catch((txError) => {
+          console.log(txError);
         });
       });
     } else {

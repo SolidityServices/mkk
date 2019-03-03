@@ -22,7 +22,7 @@ class Automations {
 
   async emitSendToSaleCompleted(pool, _gasPrice) {
     const instance = await this.automations.deployed();
-    return instance.emitPushOutTokenCompleted(pool, { from: this.account, gasPrice: _gasPrice });
+    return instance.emitSendToSaleCompleted(pool, { from: this.account, gasPrice: _gasPrice });
   }
 
   async getNewPushOutTokenEvent() {

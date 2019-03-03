@@ -820,7 +820,7 @@ export default {
     },
     async addAutoSendToSale() {
       try {
-        const date = moment(this.sendToSaleTime, this.datepickerOptions.format);
+        const date = moment(this.sendToSaleTime, this.datepickerOptions.format).unix();
         const gasPrice = Web3.utils.toWei(Web3.utils.toBN(this.sendToSaleGweiValue).toString(), 'gwei');
         const response = await this.connectICO.automations.addSendToSale(this.pool.poolAddress, date, gasPrice);
 

@@ -20,7 +20,7 @@ class Pool {
   async sendToSale(poolAddress, _gasPrice) {
     const instance = await this.pool.at(poolAddress);
 
-    return instance.sendToSale({ from: this.account, gasPrice: _gasPrice  });
+    return instance.sendToSale({ from: this.account, gasPrice: _gasPrice });
   }
 
   /**
