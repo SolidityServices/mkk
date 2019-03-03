@@ -41,6 +41,9 @@
           </div>
           <div class="d-flex flex-row flex-wrap">
             <div class="col-12 col-lg-6 border-right">
+              <i class="fa fa-lock mr-2" v-if="isClosedPool(pool)"></i>
+              <i class="fa fa-ban mr-2" v-if="isStoppedPool(pool)"></i>
+
               <router-link :to="{name: 'project', params: {address: pool.poolAddress}}">
                 {{pool.poolAddress}}
               </router-link>
@@ -89,6 +92,16 @@ export default {
       });
 
       this.initPools(poolObjects);
+    },
+    isClosedPool(item) {
+      const now = Date.now();
+
+      return item.saleEndDate <= now;
+    },
+    async isStoppedPool(item) {
+      const isStopped = await this.connectICO.pool.isStopped(item.poolAddress);
+
+      return isStopped;
     },
   },
   computed: {

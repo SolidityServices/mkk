@@ -474,6 +474,7 @@ export default {
             type: 'error',
             title: `${item.field}`,
             text: `${item.msg}`,
+            duration: -1,
           });
         });
         return;
@@ -483,6 +484,7 @@ export default {
       this.$notify({
         type: 'warn',
         text: '<i class="fa fa-spin fa-circle-o-notch"></i> Creating new pool...',
+        duration: 10000,
       });
 
       const transferDetails = await this.getTransferDetails();
@@ -504,14 +506,16 @@ export default {
               type: 'success',
               title: 'Pool created!',
               text: `${response}`,
+              duration: -1,
             });
           }
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
             this.connectICO.poolFactory.poolFactory.address,
-            response,
+            response.callData,
             transferDetails.transferValue,
             await window.web3.eth.net.getNetworkType(),
+            response.gasLimit,
           );
           openMewUrl(url);
         }
@@ -522,7 +526,11 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
+
         this.loading = false;
       }
     },

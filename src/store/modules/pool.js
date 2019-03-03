@@ -13,7 +13,7 @@ function filterPools(pools, filter, category) {
         }
         return false;
       case 'closed':
-        if (item.saleEndDate <= now) {
+        if (item.saleEndDate <= now || item.isStopped === true) {
           break;
         }
         return false;

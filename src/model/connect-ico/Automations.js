@@ -35,7 +35,13 @@ export default class Automations {
     const instance = await this.automations.deployed();
 
     if (this.mode === 'mew') {
-      return instance.addPushOutToken.request(pool, recipient, gasPrice, { from: this.account }).params[0].data;
+      const calldata = await instance.addPushOutToken.request(pool, recipient, gasPrice, { from: this.account }).params[0].data;
+      const gaslimit = await instance.addPushOutToken(pool, recipient, gasPrice, { from: this.account }).estimateGas();
+
+      return {
+        callData: calldata,
+        gasLimit: gaslimit * 2,
+      };
     }
 
     return instance.addPushOutToken(pool, recipient, gasPrice, { from: this.account });
@@ -45,7 +51,13 @@ export default class Automations {
     const instance = await this.automations.deployed();
 
     if (this.mode === 'mew') {
-      return instance.addSendToSale.request(pool, time, gasPrice, { from: this.account }).params[0].data;
+      const calldata = await instance.addSendToSale.request(pool, time, gasPrice, { from: this.account }).params[0].data;
+      const gaslimit = await instance.addSendToSale(pool, time, gasPrice, { from: this.account }).estimateGas();
+
+      return {
+        callData: calldata,
+        gasLimit: gaslimit * 2,
+      };
     }
 
     return instance.addSendToSale(pool, time, gasPrice, { from: this.account });
@@ -55,7 +67,13 @@ export default class Automations {
     const instance = await this.automations.deployed();
 
     if (this.mode === 'mew') {
-      return instance.emitPushOutTokenCompleted.request(pool, recipient, { from: this.account }).params[0].data;
+      const calldata = await instance.emitPushOutTokenCompleted.request(pool, recipient, { from: this.account }).params[0].data;
+      const gaslimit = await instance.emitPushOutTokenCompleted(pool, recipient, { from: this.account }).estimateGas();
+
+      return {
+        callData: calldata,
+        gasLimit: gaslimit * 2,
+      };
     }
 
     return instance.emitPushOutTokenCompleted(pool, recipient, { from: this.account });
@@ -65,7 +83,13 @@ export default class Automations {
     const instance = await this.automations.deployed();
 
     if (this.mode === 'mew') {
-      return instance.emitPushOutTokenCompleted.request(pool, { from: this.account }).params[0].data;
+      const calldata = await instance.emitPushOutTokenCompleted.request(pool, { from: this.account }).params[0].data;
+      const gaslimit = await instance.emitPushOutTokenCompleted(pool, { from: this.account }).estimateGas();
+
+      return {
+        callData: calldata,
+        gasLimit: gaslimit * 2,
+      };
     }
 
     return instance.emitPushOutTokenCompleted(pool, { from: this.account });
@@ -75,7 +99,13 @@ export default class Automations {
     const instance = await this.automations.deployed();
 
     if (this.mode === 'mew') {
-      return instance.setPushServer.request(pushServer, { from: this.account }).params[0].data;
+      const calldata = await instance.setPushServer.request(pushServer, { from: this.account }).params[0].data;
+      const gaslimit = await instance.setPushServer(pushServer, { from: this.account }).estimateGas();
+
+      return {
+        callData: calldata,
+        gasLimit: gaslimit * 2,
+      };
     }
 
     return instance.setPushServer(pushServer, { from: this.account });
@@ -85,7 +115,13 @@ export default class Automations {
     const instance = await this.automations.deployed();
 
     if (this.mode === 'mew') {
-      return instance.setPushGasCost.request(pushGasCost, { from: this.account }).params[0].data;
+      const calldata = await instance.setPushGasCost.request(pushGasCost, { from: this.account }).params[0].data;
+      const gaslimit = await instance.setPushGasCost(pushGasCost, { from: this.account }).estimateGas();
+
+      return {
+        callData: calldata,
+        gasLimit: gaslimit * 2,
+      };
     }
 
     return instance.setPushGasCost(pushGasCost, { from: this.account });

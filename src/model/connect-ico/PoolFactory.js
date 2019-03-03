@@ -100,7 +100,7 @@ export default class PoolFactory {
     const instance = await this.poolFactory.deployed();
 
     if (this.mode === 'mew') {
-      return instance.setParams.request(
+      const calldata = await instance.setParams.request(
         poolFactory.ownerAddress,
         poolFactory.kycContractAddress,
         poolFactory.flatFee,
@@ -111,6 +111,23 @@ export default class PoolFactory {
         [true, true, true, true, true, true],
         { from: this.account },
       ).params[0].data;
+
+      const gaslimit = await instance.setParams(
+        poolFactory.ownerAddress,
+        poolFactory.kycContractAddress,
+        poolFactory.flatFee,
+        poolFactory.maxAllocationFeeRate,
+        poolFactory.maxCreatorFeeRate,
+        poolFactory.providerFeeRate,
+        poolFactory.useWhitelist,
+        [true, true, true, true, true, true],
+        { from: this.account },
+      ).estimateGas();
+
+      return {
+        callData: calldata,
+        gasLimit: gaslimit * 2,
+      };
     }
 
     return instance.setParams(
@@ -152,15 +169,18 @@ export default class PoolFactory {
   async createPool(pool, transferValue) {
     const instance = await this.poolFactory.deployed();
 
+    const saleParticipateFunctionSig = await functionSigToCalldata(pool.saleParticipateFunctionSig);
+    const saleWithdrawFunctionSig = await functionSigToCalldata(pool.saleWithdrawFunctionSig);
+
     if (this.mode === 'mew') {
-      return instance.createPool.request(
+      const calldata = await instance.createPool.request(
         [
           pool.saleAddress,
           pool.tokenAddress,
         ],
         [
-          functionSigToCalldata(pool.saleParticipateFunctionSig),
-          functionSigToCalldata(pool.saleWithdrawFunctionSig),
+          saleParticipateFunctionSig,
+          saleWithdrawFunctionSig,
           pool.poolDescription,
         ],
         [
@@ -182,9 +202,47 @@ export default class PoolFactory {
         pool.countryBlackList,
         {
           from: this.account,
-          value: transferValue, // convert ether to wei
+          value: transferValue,
         },
       ).params[0].data;
+
+      const gaslimit = await instance.createPool.estimateGas(
+        [
+          pool.saleAddress,
+          pool.tokenAddress,
+        ],
+        [
+          saleParticipateFunctionSig,
+          saleWithdrawFunctionSig,
+          pool.poolDescription,
+        ],
+        [
+          pool.creatorFeeRate * 10, // convert percentage to "per thousandth"
+          Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
+          Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
+          pool.minContribution * 1000000000000000000, // convert ether to wei
+          pool.maxContribution * 1000000000000000000, // convert ether to wei
+          pool.minPoolGoal * 1000000000000000000, // convert ether to wei
+          pool.maxPoolAllocation * 1000000000000000000, // convert ether to wei
+          pool.withdrawTimelock * 60 * 60, // convert to unix time
+        ],
+        [
+          pool.whitelistPool ? 1 : 0,
+          pool.strictlyTrustlessPool ? 1 : 0,
+        ],
+        pool.adminAddresses,
+        pool.whiteListAddresses,
+        pool.countryBlackList,
+        {
+          from: this.account,
+          value: transferValue,
+        },
+      );
+
+      return {
+        callData: calldata,
+        gasLimit: gaslimit * 2,
+      };
     }
 
     const receipt = await instance.createPool(
@@ -193,8 +251,8 @@ export default class PoolFactory {
         pool.tokenAddress,
       ],
       [
-        functionSigToCalldata(pool.saleParticipateFunctionSig),
-        functionSigToCalldata(pool.saleWithdrawFunctionSig),
+        saleParticipateFunctionSig,
+        saleWithdrawFunctionSig,
         pool.poolDescription,
       ],
       [
@@ -241,7 +299,13 @@ export default class PoolFactory {
     const instance = await this.poolFactory.deployed();
 
     if (this.mode === 'mew') {
-      return instance.withdraw.request({ from: this.account }).params[0].data;
+      const calldata = await instance.withdraw.request({ from: this.account }).params[0].data;
+      const gaslimit = await instance.withdraw.request({ from: this.account }).estimateGas();
+
+      return {
+        callData: calldata,
+        gasLimit: gaslimit * 2,
+      };
     }
 
     return instance.withdraw({ from: this.account });

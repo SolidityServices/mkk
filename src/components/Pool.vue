@@ -464,6 +464,67 @@
           </div>
 
           <hr class="blue-hr-fullw my-5 w-100">
+
+          <div class="w-100" v-if="!disabled">
+            <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap">
+              <button class="btn px-4 blue-submit btn-block" @click="sendToSaleWithCalldata">SendToSale with predefined calldata</button>
+            </div>
+          </div>
+
+          <div class="w-100" v-if="!disabled">
+            <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap">
+              <button class="btn px-4 blue-submit btn-block" @click="withdrawFromSaleWithCalldata">Withdraw with predefined calldata </button>
+            </div>
+          </div>
+
+          <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
+            <div class="col-12 col-md-7">
+              <input type="text" class="form-control input-text" v-model="sendToSaleCalldataFunctionSig"/>
+            </div>
+
+            <div class="col-12 col-md-5 d-flex flex-row flex-wrap">
+              <button class="btn blue-submit px-4 w-100" @click="setSaleParticipateCalldata">
+                Set SendToSale calldata
+              </button>
+            </div>
+          </div>
+
+          <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
+            <div class="col-12 col-md-7">
+              <input type="text" class="form-control input-text" v-model="saleWithdrawCalldataFunctionSig"/>
+            </div>
+
+            <div class="col-12 col-md-5 d-flex flex-row flex-wrap">
+              <button class="btn blue-submit px-4 w-100" @click="setSaleWithdrawCalldata">
+                Set Withdraw calldata
+              </button>
+            </div>
+          </div>
+
+          <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
+            <div class="col-12 col-md-7">
+              <input type="text" class="form-control input-text" v-model="sendToSaleWithCalldataParameterFunctionSig"/>
+            </div>
+
+            <div class="col-12 col-md-5 d-flex flex-row flex-wrap">
+              <button class="btn blue-submit px-4 w-100" @click="sendToSaleWithCalldataParameter">
+                SendToSale with dynamic calldata
+              </button>
+            </div>
+          </div>
+
+          <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
+            <div class="col-12 col-md-7">
+              <input type="text" class="form-control input-text" v-model="withdrawFromSaleWithCalldataParameterFunctionSig"/>
+            </div>
+
+            <div class="col-12 col-md-5 d-flex flex-row flex-wrap">
+              <button class="btn blue-submit px-4 w-100" @click="withdrawFromSaleWithCalldataParameter">
+                Withdraw with dynamic calldata
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -478,6 +539,8 @@ import Multiselect from 'vue-multiselect';
 import Web3 from 'web3';
 import LocalPool from '../model/LocalPool';
 import CountrySelect from './form/CountrySelect.vue';
+import mewLinkBuilder from '../utils/mewLinkBuilder';
+import openMewUrl from '../utils/openMewUrl';
 
 export default {
   components: {
@@ -522,6 +585,10 @@ export default {
       sendToSaleGweiValue: 0,
       sendToSaleWithCalldataSig: '',
       withdrawFromSaleWithCalldataSig: '',
+      sendToSaleCalldataFunctionSig: '',
+      saleWithdrawCalldataFunctionSig: '',
+      sendToSaleWithCalldataParameterFunctionSig: '',
+      withdrawFromSaleWithCalldataParameterFunctionSig: '',
     };
   },
   mounted() {
@@ -591,12 +658,16 @@ export default {
         this.$notify({
           type: 'success',
           text: 'Admin addresses successfully added!',
+          duration: -1,
         });
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async removeAdminAddresses() {
@@ -607,12 +678,16 @@ export default {
         this.$notify({
           type: 'success',
           text: 'Admin addresses successfully removed!',
+          duration: -1,
         });
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async addWhitelistAddressToAdd(address) {
@@ -651,12 +726,16 @@ export default {
         this.$notify({
           type: 'success',
           text: 'Whitelist addresses successfully added!',
+          duration: -1,
         });
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async removeWhitelistAddresses() {
@@ -667,12 +746,16 @@ export default {
         this.$notify({
           type: 'success',
           text: 'Whitelist addresses successfully removed!',
+          duration: -1,
         });
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async initCountryData() {
@@ -691,12 +774,16 @@ export default {
         this.$notify({
           type: 'success',
           text: 'Countries successfully added to blacklist.',
+          duration: -1,
         });
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async removeFromBlacklist() {
@@ -707,12 +794,16 @@ export default {
         this.$notify({
           type: 'success',
           text: 'Countries successfully removed from blacklist.',
+          duration: -1,
         });
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async getTransferDetails() {
@@ -730,15 +821,31 @@ export default {
     async addAutoSendToSale() {
       try {
         const date = moment(this.sendToSaleTime, this.datepickerOptions.format);
-        const gasPrice = Web3.utils.toWei(Web3.toBigNumber(this.sendToSaleGweiValue), 'gwei');
+        const gasPrice = Web3.utils.toWei(Web3.utils.toBN(this.sendToSaleGweiValue).toString(), 'gwei');
         const response = await this.connectICO.automations.addSendToSale(this.pool.poolAddress, date, gasPrice);
+
+        if (this.mode === 'mm') {
+          this.$notify({
+            type: 'success',
+            text: 'Auto send to sale successfully added!',
+            duration: -1,
+          });
+        } else if (this.mode === 'mew') {
+          const gasCost = await this.connectICO.automations.getSendToSaleGasCost();
+          const value = Web3.utils.toBN(gasPrice * gasCost).toString();
+          const url = mewLinkBuilder(this.address, response.callData, value, await window.web3.eth.net.getNetworkType(), response.gasLimit);
+          openMewUrl(url);
+        }
 
         console.log(response);
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async submit() {
@@ -749,6 +856,7 @@ export default {
             type: 'error',
             title: `${item.field}`,
             text: `${item.msg}`,
+            duration: -1,
           });
         });
         return;
@@ -769,39 +877,225 @@ export default {
             type: 'success',
             title: 'Pool created!',
             text: `${response}`,
+            duration: -1,
           });
         }
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async sendSaleParticipateWithCalldata() {
       try {
         const response = await this.connectICO.pool.sendToSaleWithCalldataParameter(this.pool.poolAddress, this.sendToSaleWithCalldataSig);
 
+        if (this.mode === 'mm') {
+          this.$notify({
+            type: 'success',
+            text: 'Successful Send to Sale Participate With Calldata!',
+            duration: -1,
+          });
+        } else if (this.mode === 'mew') {
+          const url = mewLinkBuilder(this.address, response.callData, 0, await window.web3.eth.net.getNetworkType(), response.gasLimit);
+          openMewUrl(url);
+        }
+
         console.log(response);
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
       }
     },
     async sendSaleWithdrawRequestWithCalldata() {
       try {
-        console.log(this.address);
-
         const response = await this.connectICO.pool.withdrawFromSaleWithCalldataParameter(this.pool.poolAddress, this.sendToSaleWithCalldataSig);
+
+        if (this.mode === 'mm') {
+          this.$notify({
+            type: 'success',
+            text: 'Successful Send to Sale Withdraw Request With Calldata!',
+            duration: -1,
+          });
+        } else if (this.mode === 'mew') {
+          const url = mewLinkBuilder(this.address, response.callData, 0, await window.web3.eth.net.getNetworkType(), response.gasLimit);
+          openMewUrl(url);
+        }
 
         console.log(response);
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
+          duration: -1,
         });
+
+        console.log(e);
+      }
+    },
+    async sendToSaleWithCalldata() {
+      try {
+        const response = await this.connectICO.pool.sendToSaleWithCalldata(this.pool.poolAddress);
+
+        if (this.mode === 'mm') {
+          this.$notify({
+            type: 'success',
+            text: 'Successful SendToSale with predefined calldata!',
+            duration: -1,
+          });
+        } else if (this.mode === 'mew') {
+          const url = mewLinkBuilder(this.address, response.callData, 0, await window.web3.eth.net.getNetworkType(), response.gasLimit);
+          openMewUrl(url);
+        }
+
+        console.log(response);
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+          duration: -1,
+        });
+
+        console.log(e);
+      }
+    },
+    async withdrawFromSaleWithCalldata() {
+      try {
+        const response = await this.connectICO.pool.withdrawFromSaleWithCalldata(this.pool.poolAddress);
+
+        if (this.mode === 'mm') {
+          this.$notify({
+            type: 'success',
+            text: 'Successful Withdraw with predefined calldata!',
+            duration: -1,
+          });
+        } else if (this.mode === 'mew') {
+          const url = mewLinkBuilder(this.address, response.callData, 0, await window.web3.eth.net.getNetworkType(), response.gasLimit);
+          openMewUrl(url);
+        }
+
+        console.log(response);
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+          duration: -1,
+        });
+
+        console.log(e);
+      }
+    },
+    async setSaleParticipateCalldata() {
+      try {
+        const response = await this.connectICO.pool.setSaleParticipateCalldata(this.pool.poolAddress, this.sendToSaleCalldataFunctionSig);
+
+        if (this.mode === 'mm') {
+          this.$notify({
+            type: 'success',
+            text: 'Successful Set SendToSale calldata!',
+            duration: -1,
+          });
+        } else if (this.mode === 'mew') {
+          const url = mewLinkBuilder(this.address, response.callData, 0, await window.web3.eth.net.getNetworkType(), response.gasLimit);
+          openMewUrl(url);
+        }
+
+        console.log(response);
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+          duration: -1,
+        });
+
+        console.log(e);
+      }
+    },
+    async setSaleWithdrawCalldata() {
+      try {
+        const response = await this.connectICO.pool.setSaleWithdrawCalldata(this.pool.poolAddress, this.saleWithdrawCalldataFunctionSig);
+
+        if (this.mode === 'mm') {
+          this.$notify({
+            type: 'success',
+            text: 'Successful Set Withdraw calldata!',
+            duration: -1,
+          });
+        } else if (this.mode === 'mew') {
+          const url = mewLinkBuilder(this.address, response.callData, 0, await window.web3.eth.net.getNetworkType(), response.gasLimit);
+          openMewUrl(url);
+        }
+
+        console.log(response);
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+          duration: -1,
+        });
+
+        console.log(e);
+      }
+    },
+    async sendToSaleWithCalldataParameter() {
+      try {
+        const response = await this.connectICO.pool.sendToSaleWithCalldataParameter(this.pool.poolAddress, this.sendToSaleWithCalldataParameterFunctionSig);
+
+        if (this.mode === 'mm') {
+          this.$notify({
+            type: 'success',
+            text: 'Successful SendToSale with dynamic calldata!',
+            duration: -1,
+          });
+        } else if (this.mode === 'mew') {
+          const url = mewLinkBuilder(this.address, response.callData, 0, await window.web3.eth.net.getNetworkType(), response.gasLimit);
+          openMewUrl(url);
+        }
+
+        console.log(response);
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+          duration: -1,
+        });
+
+        console.log(e);
+      }
+    },
+    async withdrawFromSaleWithCalldataParameter() {
+      try {
+        const response = await this.connectICO.pool.withdrawFromSaleWithCalldataParameter(this.pool.poolAddress, this.withdrawFromSaleWithCalldataParameterFunctionSig);
+
+        if (this.mode === 'mm') {
+          this.$notify({
+            type: 'success',
+            text: 'Successful Withdraw with dynamic calldata!',
+            duration: -1,
+          });
+        } else if (this.mode === 'mew') {
+          const url = mewLinkBuilder(this.address, response.callData, 0, await window.web3.eth.net.getNetworkType(), response.gasLimit);
+          openMewUrl(url);
+        }
+
+        console.log(response);
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+          duration: -1,
+        });
+
+        console.log(e);
       }
     },
   },
