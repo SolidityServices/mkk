@@ -657,10 +657,10 @@ export default class Pool {
         value: amount * 1000000000000000000, // @TODO convert ether to wei,
       }).params[0].data;
 
-      const gaslimit = await instance.contribute({
+      const gaslimit = await instance.contribute.estimateGas({
         from: this.account,
         value: amount * 1000000000000000000, // @TODO convert ether to wei,
-      }).estimateGas();
+      });
 
       return {
         callData: calldata,
