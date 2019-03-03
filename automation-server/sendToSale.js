@@ -1,22 +1,30 @@
 const schedule = require('node-schedule');
 const getUnprocessedSendToSale = require('./getUnprocessedSendToSale.js');
 
-async function processPoolEntry(time, poolAddress, gasPrice, poolContract, automationsContract) {
+async function processPoolEntry(time, poolAddress, gasPrice, poolContract, automationsContract, web3) {
   const date = new Date(time * 1000);
   schedule.scheduleJob(date, async () => {
     console.log(`send to sale time triggered scheduler - time: ${time} , poolAddress: ${poolAddress} , gasPrice: ${gasPrice}`);
     // eslint-disable-next-line prefer-destructuring
     console.log('sending Pool.sendToSale tx... Result:');
-    const result1 = await poolContract.sendToSale(poolAddress, gasPrice);
-    console.log(result1);
+    poolContract.sendToSale(poolAddress, gasPrice).then((txResult) => {
+      console.log(`Tx hash: ${txResult.tx}`);
+      web3.eth.getTransactionReceipt(txResult.tx).then((reciept) => {
+        console.log(`Tx reciept: ${JSON.stringify(reciept)}`);
+      });
+    });
     console.log('sending Automations.emitPushSendToSaleCompleted tx... Result:');
-    const result2 = await automationsContract.emitPushSendToSaleCompleted(poolAddress, gasPrice);
-    console.log(result2);
+    automationsContract.emitPushSendToSaleCompleted(poolAddress, gasPrice).then((txResult) => {
+      console.log(`Tx hash: ${txResult.tx}`);
+      web3.eth.getTransactionReceipt(txResult.tx).then((reciept) => {
+        console.log(`Tx reciept: ${JSON.stringify(reciept)}`);
+      });
+    });
   });
 }
 
 module.exports = {
-  async process(automationsContract, poolContract) {
+  async process(automationsContract, poolContract, web3) {
     const unprocessedSendToSale = await getUnprocessedSendToSale.getElements(automationsContract);
     console.log(`send to sale events to process: ${JSON.stringify(unprocessedSendToSale)}`);
 
@@ -27,7 +35,7 @@ module.exports = {
           time: result.returnValues.time,
           gasPrice: result.returnValues.gasPrice,
         };
-        processPoolEntry(result.returnValues.time, poolAddress, unprocessedSendToSale, poolContract, automationsContract);
+        processPoolEntry(result.returnValues.time, poolAddress, unprocessedSendToSale, poolContract, automationsContract, web3);
 
         console.log(`New send to sale event to process: ${result}`);
       } else {
@@ -37,7 +45,7 @@ module.exports = {
 
     Object.keys(unprocessedSendToSale).forEach((poolAddress) => {
       const { time, gasPrice } = unprocessedSendToSale[poolAddress];
-      processPoolEntry(time, poolAddress, gasPrice, unprocessedSendToSale, poolContract, automationsContract);
+      processPoolEntry(time, poolAddress, gasPrice, unprocessedSendToSale, poolContract, automationsContract, web3);
     });
     console.log('Watching for new events to process and waiting for scheduler to be triggered by send to sale times...');
   },

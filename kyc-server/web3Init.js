@@ -17,6 +17,14 @@ module.exports = {
     const provider = new HDWalletProvider(infura.mnemonic, providerUrl, accountNumber);
     console.log(`provider: ${providerUrl}`);
     const web3 = new Web3(provider);
+    console.log('Getting latest block number...');
+    await web3.eth.getBlockNumber((error, result) => {
+      if (!error) {
+        console.log(`Latest block number: ${result}`);
+      } else {
+        console.log(`Error during getting latest block number: ${error}`);
+      }
+    });
     return web3;
   },
 };

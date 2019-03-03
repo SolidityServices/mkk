@@ -40,8 +40,8 @@ const automationsArtifact = require(`${constractAtrifactPath}/Automations.json`)
   const automationsContract = new automations.Automations(web3.currentProvider, account, web3, automationsArtifact, firstBlock);
 
   try {
-    pushOutToken.process(automationsContract, poolContract);
-    sendToSale.process(automationsContract, poolContract);
+    pushOutToken.process(automationsContract, poolContract, web3);
+    sendToSale.process(automationsContract, poolContract, web3);
   } catch (error) {
     console.log(`Error: ${error}`);
   }

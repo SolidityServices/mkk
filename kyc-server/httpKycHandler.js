@@ -3,7 +3,7 @@ const express = require('express');
 
 
 module.exports = {
-  async handle(app, kycInstance, port) {
+  async handle(app, kycInstance, port, web3) {
     app.use(express.json());
 
     let kycObjectList = {};
@@ -12,7 +12,7 @@ module.exports = {
       kycObjectList = request.body;
       const addressList = [];
       const countryList = [];
-      console.log(`incoming request: ${kycObjectList}`);
+      console.log(`incoming request: ${JSON.stringify(kycObjectList)}`);
 
       kycObjectList.forEach((element) => {
         addressList.push(element.address);
@@ -20,9 +20,13 @@ module.exports = {
       });
 
       console.log('sending transaction...');
-      const reciept = await kycInstance.addKYCAddresses(addressList, countryList);
-      console.log(reciept); // your JSON
-      response.send(reciept); // echo the result back
+      kycInstance.addKYCAddresses(addressList, countryList).then((result) => {
+        console.log(`Tx hash: ${result.tx}`);
+        web3.eth.getTransactionReceipt(result.tx).then((reciept) => {
+          console.log(`Tx reciept: ${JSON.stringify(reciept)}`); // your JSON
+          response.send(reciept); // echo the result back
+        });
+      });
     });
 
     try {

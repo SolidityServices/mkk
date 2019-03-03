@@ -38,5 +38,5 @@ const kycArtifact = require(`${constractAtrifactPath}/KYC.json`);
   console.log(`account: ${account}`);
   const kycInstance = new kyc.KYC(web3.currentProvider, account, kycArtifact, gasPrice);
 
-  httpKycHandler.handle(app, kycInstance, port);
+  httpKycHandler.handle(app, kycInstance, port, web3);
 })();
