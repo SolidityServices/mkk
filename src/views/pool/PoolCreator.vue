@@ -14,7 +14,7 @@
     </div>
 
     <div class="container d-flex flex-column">
-      <div class="d-flex flex-column ml-sm-5">
+      <div class="d-flex flex-column">
         <div>
           <div class="o-border d-inline"></div>
           <div class="d-inline blue-36-20-bold"> Creator
@@ -41,7 +41,7 @@
 
       <hr class="blue-hr-fullw my-5 w-100">
 
-      <div class="d-flex flex-column ml-sm-5 mt-3">
+      <div class="d-flex flex-column mt-3">
         <div class="d-flex flex-row flex-wrap">
           <div>
             <div class="o-border d-inline"></div>
@@ -79,7 +79,7 @@
 
       <hr class="blue-hr-fullw my-5 w-100">
 
-      <div class="d-flex flex-column ml-sm-5">
+      <div class="d-flex flex-column">
         <div>
           <div class="o-border d-inline"></div>
           <div class="d-inline mt-5 blue-36-20-bold"> Deal Details
@@ -151,6 +151,20 @@
             </div>
           </div>
 
+        </div>
+      </div>
+
+      <hr class="blue-hr-fullw my-5 w-100">
+
+      <div class="d-flex flex-column">
+        <div>
+          <div class="o-border d-inline"></div>
+          <div class="d-inline mt-5 blue-36-20-bold"> Pool Details
+            <hr align="left" class="blue-hr-2">
+          </div>
+        </div>
+
+        <div class="d-flex flex-row flex-wrap">
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Minimum pool goal in ETH</div>
             <div class="col-12 col-lg-6">
@@ -171,16 +185,6 @@
                      class="form-control input-text w-100" data-vv-name="Max allocation"
                      v-model="pool.maxPoolAllocation">
               <span v-if="errors.has('Max allocation')" v-text="errors.first('Max allocation')" class="text-danger"></span>
-            </div>
-          </div>
-
-          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 d-flex flex-row align-items-center">
-              <div class="input-cb mr-3">
-                <input type="checkbox" v-model="pool.whitelistPool" id="whitelistPool" name=""/>
-                <label for="whitelistPool"></label>
-              </div>
-              <label class="blue-18-reg mb-0" for="whitelistPool">Whitelist pool</label>
             </div>
           </div>
 
@@ -215,9 +219,33 @@
               <span v-if="errors.has('Maximum contribution')" v-text="errors.first('Maximum contribution')" class="text-danger"></span>
             </div>
           </div>
+        </div>
+      </div>
 
-          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 d-flex flex-row align-items-center">
+
+      <hr class="blue-hr-fullw my-5 w-100">
+
+
+      <div class="d-flex flex-column mb-5">
+        <div class="mb-5">
+          <div class="o-border d-inline"></div>
+          <div class="d-inline mt-5 blue-36-20-bold"> Other Parameters
+            <hr align="left" class="blue-hr-2">
+          </div>
+        </div>
+
+        <div class="d-flex flex-row flex-wrap">
+
+          <div class="d-flex flex-column ml-4 mb-3">
+            <div class="d-flex flex-row align-items-center mb-3">
+              <div class="input-cb mr-3">
+                <input type="checkbox" v-model="pool.whitelistPool" id="whitelistPool" name=""/>
+                <label for="whitelistPool"></label>
+              </div>
+              <label class="blue-18-reg mb-0" for="whitelistPool">Whitelist pool</label>
+            </div>
+
+            <div class="d-flex flex-row align-items-center">
               <div class="input-cb mr-3">
                 <input type="checkbox" v-model="pool.strictlyTrustlessPool" id="trustlessPool" name=""/>
                 <label for="trustlessPool"></label>
@@ -226,26 +254,27 @@
             </div>
           </div>
 
-          <div class="col-12 mt-3">
-            <div class="row">
-              <div class="col-12 col-md-6 d-flex flex-row flex-wrap">
-                <div class="col-12 blue-18-reg mb-1">Country blacklist:</div>
-                <div class="col-12">
-                  <country-select
-                          multiple
-                          v-model="pool.countryBlackList"
-                          :options="countries"/>
-                </div>
-              </div>
-
-              <div class="col-12 col-md-6 d-flex flex-row flex-wrap">
-                <div class="col-12 blue-18-reg mb-1">Selected countries:</div>
-                <div class="col-12">{{pool.countryBlackList.join(', ')}}</div>
-              </div>
+          <div class="col-12 d-flex flex-wrap mt-3 align-items-center">
+            <div class="col-12 col-lg-3 blue-18-reg">Country blacklist:</div>
+            <div class="col-12 col-lg-9">
+              <country-select
+                      multiple
+                      v-model="pool.countryBlackList"
+                      :options="countries"/>
             </div>
           </div>
 
-          <div class="col-12 d-flex mt-3 align-items-center">
+          <!--<div class="col-12">-->
+          <!--<div class="row">-->
+          <!--<div class="col-12 col-md-6 d-flex flex-row flex-wrap">-->
+          <!--<div class="col-12 blue-18-reg mb-1">Selected countries:</div>-->
+          <!--<div class="col-12">{{pool.countryBlackList.join(', ')}}</div>-->
+          <!--</div>-->
+          <!--</div>-->
+          <!--</div>-->
+
+
+          <div class="col-12 d-flex flex-wrap mt-3 align-items-center">
               <div class="col-12 col-lg-3 blue-18-reg">Admin addresses:</div>
 
               <div class="col-12 col-lg-9">
@@ -262,7 +291,7 @@
               </div>
           </div>
 
-          <div class="col-12 d-flex mt-3 align-items-center">
+          <div class="col-12 d-flex flex-wrap mt-3 align-items-center">
               <div class="col-12 col-lg-3 blue-18-reg">Whitelist addresses:</div>
 
               <div class="col-12 col-lg-9">
@@ -283,7 +312,7 @@
 
       <hr class="blue-hr-fullw my-5 w-100" v-if="calculatedFee">
 
-      <div class="d-flex flex-column ml-sm-5 mt-3" v-if="calculatedFee">
+      <div class="d-flex flex-column mt-3" v-if="calculatedFee">
         <div>
           <div class="o-border d-inline"></div>
           <div class="d-inline mt-5 blue-36-20-bold"> Transaction details
