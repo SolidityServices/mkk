@@ -433,7 +433,7 @@ export default class Pool {
 
     if (this.mode === 'mew') {
       const calldata = await instance.addAdmin.request(adminAddressList, { from: this.account }).params[0].data;
-      const gaslimit = await instance.addAdmin(adminAddressList, { from: this.account }).estimateGas();
+      const gaslimit = await instance.addAdmin.estimateGas(adminAddressList, { from: this.account });
 
       return {
         callData: calldata,
@@ -482,7 +482,7 @@ export default class Pool {
 
     if (this.mode === 'mew') {
       const calldata = await instance.removeAdmin.request(adminAddressList, { from: this.account }).params[0].data;
-      const gaslimit = await instance.removeAdmin(adminAddressList, { from: this.account }).estimateGas();
+      const gaslimit = await instance.removeAdmin.estimateGas(adminAddressList, { from: this.account });
 
       return {
         callData: calldata,
@@ -506,7 +506,7 @@ export default class Pool {
 
     if (this.mode === 'mew') {
       const calldata = await instance.addWhitelist.request(whitelistAddressList, { from: this.account }).params[0].data;
-      const gaslimit = await instance.addWhitelist(whitelistAddressList, { from: this.account }).estimateGas();
+      const gaslimit = await instance.addWhitelist.estimateGas(whitelistAddressList, { from: this.account });
 
       return {
         callData: calldata,
@@ -555,7 +555,7 @@ export default class Pool {
 
     if (this.mode === 'mew') {
       const calldata = await instance.removeWhitelist.request(whitelistAddressList, { from: this.account }).params[0].data;
-      const gaslimit = await instance.removeWhitelist(whitelistAddressList, { from: this.account }).estimateGas();
+      const gaslimit = await instance.removeWhitelist.estimateGas(whitelistAddressList, { from: this.account });
 
       return {
         callData: calldata,
@@ -579,7 +579,7 @@ export default class Pool {
 
     if (this.mode === 'mew') {
       const calldata = await instance.addCountryBlacklist.request(countryCodeList, { from: this.account }).params[0].data;
-      const gaslimit = await instance.addCountryBlacklist(countryCodeList, { from: this.account }).estimateGas();
+      const gaslimit = await instance.addCountryBlacklist.estimateGas(countryCodeList, { from: this.account });
 
       return {
         callData: calldata,
@@ -628,7 +628,7 @@ export default class Pool {
 
     if (this.mode === 'mew') {
       const calldata = await instance.removeCountryBlacklist.request(countryCodeList, { from: this.account }).params[0].data;
-      const gaslimit = await instance.removeCountryBlacklist(countryCodeList, { from: this.account }).estimateGas();
+      const gaslimit = await instance.removeCountryBlacklist.estimateGas(countryCodeList, { from: this.account });
 
       return {
         callData: calldata,
@@ -688,7 +688,7 @@ export default class Pool {
     // @TODO convert amount
     if (this.mode === 'mew') {
       const calldata = await instance.withdraw.request(amount * 1000000000000000000, { from: this.account }).params[0].data;
-      const gaslimit = await instance.withdraw(amount * 1000000000000000000, { from: this.account }).estimateGas();
+      const gaslimit = await instance.withdraw.estimateGas(amount * 1000000000000000000, { from: this.account });
 
       return {
         callData: calldata,
@@ -712,7 +712,7 @@ export default class Pool {
 
     if (this.mode === 'mew') {
       const calldata = await instance.withdrawRefund.request({ from: this.account }).params[0].data;
-      const gaslimit = await instance.withdrawRefund({ from: this.account }).estimateGas();
+      const gaslimit = await instance.withdrawRefund.estimateGas({ from: this.account });
 
       return {
         callData: calldata,
@@ -736,7 +736,7 @@ export default class Pool {
 
     if (this.mode === 'mew') {
       const calldata = await instance.withdrawToken.request({ from: this.account }).params[0].data;
-      const gaslimit = await instance.withdrawToken({ from: this.account }).estimateGas();
+      const gaslimit = await instance.withdrawToken.estimateGas({ from: this.account });
 
       return {
         callData: calldata,
@@ -760,7 +760,7 @@ export default class Pool {
 
     if (this.mode === 'mew') {
       const calldata = await instance.withdrawCustomToken.request(tokenAddress, { from: this.account }).params[0].data;
-      const gaslimit = await instance.withdrawCustomToken(tokenAddress, { from: this.account }).estimateGas();
+      const gaslimit = await instance.withdrawCustomToken.estimateGas(tokenAddress, { from: this.account });
 
       return {
         callData: calldata,
@@ -785,7 +785,7 @@ export default class Pool {
 
     if (this.mode === 'mew') {
       const calldata = await instance.pushOutToken.request(recipientAddress, { from: this.account }).params[0].data;
-      const gaslimit = await instance.pushOutToken(recipientAddress, { from: this.account }).estimateGas();
+      const gaslimit = await instance.pushOutToken.estimateGas(recipientAddress, { from: this.account });
 
       return {
         callData: calldata,
@@ -821,7 +821,7 @@ export default class Pool {
 
     if (this.mode === 'mew') {
       const calldata = await instance.confirmTokensReceived.request(tokensExpected, { from: this.account }).params[0].data;
-      const gaslimit = await instance.confirmTokensReceived(tokensExpected, { from: this.account }).estimateGas();
+      const gaslimit = await instance.confirmTokensReceived.estimateGas(tokensExpected, { from: this.account });
 
       return {
         callData: calldata,
@@ -867,7 +867,7 @@ export default class Pool {
 
     if (this.mode === 'mew') {
       const calldata = await instance.stopPool.request({ from: this.account }).params[0].data;
-      const gaslimit = await instance.stopPool({ from: this.account }).estimateGas();
+      const gaslimit = await instance.stopPool.estimateGas({ from: this.account });
 
       return {
         callData: calldata,
@@ -890,7 +890,7 @@ export default class Pool {
 
     if (this.mode === 'mew') {
       const calldata = await instance.sendToSaleWithCalldata.request({ from: this.account }).params[0].data;
-      const gaslimit = await instance.sendToSaleWithCalldata({ from: this.account }).estimateGas();
+      const gaslimit = await instance.sendToSaleWithCalldata.estimateGas({ from: this.account });
 
       return {
         callData: calldata,
@@ -913,7 +913,7 @@ export default class Pool {
 
     if (this.mode === 'mew') {
       const calldata = await instance.withdrawFromSaleWithCalldata.request({ from: this.account }).params[0].data;
-      const gaslimit = await instance.withdrawFromSaleWithCalldata({ from: this.account }).estimateGas();
+      const gaslimit = await instance.withdrawFromSaleWithCalldata.estimateGas({ from: this.account });
 
       return {
         callData: calldata,
@@ -938,7 +938,7 @@ export default class Pool {
 
     if (this.mode === 'mew') {
       const calldata = await instance.sendToSaleWithCalldataParameter.request(functionCalldata, { from: this.account }).params[0].data;
-      const gaslimit = await instance.sendToSaleWithCalldataParameter(functionCalldata, { from: this.account }).estimateGas();
+      const gaslimit = await instance.sendToSaleWithCalldataParameter.estimateGas(functionCalldata, { from: this.account });
 
       return {
         callData: calldata,
@@ -963,7 +963,7 @@ export default class Pool {
 
     if (this.mode === 'mew') {
       const calldata = await instance.withdrawFromSaleWithCalldataParameter.request(functionCalldata, { from: this.account }).params[0].data;
-      const gaslimit = await instance.withdrawFromSaleWithCalldataParameter(functionCalldata, { from: this.account }).estimateGas();
+      const gaslimit = await instance.withdrawFromSaleWithCalldataParameter.estimateGas(functionCalldata, { from: this.account });
 
       return {
         callData: calldata,
@@ -986,7 +986,7 @@ export default class Pool {
 
     if (this.mode === 'mew') {
       const calldata = await instance.providerWithdraw.request({ from: this.account }).params[0].data;
-      const gaslimit = await instance.providerWithdraw({ from: this.account }).estimateGas();
+      const gaslimit = await instance.providerWithdraw.estimateGas({ from: this.account });
 
       return {
         callData: calldata,
@@ -1009,7 +1009,7 @@ export default class Pool {
 
     if (this.mode === 'mew') {
       const calldata = await instance.creatorWithdraw.request({ from: this.account }).params[0].data;
-      const gaslimit = await instance.creatorWithdraw({ from: this.account }).estimateGas();
+      const gaslimit = await instance.creatorWithdraw.estimateGas({ from: this.account });
 
       return {
         callData: calldata,
@@ -1049,7 +1049,7 @@ export default class Pool {
         { from: this.account },
       ).params[0].data;
 
-      const gaslimit = await instance.setParamsCreator(
+      const gaslimit = await instance.setParamsCreator.estimateGas(
         pool.creator,
         pool.creatorFeeRate * 100, // convert percentage to integer
         Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
@@ -1063,7 +1063,7 @@ export default class Pool {
         pool.tokenAddress,
         [true, true, true, true, true, true, true, true, true, true, true],
         { from: this.account },
-      ).estimateGas();
+      );
 
       return {
         callData: calldata,
@@ -1144,13 +1144,13 @@ export default class Pool {
         { from: this.account },
       ).params[0].data;
 
-      const gaslimit = await instance.setParamsProvider(
+      const gaslimit = await instance.setParamsProvider.estimateGas(
         provider,
         providerFeeRate,
         maxPoolAllocation,
         toUpdate,
         { from: this.account },
-      ).estimateGas();
+      );
 
       return {
         callData: calldata,
@@ -1187,13 +1187,13 @@ export default class Pool {
         { from: this.account },
       ).params[0].data;
 
-      const gaslimit = await instance.setParams(
+      const gaslimit = await instance.setParams.estimateGas(
         providerAddress,
         0,
         0,
         [true, false, false],
         { from: this.account },
-      ).estimateGas();
+      );
 
       return {
         callData: calldata,
@@ -1230,13 +1230,13 @@ export default class Pool {
         { from: this.account },
       ).params[0].data;
 
-      const gaslimit = await instance.setParams(
+      const gaslimit = await instance.setParams.estimateGas(
         0x0,
         providerFeeRate,
         0,
         [false, true, false],
         { from: this.account },
-      ).estimateGas();
+      );
 
       return {
         callData: calldata,
@@ -1273,13 +1273,13 @@ export default class Pool {
         { from: this.account },
       ).params[0].data;
 
-      const gaslimit = await instance.setParams(
+      const gaslimit = await instance.setParams.estimateGas(
         0x0,
         0,
         maxPoolAllocation,
         [false, false, true],
         { from: this.account },
-      ).estimateGas();
+      );
 
       return {
         callData: calldata,
@@ -1302,7 +1302,7 @@ export default class Pool {
 
     if (this.mode === 'mew') {
       const calldata = await instance.setSaleParticipateCalldata.request(functionCalldata, { from: this.account }).params[0].data;
-      const gaslimit = await instance.setSaleParticipateCalldata(functionCalldata, { from: this.account }).estimateGas();
+      const gaslimit = await instance.setSaleParticipateCalldata.estimateGas(functionCalldata, { from: this.account });
 
       return {
         callData: calldata,
@@ -1319,7 +1319,7 @@ export default class Pool {
 
     if (this.mode === 'mew') {
       const calldata = await instance.setSaleWithdrawCalldata.request(functionCalldata, { from: this.account }).params[0].data;
-      const gaslimit = await instance.setSaleWithdrawCalldata(functionCalldata, { from: this.account }).estimateGas();
+      const gaslimit = await instance.setSaleWithdrawCalldata.estimateGas(functionCalldata, { from: this.account });
 
       return {
         callData: calldata,

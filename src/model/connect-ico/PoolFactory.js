@@ -112,7 +112,7 @@ export default class PoolFactory {
         { from: this.account },
       ).params[0].data;
 
-      const gaslimit = await instance.setParams(
+      const gaslimit = await instance.setParams.estimateGas(
         poolFactory.ownerAddress,
         poolFactory.kycContractAddress,
         poolFactory.flatFee,
@@ -122,7 +122,7 @@ export default class PoolFactory {
         poolFactory.useWhitelist,
         [true, true, true, true, true, true],
         { from: this.account },
-      ).estimateGas();
+      );
 
       return {
         callData: calldata,
@@ -300,7 +300,7 @@ export default class PoolFactory {
 
     if (this.mode === 'mew') {
       const calldata = await instance.withdraw.request({ from: this.account }).params[0].data;
-      const gaslimit = await instance.withdraw.request({ from: this.account }).estimateGas();
+      const gaslimit = await instance.withdraw.estimateGas({ from: this.account });
 
       return {
         callData: calldata,
