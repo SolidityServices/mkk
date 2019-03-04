@@ -314,7 +314,7 @@
 
           <hr class="blue-hr-fullw my-5 w-100">
 
-          <div v-if="!disabled">
+          <div v-if="!disabled" class="w-100">
             <div class="w-100">
               <div class="col-12 d-flex flex-row mt-3 flex-wrap">
                 <div class="col-12 blue-18-reg">Admin addresses:</div>
