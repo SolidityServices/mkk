@@ -138,7 +138,7 @@ export default {
     },
     async confirmTokensReceived() {
       try {
-        const response = await this.connectICO.pool.areTokensReceivedConfirmed(this.pool.poolAddress);
+        const response = await this.connectICO.pool.confirmTokensReceived(this.pool.poolAddress, 0);
 
         console.log(response);
 
