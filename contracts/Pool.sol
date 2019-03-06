@@ -152,6 +152,7 @@ contract Pool {
     }
 
     function removeWhitelist(address[] addressList) public onlyAdmin {
+      require(!poolStats.sentToSale, "removeWhitelist: already sent to sale");
       for(uint i = 0; i < addressList.length; i++) {
         whitelist[addressList[i]] = false;
         emit whitelistChange(addressList[i], false);
@@ -173,6 +174,7 @@ contract Pool {
     }
 
     function removeCountryBlacklist(bytes32[] countryList) public onlyAdmin {
+      require(!poolStats.sentToSale, "removeCountryBlacklist: already sent to sale");
       for(uint i = 0; i < countryList.length; i++){
         kycCountryBlacklist[countryList[i]] = false;
         emit countryBlacklistChange(countryList[i], false);

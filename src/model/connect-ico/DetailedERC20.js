@@ -18,4 +18,9 @@ export default class KYC {
     const instance = await this.pool.at(tokenAddress);
     return instance.name.call({ from: this.account });
   }
+
+  async getBalance(tokenAddress, poolAddress) {
+    const instance = await this.pool.at(tokenAddress);
+    return instance.balanceOf.call(poolAddress, { from: this.account });
+  }
 }
