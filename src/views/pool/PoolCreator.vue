@@ -515,6 +515,9 @@ export default {
 
       const transferDetails = await this.getTransferDetails();
 
+      console.log('Transfer details loaded.');
+      console.log(transferDetails);
+
       if (typeof this.pool.saleStartDate === 'string') {
         this.pool.saleStartDate = moment(this.pool.saleStartDate, this.datepickerOptions.format);
       }
@@ -524,6 +527,9 @@ export default {
 
       try {
         const response = await this.connectICO.poolFactory.createPool(this.pool, transferDetails.transferValue);
+
+        console.log('Create pool success.');
+        console.log(response);
 
         if (this.mode === 'mm') {
           if (response) {
@@ -535,8 +541,13 @@ export default {
               duration: -1,
             });
           }
-        } else if (this.mode === 'mew') {
+        }
+
+        if (this.mode === 'mew') {
           const network = await window.web3.eth.net.getNetworkType();
+
+          console.log('Network info loaded.');
+          console.log(network);
 
           const url = mewLinkBuilder(
             this.connectICO.poolFactory.poolFactory.address,
@@ -545,6 +556,10 @@ export default {
             network,
             response.gasLimit,
           );
+
+          console.log('MEW link created');
+          console.log(url);
+
           openMewUrl(url);
         }
 
