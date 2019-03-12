@@ -10,6 +10,19 @@ module.exports = {
       network_id: '*',
       gas: 6700000,
     },
+    mainnet: {
+      provider() {
+        const wallet = new HDWalletProvider(infura.mnemonic, `https://mainnet.infura.io/v3/${infura.apiKey}`);
+        const nonceTracker = new NonceTrackerSubprovider();
+        // eslint-disable-next-line no-underscore-dangle
+        wallet.engine._providers.unshift(nonceTracker);
+        nonceTracker.setEngine(wallet.engine);
+        return wallet;
+      },
+      network_id: 4,
+      gas: 6700000,
+      gasPrice: 5000000000, // 5 gwei
+    },
     rinkeby: {
       provider() {
         const wallet = new HDWalletProvider(infura.mnemonic, `https://rinkeby.infura.io/v3/${infura.apiKey}`);
