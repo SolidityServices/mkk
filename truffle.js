@@ -19,7 +19,7 @@ module.exports = {
         nonceTracker.setEngine(wallet.engine);
         return wallet;
       },
-      network_id: 4,
+      network_id: 1,
       gas: 6700000,
       gasPrice: 5000000000, // 5 gwei
     },
