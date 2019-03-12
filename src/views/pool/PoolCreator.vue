@@ -202,7 +202,7 @@
             <div class="col-12 col-lg-6 blue-18-reg">Minimum ETH contribution (optional)</div>
             <div class="col-12 col-lg-6">
               <input type="number" v-validate="'decimal|min_value:0'" min="0"
-                     step=0.000001
+                     step="0.000001"
                      class="form-control input-text w-100" data-vv-name="Minimum contribution"
                      v-model="pool.minContribution"/>
               <span v-if="errors.has('Minimum contribution')" v-text="errors.first('Minimum contribution')" class="text-danger"></span>
@@ -213,7 +213,7 @@
             <div class="col-12 col-lg-6 blue-18-reg">Maximum ETH contribution (optional)</div>
             <div class="col-12 col-lg-6">
               <input type="number" v-validate="'decimal|min_value:0'" min="0"
-                     step=0.000001
+                     step="0.000001"
                      class="form-control input-text" data-vv-name="Maximum contribution"
                      v-model="pool.maxContribution"/>
               <span v-if="errors.has('Maximum contribution')" v-text="errors.first('Maximum contribution')" class="text-danger"></span>
@@ -407,18 +407,15 @@ export default {
     ]),
   },
   methods: {
-    setCountries(countries) {
-      console.log(countries);
-    },
     async getTransferDetails() {
       const factoryParams = await this.connectICO.poolFactory.getAllPoolFactoryParams();
+      const poolFee = parseInt(await window.web3.utils.toWei((factoryParams.maxAllocationFeeRate * this.pool.maxPoolAllocation / 1000).toString(), 'ether'), 10);
+      const transferValue = factoryParams.flatFee + poolFee;
+
       return {
         flatFee: factoryParams.flatFee,
-        poolFee: parseInt(await window.web3.utils.toWei((factoryParams.maxAllocationFeeRate * this.pool.maxPoolAllocation / 1000).toString(), 'ether'), 10),
-        transferValue: (
-          factoryParams.flatFee
-          + parseInt(await window.web3.utils.toWei((factoryParams.maxAllocationFeeRate * this.pool.maxPoolAllocation / 1000).toString(), 'ether'), 10)
-        ),
+        poolFee,
+        transferValue,
       };
     },
     async getTransferDetailsETH() {
@@ -539,11 +536,13 @@ export default {
             });
           }
         } else if (this.mode === 'mew') {
+          const network = await window.web3.eth.net.getNetworkType();
+
           const url = mewLinkBuilder(
             this.connectICO.poolFactory.poolFactory.address,
             response.callData,
             transferDetails.transferValue,
-            await window.web3.eth.net.getNetworkType(),
+            network,
             response.gasLimit,
           );
           openMewUrl(url);
@@ -561,6 +560,7 @@ export default {
         console.log(e);
 
         this.loading = false;
+        throw e;
       }
     },
   },
