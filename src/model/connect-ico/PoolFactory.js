@@ -173,71 +173,84 @@ export default class PoolFactory {
     const saleWithdrawFunctionSig = await functionSigToCalldata(pool.saleWithdrawFunctionSig);
 
     if (this.mode === 'mew') {
-      const calldata = await instance.createPool.request(
-        [
-          pool.saleAddress,
-          pool.tokenAddress,
-        ],
-        [
-          saleParticipateFunctionSig,
-          saleWithdrawFunctionSig,
-          pool.poolDescription,
-        ],
-        [
-          pool.creatorFeeRate * 10, // convert percentage to "per thousandth"
-          Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
-          Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
-          pool.minContribution * 1000000000000000000, // convert ether to wei
-          pool.maxContribution * 1000000000000000000, // convert ether to wei
-          pool.minPoolGoal * 1000000000000000000, // convert ether to wei
-          pool.maxPoolAllocation * 1000000000000000000, // convert ether to wei
-          pool.withdrawTimelock * 60 * 60, // convert to unix time
-        ],
-        [
-          pool.whitelistPool ? 1 : 0,
-          pool.strictlyTrustlessPool ? 1 : 0,
-        ],
-        pool.adminAddresses,
-        pool.whiteListAddresses,
-        pool.countryBlackList,
-        {
-          from: this.account,
-          value: transferValue,
-        },
-      ).params[0].data;
+      let calldata = null;
+      let gaslimit = null;
 
-      const gaslimit = await instance.createPool.estimateGas(
-        [
-          pool.saleAddress,
-          pool.tokenAddress,
-        ],
-        [
-          saleParticipateFunctionSig,
-          saleWithdrawFunctionSig,
-          pool.poolDescription,
-        ],
-        [
-          pool.creatorFeeRate * 10, // convert percentage to "per thousandth"
-          Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
-          Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
-          pool.minContribution * 1000000000000000000, // convert ether to wei
-          pool.maxContribution * 1000000000000000000, // convert ether to wei
-          pool.minPoolGoal * 1000000000000000000, // convert ether to wei
-          pool.maxPoolAllocation * 1000000000000000000, // convert ether to wei
-          pool.withdrawTimelock * 60 * 60, // convert to unix time
-        ],
-        [
-          pool.whitelistPool ? 1 : 0,
-          pool.strictlyTrustlessPool ? 1 : 0,
-        ],
-        pool.adminAddresses,
-        pool.whiteListAddresses,
-        pool.countryBlackList,
-        {
-          from: this.account,
-          value: transferValue,
-        },
-      );
+      try {
+        calldata = await instance.createPool.request(
+          [
+            pool.saleAddress,
+            pool.tokenAddress,
+          ],
+          [
+            saleParticipateFunctionSig,
+            saleWithdrawFunctionSig,
+            pool.poolDescription,
+          ],
+          [
+            pool.creatorFeeRate * 10, // convert percentage to "per thousandth"
+            Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
+            Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
+            pool.minContribution * 1000000000000000000, // convert ether to wei
+            pool.maxContribution * 1000000000000000000, // convert ether to wei
+            pool.minPoolGoal * 1000000000000000000, // convert ether to wei
+            pool.maxPoolAllocation * 1000000000000000000, // convert ether to wei
+            pool.withdrawTimelock * 60 * 60, // convert to unix time
+          ],
+          [
+            pool.whitelistPool ? 1 : 0,
+            pool.strictlyTrustlessPool ? 1 : 0,
+          ],
+          pool.adminAddresses,
+          pool.whiteListAddresses,
+          pool.countryBlackList,
+          {
+            from: this.account,
+            value: transferValue,
+          },
+        ).params[0].data;
+      } catch (e) {
+        console.log('Pool create fail');
+        console.log(e);
+      }
+
+      try {
+        gaslimit = await instance.createPool.estimateGas(
+          [
+            pool.saleAddress,
+            pool.tokenAddress,
+          ],
+          [
+            saleParticipateFunctionSig,
+            saleWithdrawFunctionSig,
+            pool.poolDescription,
+          ],
+          [
+            pool.creatorFeeRate * 10, // convert percentage to "per thousandth"
+            Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
+            Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
+            pool.minContribution * 1000000000000000000, // convert ether to wei
+            pool.maxContribution * 1000000000000000000, // convert ether to wei
+            pool.minPoolGoal * 1000000000000000000, // convert ether to wei
+            pool.maxPoolAllocation * 1000000000000000000, // convert ether to wei
+            pool.withdrawTimelock * 60 * 60, // convert to unix time
+          ],
+          [
+            pool.whitelistPool ? 1 : 0,
+            pool.strictlyTrustlessPool ? 1 : 0,
+          ],
+          pool.adminAddresses,
+          pool.whiteListAddresses,
+          pool.countryBlackList,
+          {
+            from: this.account,
+            value: transferValue,
+          },
+        );
+      } catch (e) {
+        console.log('Estimage gas fail');
+        console.log(e);
+      }
 
       return {
         callData: calldata,
