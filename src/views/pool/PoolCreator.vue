@@ -115,7 +115,6 @@
               <input type="number" v-validate="'required|decimal|min_value:0|max_value:100'"
                      data-vv-name="Creator fee"
                      class="form-control input-text w-100"
-                     placeholder="0.12"
                      step="0.01"
                      min="0"
                      max="100"
@@ -520,6 +519,7 @@ export default {
             this.poolAddress = response;
 
             this.$notify({ clean: true });
+
             this.$notify({
               type: 'success',
               title: 'Pool created!',
@@ -540,10 +540,11 @@ export default {
             response.gasLimit,
           );
 
+          this.$notify({ clean: true });
+
           openMewUrl(url);
         }
 
-        this.$notify({ clean: true });
         this.pool = new LocalPool();
         this.loading = false;
       } catch (e) {
@@ -553,9 +554,6 @@ export default {
           text: e.message,
           duration: -1,
         });
-
-        console.log(e);
-
         this.loading = false;
         throw e;
       }

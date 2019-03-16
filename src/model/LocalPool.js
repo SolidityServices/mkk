@@ -67,7 +67,7 @@ export default class LocalPool {
     this.maxPoolAllocation = this.convertWeiToEther(params.maxPoolAllocation);
     this.withdrawTimelock = params.withdrawTimelock !== 0 ? params.withdrawTimelock / 60 / 60 : 0;
     this.providerFeeRate = params.providerFeeRate !== 0 ? params.providerFeeRate / 100 : 0;
-    this.creatorFeeRate = params.creatorFeeRate !== 0 ? params.creatorFeeRate / 100 : 0;
+    this.creatorFeeRate = params.creatorFeeRate !== 0 ? params.creatorFeeRate / 10 : 0;
     this.whitelistPool = params.whitelistPool;
     this.strictlyTrustlessPool = params.strictlyTrustlessPool;
     this.adminAddresses = params.adminAddresses ? params.adminAddresses : [];
