@@ -92,7 +92,7 @@ export default class LocalPool {
     params.minContribution = 1000000000000;
     params.maxContribution = 1000000000000;
     params.minPoolGoal = 1000000000000;
-    params.maxPoolAllocation = 1000000000000;
+    params.maxPoolAllocation = 10000000000000000;
     params.withdrawTimelock = 0;
     params.whitelistPool = false;
     params.strictlyTrustlessPool = false;

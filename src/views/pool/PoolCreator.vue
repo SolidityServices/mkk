@@ -179,7 +179,7 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Max allocation in ETH</div>
             <div class="col-12 col-lg-6">
-              <input type="number" v-validate="'required|decimal|min_value:0'"
+              <input type="number" v-validate="'required|decimal|min_value:0.01'"
                      step=0.01
                      min=0.01
                      class="form-control input-text w-100" data-vv-name="Max allocation"
@@ -263,16 +263,6 @@
                       :options="countries"/>
             </div>
           </div>
-
-          <!--<div class="col-12">-->
-          <!--<div class="row">-->
-          <!--<div class="col-12 col-md-6 d-flex flex-row flex-wrap">-->
-          <!--<div class="col-12 blue-18-reg mb-1">Selected countries:</div>-->
-          <!--<div class="col-12">{{pool.countryBlackList.join(', ')}}</div>-->
-          <!--</div>-->
-          <!--</div>-->
-          <!--</div>-->
-
 
           <div class="col-12 d-flex flex-wrap mt-3 align-items-center">
               <div class="col-12 col-lg-3 blue-18-reg">Admin addresses:</div>
@@ -510,13 +500,10 @@ export default {
       this.$notify({
         type: 'warn',
         text: '<i class="fa fa-spin fa-circle-o-notch"></i> Creating new pool...',
-        duration: 10000,
+        duration: -1,
       });
 
       const transferDetails = await this.getTransferDetails();
-
-      console.log('Transfer details loaded.');
-      console.log(transferDetails);
 
       if (typeof this.pool.saleStartDate === 'string') {
         this.pool.saleStartDate = moment(this.pool.saleStartDate, this.datepickerOptions.format);
@@ -528,12 +515,11 @@ export default {
       try {
         const response = await this.connectICO.poolFactory.createPool(this.pool, transferDetails.transferValue);
 
-        console.log('Create pool success.');
-        console.log(response);
-
         if (this.mode === 'mm') {
           if (response) {
             this.poolAddress = response;
+
+            this.$notify({ clean: true });
             this.$notify({
               type: 'success',
               title: 'Pool created!',
@@ -546,9 +532,6 @@ export default {
         if (this.mode === 'mew') {
           const network = await window.web3.eth.net.getNetworkType();
 
-          console.log('Network info loaded.');
-          console.log(network);
-
           const url = mewLinkBuilder(
             this.connectICO.poolFactory.poolFactory.address,
             response.callData,
@@ -557,15 +540,14 @@ export default {
             response.gasLimit,
           );
 
-          console.log('MEW link created');
-          console.log(url);
-
           openMewUrl(url);
         }
 
+        this.$notify({ clean: true });
         this.pool = new LocalPool();
         this.loading = false;
       } catch (e) {
+        this.$notify({ clean: true });
         this.$notify({
           type: 'error',
           text: e.message,

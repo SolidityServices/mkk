@@ -467,7 +467,7 @@
 
           <div class="w-100" v-if="!disabled">
             <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap">
-              <button class="btn px-4 blue-submit btn-block" @click="sendToSaleWithCalldata">SendToSale with predefined calldata</button>
+              <button class="btn px-4 blue-submit btn-block" @click="sendToSaleWithCalldata">Send to sale with predefined calldata</button>
             </div>
           </div>
 
@@ -484,7 +484,7 @@
 
             <div class="col-12 col-md-5 d-flex flex-row flex-wrap">
               <button class="btn blue-submit px-4 w-100" @click="setSaleParticipateCalldata">
-                Set SendToSale calldata
+                Set send to sale calldata
               </button>
             </div>
           </div>
@@ -496,7 +496,7 @@
 
             <div class="col-12 col-md-5 d-flex flex-row flex-wrap">
               <button class="btn blue-submit px-4 w-100" @click="setSaleWithdrawCalldata">
-                Set Withdraw calldata
+                Set withdraw calldata
               </button>
             </div>
           </div>
@@ -508,7 +508,7 @@
 
             <div class="col-12 col-md-5 d-flex flex-row flex-wrap">
               <button class="btn blue-submit px-4 w-100" @click="sendToSaleWithCalldataParameter">
-                SendToSale with dynamic calldata
+                Send to sale with dynamic calldata
               </button>
             </div>
           </div>
