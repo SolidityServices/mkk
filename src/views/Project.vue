@@ -59,7 +59,7 @@
           </div>
 
           <div class="row mx-0 pt-5">
-            <div class="col-6 col-lg-2 orange-24-16-bold px-0 order-1"> Total filled</div>
+            <div class="col-6 col-lg-2 orange-24-16-bold px-0 order-1">Total filled</div>
             <div class="col-12 col-lg-4 pt-1 order-3 order-lg-2 px-0">
               <div class="w-100">
                 <range-slider
@@ -68,13 +68,12 @@
                   :max="pool.maxPoolAllocation"
                   :disabled="true"
                   step="0.0000001"
-                  v-model="pool.balance">
+                  v-model="pool.allGrossContributions">
                 </range-slider>
               </div>
             </div>
-            <div class="col-6 col-lg-2
-                orange-24-16-bold px-0 order-2 order-lg-3 text-right text-lg-left">
-              {{pool.balance}}/{{pool.maxPoolAllocation}} ETH
+            <div class="col-6 col-lg-6 orange-24-16-bold px-0 order-2 order-lg-3 text-right text-lg-left">
+              <span class="ml-2">{{pool.allGrossContributions}}/{{pool.maxPoolAllocation}} ETH</span>
             </div>
           </div>
 
@@ -161,7 +160,7 @@
                 <span v-if="errors.has('Deposit amount')" v-text="errors.first('Deposit amount')" class="text-danger"></span>
               </div>
 
-              <button class="btn px-4 blue-submit btn-block" @click="contribute">Deposit ETH</button>
+              <button class="btn px-4 blue-submit btn-block" @click="contribute" :disabled="pool.isStopped">Deposit ETH</button>
             </div>
           </div>
 
@@ -237,7 +236,6 @@ export default {
     },
     address: '',
     pool: null,
-    sliderTotalFilled: 20,
     depositAmount: 0.000001,
     withdrawAmount: 0.000001,
     showAdvancedDetails: false,
@@ -251,7 +249,6 @@ export default {
     userMaxDeposit: 0,
     autoTokenWithDrawDate: '',
     autoTokenWithDrawGweiValue: 0,
-    isStopped: false,
   }),
   computed: {
     ...mapGetters([
@@ -272,9 +269,6 @@ export default {
   methods: {
     async initCountryData() {
       this.blacklistedCountries = await this.connectICO.pool.getKycCountryBlacklist(this.address);
-    },
-    async initIsStopped() {
-      this.isStopped = await this.connectICO.pool.isStopped(this.address);
     },
     async reloadPool() {
       console.log('Reload pool called.');
@@ -502,11 +496,9 @@ export default {
     },
     async initUserContributions() {
       try {
-        let userContribution = await this.connectICO.pool.getGrossContributionByContributor(this.address, this.connectICO.account);
+        const userContribution = await this.connectICO.pool.getGrossContributionByContributor(this.address, this.connectICO.account);
 
-        userContribution /= 1000000000000000000;
-
-        this.userContribution = userContribution;
+        this.userContribution = Web3.utils.fromWei(Web3.utils.toBN(userContribution), 'ether');
       } catch (e) {
         this.$notify({
           type: 'error',
@@ -551,7 +543,6 @@ export default {
     if (this.$route.params.address) {
       this.address = this.$route.params.address;
       this.search();
-      this.initIsStopped();
       this.initCountryData();
       this.initWithdrawTokensAvailable();
       this.initWithDrawRefundAvailable();
@@ -568,8 +559,12 @@ export default {
 
     this.$validator.extend('max-deposit', {
       getMessage: (field) => {
+        if (this.userContribution === this.pool.maxContribution && this.pool.maxContribution > 0) {
+          return 'You reached the maximum contribution';
+        }
+
         if (this.pool.maxContribution > 0) {
-          return `The ${field} must between ${this.pool.minContribution} and ${parseFloat(this.pool.maxContribution) - parseFloat(this.userContribution)}.`;
+          return `The ${field} must between ${this.pool.minContribution} and ${(parseFloat(this.pool.maxContribution) - parseFloat(this.userContribution))}.`;
         }
 
         if (this.pool.maxPoolAllocation > 0) {
@@ -579,8 +574,12 @@ export default {
         return `The ${field} must bigger than ${this.pool.minContribution}`;
       },
       validate: (value) => {
+        if (this.userContribution === this.pool.maxContribution && this.pool.maxContribution > 0) {
+          return false;
+        }
+
         if (this.pool.maxContribution > 0) {
-          return value > 0 && value >= this.pool.minContribution && value <= parseFloat(this.pool.maxContribution) - parseFloat(this.userContribution);
+          return value > 0 && value >= this.pool.minContribution && value <= (parseFloat(this.pool.maxContribution) - parseFloat(this.userContribution));
         }
 
         if (this.pool.maxPoolAllocation > 0) {
@@ -595,7 +594,7 @@ export default {
 
     this.$validator.extend('max-withdraw', {
       getMessage: (field) => {
-        if (this.isStopped) {
+        if (this.pool.isStopped) {
           return `The ${field} must bigger than 0 and lesser or equal ${this.userContribution}.`;
         }
         if (this.userContribution > 0) {
@@ -605,7 +604,7 @@ export default {
         return 'You must deposit ETH first if you want a withdraw';
       },
       validate: (value) => {
-        if (this.isStopped) {
+        if (this.pool.isStopped) {
           return value > 0 && value <= this.userContribution;
         }
 

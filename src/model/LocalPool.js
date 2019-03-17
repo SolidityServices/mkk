@@ -1,3 +1,5 @@
+import Web3 from 'web3';
+
 export default class LocalPool {
   saleAddress;
 
@@ -43,6 +45,8 @@ export default class LocalPool {
 
   isSentToSale;
 
+  allGrossContributions;
+
   constructor(address) {
     this.connectIco = window.connectICO;
     this.poolAddress = address;
@@ -56,6 +60,7 @@ export default class LocalPool {
       params.balance = await this.connectIco.pool.getPoolBalance(this.poolAddress);
       params.isStopped = await this.connectIco.pool.isStopped(this.poolAddress);
       params.isSentToSale = await this.connectIco.pool.isSentToSale(this.poolAddress);
+      params.allGrossContributions = await this.connectIco.pool.getAllGrossContributions(this.poolAddress);
     }
     this.saleParticipateFunctionSig = params.saleParticipateFunctionSig;
     this.saleWithdrawFunctionSig = params.saleWithdrawFunctionSig;
@@ -65,12 +70,12 @@ export default class LocalPool {
     this.kycAddress = params.kycAddress;
     this.provider = params.provider;
     this.creator = params.creator;
-    this.minContribution = this.convertWeiToEther(params.minContribution);
-    this.maxContribution = this.convertWeiToEther(params.maxContribution);
-    this.minPoolGoal = this.convertWeiToEther(params.minPoolGoal);
+    this.minContribution = Web3.utils.fromWei(Web3.utils.toBN(params.minContribution), 'ether');
+    this.maxContribution = Web3.utils.fromWei(Web3.utils.toBN(params.maxContribution), 'ether');
+    this.minPoolGoal = Web3.utils.fromWei(Web3.utils.toBN(params.minPoolGoal), 'ether');
     this.saleStartDate = new Date(params.saleStartDate * 1000);
     this.saleEndDate = new Date(params.saleEndDate * 1000);
-    this.maxPoolAllocation = this.convertWeiToEther(params.maxPoolAllocation);
+    this.maxPoolAllocation = Web3.utils.fromWei(Web3.utils.toBN(params.maxPoolAllocation), 'ether');
     this.withdrawTimelock = params.withdrawTimelock !== 0 ? params.withdrawTimelock / 60 / 60 : 0;
     this.providerFeeRate = params.providerFeeRate !== 0 ? params.providerFeeRate / 100 : 0;
     this.creatorFeeRate = params.creatorFeeRate !== 0 ? params.creatorFeeRate / 10 : 0;
@@ -82,6 +87,7 @@ export default class LocalPool {
     this.balance = params.balance;
     this.isStopped = params.isStopped;
     this.isSentToSale = params.isSentToSale;
+    this.allGrossContributions = Web3.utils.fromWei(Web3.utils.toBN(params.allGrossContributions), 'ether');
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -109,16 +115,8 @@ export default class LocalPool {
     params.countryBlackList = [];
     params.isStopped = false;
     params.isSentToSale = false;
+    params.allGrossContributions = 0;
 
     return params;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  convertWeiToEther(value) {
-    if (!value || value === 0) {
-      return value;
-    }
-
-    return value / 1000000000000000000;
   }
 }
