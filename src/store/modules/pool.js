@@ -3,7 +3,7 @@ function filterPools(pools, filter, category) {
   return pools.filter((item) => {
     switch (category) {
       case 'active':
-        if (item.saleStartDate <= now && item.saleEndDate > now) {
+        if (item.saleStartDate <= now && item.saleEndDate > now && item.isStopped === false) {
           break;
         }
         return false;

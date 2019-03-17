@@ -39,6 +39,10 @@ export default class LocalPool {
 
   countryBlackList;
 
+  isStopped;
+
+  isSentToSale;
+
   constructor(address) {
     this.connectIco = window.connectICO;
     this.poolAddress = address;
@@ -50,6 +54,8 @@ export default class LocalPool {
     if (this.poolAddress) {
       params = await this.connectIco.pool.getPoolParams(this.poolAddress);
       params.balance = await this.connectIco.pool.getPoolBalance(this.poolAddress);
+      params.isStopped = await this.connectIco.pool.isStopped(this.poolAddress);
+      params.isSentToSale = await this.connectIco.pool.isSentToSale(this.poolAddress);
     }
     this.saleParticipateFunctionSig = params.saleParticipateFunctionSig;
     this.saleWithdrawFunctionSig = params.saleWithdrawFunctionSig;
@@ -74,6 +80,8 @@ export default class LocalPool {
     this.whiteListAddresses = params.whiteListAddresses ? params.whiteListAddresses : [];
     this.countryBlackList = params.countryBlackList ? params.countryBlackList : [];
     this.balance = params.balance;
+    this.isStopped = params.isStopped;
+    this.isSentToSale = params.isSentToSale;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -99,6 +107,8 @@ export default class LocalPool {
     params.adminAddresses = [];
     params.whiteListAddresses = [];
     params.countryBlackList = [];
+    params.isStopped = false;
+    params.isSentToSale = false;
 
     return params;
   }
