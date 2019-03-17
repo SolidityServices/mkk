@@ -18,7 +18,7 @@ function filterPools(pools, account, filter, category) {
         }
         return false;
       case 'owned':
-        if (item.creator.toUpperCase() === account.toUpperCase()) {
+        if (item.creator && (item.creator.toUpperCase() === account.toUpperCase())) {
           break;
         }
         return false;

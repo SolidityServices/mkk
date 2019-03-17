@@ -185,7 +185,7 @@
           <div class="row mt-5">
             <div class="d-flex row justify-content-center w-100 py-5">
               <div class="text-center text-lg-left mx-2">
-                <button class="btn px-4 white-submit" @click="withdrawTokens" :disabled="!withdrawTokensAvailable">Withdraw tokens</button>
+                <button class="btn px-4 white-submit" @click="withdrawTokens" :disabled="!pool.isSentToSale">Withdraw tokens</button>
               </div>
 
 
@@ -199,8 +199,8 @@
                      data-vv-name="Custom token"
                      class="form-control input-text w-100 mx-2"
                      v-model="customToken" placeholder="Custom token"
-                     :disabled="!withdrawCustomTokenAvailable"/>
-              <button class="btn px-4 blue-submit text-lg-center mx-2" @click="withdrawCustomToken" :disabled="!withdrawCustomTokenAvailable">Withdraw custom token</button>
+                     :disabled="!pool.isSentToSale"/>
+              <button class="btn px-4 blue-submit text-lg-center mx-2" @click="withdrawCustomToken" :disabled="!pool.isSentToSale">Withdraw custom token</button>
             </div>
           </div>
 
@@ -243,8 +243,6 @@ export default {
     contributions: [],
     blacklistedCountries: [],
     withDrawRefundAvailable: false,
-    withdrawTokensAvailable: false,
-    withdrawCustomTokenAvailable: false,
     userContribution: 0,
     userMaxDeposit: 0,
     autoTokenWithDrawDate: '',
@@ -269,6 +267,14 @@ export default {
   methods: {
     async initCountryData() {
       this.blacklistedCountries = await this.connectICO.pool.getKycCountryBlacklist(this.address);
+    },
+    async initWithDrawRefundAvailable() {
+      this.withDrawRefundAvailable = await this.checkWithDrawRefundAvailable();
+    },
+    async initUserContributions() {
+      const userContribution = await this.connectICO.pool.getGrossContributionByContributor(this.address, this.connectICO.account);
+
+      this.userContribution = Web3.utils.fromWei(Web3.utils.toBN(userContribution), 'ether');
     },
     async reloadPool() {
       console.log('Reload pool called.');
@@ -467,16 +473,6 @@ export default {
         console.log(e);
       }
     },
-    async initWithdrawCustomTokenAvailable() {
-      const isSentToSale = await this.connectICO.pool.isSentToSale(this.address);
-
-      this.withdrawCustomTokenAvailable = isSentToSale;
-    },
-    async initWithdrawTokensAvailable() {
-      const isSentToSale = await this.connectICO.pool.isSentToSale(this.address);
-
-      this.withdrawTokensAvailable = isSentToSale;
-    },
     async checkWithDrawRefundAvailable() {
       const isSentToSale = await this.connectICO.pool.isSentToSale(this.address);
 
@@ -490,24 +486,6 @@ export default {
         }
       }
       return false;
-    },
-    async initWithDrawRefundAvailable() {
-      this.withDrawRefundAvailable = await this.checkWithDrawRefundAvailable();
-    },
-    async initUserContributions() {
-      try {
-        const userContribution = await this.connectICO.pool.getGrossContributionByContributor(this.address, this.connectICO.account);
-
-        this.userContribution = Web3.utils.fromWei(Web3.utils.toBN(userContribution), 'ether');
-      } catch (e) {
-        this.$notify({
-          type: 'error',
-          text: e.message,
-          duration: -1,
-        });
-
-        console.log(e);
-      }
     },
     async addPushOutToken() {
       try {
@@ -543,20 +521,20 @@ export default {
     if (this.$route.params.address) {
       this.address = this.$route.params.address;
       this.search();
+      this.initUserContributions();
       this.initCountryData();
-      this.initWithdrawTokensAvailable();
       this.initWithDrawRefundAvailable();
 
       const self = this;
 
       this.connectICO.pool.watchContributionEvents(this.address, null, () => {
         self.reloadPool();
+        self.initUserContributions();
+        self.initWithDrawRefundAvailable();
       });
     }
   },
   beforeUpdate() {
-    this.initUserContributions();
-
     this.$validator.extend('max-deposit', {
       getMessage: (field) => {
         if (this.userContribution === this.pool.maxContribution && this.pool.maxContribution > 0) {
