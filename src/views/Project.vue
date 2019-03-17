@@ -67,7 +67,7 @@
                   min="0"
                   :max="pool.maxPoolAllocation"
                   :disabled="true"
-                  :step="pool.minContribution"
+                  step="0.0000001"
                   v-model="pool.balance">
                 </range-slider>
               </div>
