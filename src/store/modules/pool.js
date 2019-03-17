@@ -1,4 +1,4 @@
-function filterPools(pools, filter, category) {
+function filterPools(pools, account, filter, category) {
   const now = Date.now();
   return pools.filter((item) => {
     switch (category) {
@@ -14,6 +14,11 @@ function filterPools(pools, filter, category) {
         return false;
       case 'closed':
         if (item.saleEndDate <= now || item.isStopped === true) {
+          break;
+        }
+        return false;
+      case 'owned':
+        if (item.creator.toUpperCase() === account.toUpperCase()) {
           break;
         }
         return false;
@@ -48,9 +53,9 @@ export default {
     },
   },
   getters: {
-    pools(state) {
+    pools(state, getters, rootState) {
       return (filter, page, itemsPerPage) => {
-        const filteredPools = filterPools(state.pools, filter, state.category);
+        const filteredPools = filterPools(state.pools, rootState.connectICO.account, filter, state.category);
 
         const minIndex = (page - 1) * itemsPerPage;
         const maxIndex = page * itemsPerPage > filteredPools.length ? filteredPools.length : page * itemsPerPage;

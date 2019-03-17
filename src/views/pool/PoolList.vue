@@ -72,6 +72,7 @@ export default {
       { text: 'Active', value: 'active' },
       { text: 'Upcoming', value: 'upcoming' },
       { text: 'Closed', value: 'closed' },
+      { text: 'My Pools', value: 'owned' },
       // { text: 'Waiting for token', value: 'waiting' },
     ],
     filter: '',
