@@ -40,15 +40,18 @@
           </div>
           <div class="d-flex flex-row flex-wrap">
             <div class="col-12 col-lg-6 border-right">
-              <i class="fa fa-lock mr-2" v-if="isClosedPool(pool)"></i>
-              <i class="fa fa-ban mr-2" v-if="pool.isStopped"></i>
-
               <router-link :to="{name: 'project', params: {address: pool.poolAddress}}">
                 {{pool.poolAddress}}
               </router-link>
             </div>
-            <div class="col-12 col-lg-6">
-              {{pool.poolDescription}}
+            <div class="col-12 col-lg-6 d-flex justify-content-lg-between">
+              <div>{{pool.poolDescription}}</div>
+
+              <div>
+                <i class="fa fa-lock mr-2" v-if="pool.saleEndDate <= Date.now()"></i>
+                <i class="fa fa-money mr-2" v-if="pool.isSentToSale"></i>
+                <i class="fa fa-ban mr-2" v-if="pool.isStopped"></i>
+              </div>
             </div>
           </div>
         </div>
@@ -58,7 +61,6 @@
         <b-pagination size="md" :total-rows="poolCount" v-model="currentPage" :per-page="itemsPerPage"></b-pagination>
       </div>
     </div>
-
 </template>
 
 <script>
@@ -73,7 +75,6 @@ export default {
       { text: 'Upcoming', value: 'upcoming' },
       { text: 'Closed', value: 'closed' },
       { text: 'My Pools', value: 'owned' },
-      // { text: 'Waiting for token', value: 'waiting' },
     ],
     filter: '',
     currentPage: 1,
@@ -92,11 +93,6 @@ export default {
       });
 
       this.initPools(poolObjects);
-    },
-    isClosedPool(item) {
-      const now = Date.now();
-
-      return item.saleEndDate <= now;
     },
   },
   computed: {
