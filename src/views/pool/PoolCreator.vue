@@ -259,7 +259,8 @@
               <country-select
                       multiple
                       v-model="pool.countryBlackList"
-                      :options="countries"/>
+                      :options="countries"
+                      :disabled="false" />
             </div>
           </div>
 
