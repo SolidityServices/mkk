@@ -30,7 +30,7 @@ export default {
     };
   },
   mounted() {
-    this.values = this.transformCountryObjects(this.value);
+    this.values = (this.value) ? this.transformCountryObjects(this.value) : [];
   },
   watch: {
     value(val) {
