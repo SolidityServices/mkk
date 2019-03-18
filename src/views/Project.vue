@@ -71,8 +71,15 @@
                         <span class="blue-18-reg">Max allocation:</span>
                         <span class="orange-18-bold text-right">{{pool.maxPoolAllocation}} ETH</span>
                     </div>
-                </div>
 
+                    <div class="orange-24-16-bold d-flex justify-content-between">
+                        <span class="blue-18-reg">Tokens Confirmed:</span>
+                        <span class="orange-18-bold text-right">
+                            <i class="fa fa-check" v-if="tokensConfirmed"></i>
+                            <i class="fa fa-times" v-if="!tokensConfirmed"></i>
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -288,6 +295,9 @@ export default {
     userMaxDeposit: 0,
     autoTokenWithDrawDate: '',
     autoTokenWithDrawGweiValue: 0,
+    tokensConfirmed: false,
+    tokenCount: 0,
+    tokenSymbol: '',
   }),
   computed: {
     ...mapGetters([
@@ -316,6 +326,11 @@ export default {
       const userContribution = await this.connectICO.pool.getGrossContributionByContributor(this.address, this.connectICO.account);
 
       this.userContribution = Web3.utils.fromWei(Web3.utils.toBN(userContribution), 'ether');
+    },
+    async initTokens() {
+      this.tokensConfirmed = await this.connectICO.pool.areTokensReceivedConfirmed(this.address);
+      this.tokenCount = 0;
+      this.tokenSymbol = '';
     },
     async loadPool() {
       try {
@@ -543,6 +558,7 @@ export default {
       this.initUserContributions();
       this.initCountryData();
       this.initWithDrawRefundAvailable();
+      this.initTokens();
 
       const self = this;
 
