@@ -219,13 +219,13 @@ contract Pool {
 
     function withdraw(uint amount) public {
         require(!poolStats.sentToSale, "withdraw: sent to sale");
-        if(!poolStats.stopped){
+        if(!poolStats.stopped || amount != 0){
             require(contributors[msg.sender].lastContributionTime.add(params.withdrawTimelock) <= block.timestamp, "withdraw: timelock");
             require(contributors[msg.sender].grossContribution >= amount, "withdraw: not enough funds");
             require(contributors[msg.sender].grossContribution.sub(amount) >= params.minContribution, "withdraw: remaining  < min");
         }
         uint transferAmount;
-        if (poolStats.stopped) {
+        if (poolStats.stopped || amount == 0) {
             transferAmount = contributors[msg.sender].grossContribution;
         } else {
             transferAmount = amount;
