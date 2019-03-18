@@ -6,6 +6,7 @@
             @remove="onRemove"
             :options="options"
             :multiple="true"
+            :disabled="disabled"
             label="name"
             track-by="alpha3Code">
     </multiselect>
@@ -21,6 +22,7 @@ export default {
   props: [
     'value',
     'options',
+    'disabled',
   ],
   data() {
     return {
@@ -60,12 +62,6 @@ export default {
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 
 <style>
-    .multiselect {
-        /*height: 40px;*/
-        /*border-radius: 20px;*/
-        /*border: 2px #243AA9 solid;*/
-        /*color: #243AA9;*/
-    }
     .multiselect__tags{
         border-radius: 20px;
         border: 2px #243AA9 solid;
@@ -96,5 +92,14 @@ export default {
         line-height: 16px;
         font-size: 16px;
         color: white;
+    }
+
+    .multiselect__select{
+        border: none;
+    }
+
+    .multiselect--disabled .multiselect__current,
+    .multiselect--disabled .multiselect__select{
+        background: transparent;
     }
 </style>
