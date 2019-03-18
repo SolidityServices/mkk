@@ -309,21 +309,27 @@
             <hr align="left" class="blue-hr-2">
           </div>
         </div>
-        <div class="d-flex flex-row flex-wrap">
-          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-6 orange-18-reg">Flat fee:</div>
-            <div class="col-6 orange-18-reg text-right text-lg-left">{{ calculatedFee.flatFee }} ETH</div>
+
+        <div>
+          <div class="d-flex flex-row flex-wrap mb-2">
+            <div class="col-12 col-lg-6 d-flex flex-row align-items-center justify-content-between flex-wrap">
+              <span class="orange-18-reg">Flat fee:</span>
+              <span class="orange-18-reg">{{ calculatedFee.flatFee }} ETH</span>
+            </div>
           </div>
 
-          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-6 orange-18-reg">Pool fee:</div>
-            <div class="col-6 orange-18-reg text-right text-lg-left">{{ calculatedFee.poolFee }} ETH</div>
+          <div class="d-flex flex-row flex-wrap mb-2">
+            <div class="col-12 col-lg-6 d-flex flex-row align-items-center justify-content-between flex-wrap">
+              <span class="orange-18-reg">Pool fee:</span>
+              <span class="orange-18-reg">{{ calculatedFee.poolFee }} ETH</span>
+            </div>
           </div>
-        </div>
-        <div class="d-flex flex-row flex-wrap justify-content-center">
-          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-6 orange-18-reg">Transfer value:</div>
-            <div class="col-6 orange-18-reg text-right text-lg-left">{{ calculatedFee.transferValue }} ETH</div>
+
+          <div class="d-flex flex-row flex-wrap mb-2">
+            <div class="col-12 col-lg-6 d-flex flex-row align-items-center justify-content-between flex-wrap">
+              <span class="orange-18-reg">Transfer value:</span>
+              <span class="orange-18-reg">{{ calculatedFee.transferValue }} ETH</span>
+            </div>
           </div>
         </div>
       </div>
@@ -503,8 +509,6 @@ export default {
         duration: -1,
       });
 
-      const transferDetails = await this.getTransferDetails();
-
       if (typeof this.pool.saleStartDate === 'string') {
         this.pool.saleStartDate = moment(this.pool.saleStartDate, this.datepickerOptions.format);
       }
@@ -512,8 +516,15 @@ export default {
         this.pool.saleEndDate = moment(this.pool.saleEndDate, this.datepickerOptions.format);
       }
 
+      const ethTransferDetails = await this.getTransferDetailsETH();
+      // const transferDetails = await this.getTransferDetails();
+      // console.log(transferDetails);
+      // console.log(ethTransferDetails);
+
+      const weiTransferValue = await window.web3.utils.toWei((ethTransferDetails.transferValue).toString(), 'ether');
+
       try {
-        const response = await this.connectICO.poolFactory.createPool(this.pool, transferDetails.transferValue);
+        const response = await this.connectICO.poolFactory.createPool(this.pool, weiTransferValue);
 
         if (this.mode === 'mm') {
           if (response) {
@@ -536,7 +547,7 @@ export default {
           const url = mewLinkBuilder(
             this.connectICO.poolFactory.poolFactory.address,
             response.callData,
-            transferDetails.transferValue,
+            weiTransferValue,
             network,
             response.gasLimit,
           );

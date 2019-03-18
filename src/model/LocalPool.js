@@ -70,12 +70,12 @@ export default class LocalPool {
     this.kycAddress = params.kycAddress;
     this.provider = params.provider;
     this.creator = params.creator;
-    this.minContribution = await Web3.utils.fromWei(await Web3.utils.toBN(params.minContribution), 'ether');
-    this.maxContribution = await Web3.utils.fromWei(await Web3.utils.toBN(params.maxContribution), 'ether');
-    this.minPoolGoal = await Web3.utils.fromWei(await Web3.utils.toBN(params.minPoolGoal), 'ether');
+    this.minContribution = Web3.utils.fromWei((params.minContribution).toString(), 'ether');
+    this.maxContribution = Web3.utils.fromWei((params.maxContribution).toString(), 'ether');
+    this.minPoolGoal = Web3.utils.fromWei((params.minPoolGoal).toString(), 'ether');
     this.saleStartDate = new Date(params.saleStartDate * 1000);
     this.saleEndDate = new Date(params.saleEndDate * 1000);
-    this.maxPoolAllocation = await Web3.utils.fromWei(await Web3.utils.toBN(params.maxPoolAllocation), 'ether');
+    this.maxPoolAllocation = Web3.utils.fromWei((params.maxPoolAllocation).toString(), 'ether');
     this.withdrawTimelock = params.withdrawTimelock !== 0 ? params.withdrawTimelock / 60 / 60 : 0;
     this.providerFeeRate = params.providerFeeRate !== 0 ? params.providerFeeRate / 100 : 0;
     this.creatorFeeRate = params.creatorFeeRate !== 0 ? params.creatorFeeRate / 10 : 0;
@@ -87,7 +87,7 @@ export default class LocalPool {
     this.balance = params.balance;
     this.isStopped = params.isStopped;
     this.isSentToSale = params.isSentToSale;
-    this.allGrossContributions = await Web3.utils.fromWei(await Web3.utils.toBN(params.allGrossContributions), 'ether');
+    this.allGrossContributions = Web3.utils.fromWei((params.allGrossContributions).toString(), 'ether');
   }
 
   // eslint-disable-next-line class-methods-use-this
