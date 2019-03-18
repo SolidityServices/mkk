@@ -819,18 +819,6 @@ export default {
         console.log(e);
       }
     },
-    async getTransferDetails() {
-      const factoryParams = await this.connectICO.poolFactory.getAllPoolFactoryParams();
-      return {
-        flatFee: factoryParams.flatFee,
-        poolFee: factoryParams.maxAllocationFeeRate * this.pool.maxPoolAllocation / 1000,
-        transferValue: (
-          factoryParams.flatFee
-          + factoryParams.maxAllocationFeeRate
-          * this.pool.maxPoolAllocation / 1000
-        ),
-      };
-    },
     async addAutoSendToSale() {
       try {
         const date = moment(this.sendToSaleTime, this.datepickerOptions.format).unix();
