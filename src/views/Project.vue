@@ -1,220 +1,241 @@
 <template>
-  <div class="row" v-if="pool">
-    <div class="d-none d-sm-flex col-1"></div>
-    <div class="col-12 col-sm-10">
-      <div class="d-none d-sm-block mt-5 blue-36-20-bold">{{pool.poolAddress}}</div>
-      <hr align="left" class="d-none d-sm-block blue-hr">
-      <div class="d-sm-none mobile-back row mx-0">
-        <div class="my-auto pl-3"><img src="../assets/chevron-left.png" alt=""></div>
-        <div class="white-16-bold my-auto">Project Name</div>
-      </div>
-      <router-link class="btn blue-submit px-4 mr-3" :to="{name: 'project.edit', params: {address: pool.poolAddress}}">
-        Edit pool
-      </router-link>
+  <div class="container">
+    <div v-if="pool">
+      <section class="mb-4">
+        <div class="d-none d-sm-block mt-5 blue-36-20-bold">{{pool.poolAddress}}</div>
 
-      <div class="row">
-        <div class="col-1"></div>
-        <div class="col-10 mt-5 ">
-          <div class="o-border d-inline "></div>
-          <div class="d-inline blue-36-20-bold"> Project Description
-            <hr align="left" class="blue-hr-2">
-          </div>
-          <div class="blue-18-reg pl-3">
-            <p>
-              {{pool.poolDescription}}
-            </p>
-          </div>
+        <hr align="left" class="d-none d-sm-block blue-hr">
 
-          <hr class="blue-hr-fullw my-5">
-
-          <!-- Deal Details -->
-
-          <div class="o-border d-inline "></div>
-          <div class="d-inline blue-36-20-bold"> Deal Details
-            <hr align="left" class="blue-hr-2">
-          </div>
-          <div class="row mx-0">
-            <div class="col-12 col-lg-6 pt-3">
-              <div class="blue-18-bold">Parameters</div>
-              <div class="row pt-3">
-                <div class="py-1 col-8 blue-18-reg">Fee</div>
-                <div class="py-1 col-4 orange-18-bold text-right">{{pool.creatorFeeRate}} %</div>
-
-                <div class="py-1 col-8 blue-18-reg">ConnectICO Fee</div>
-                <div class="py-1 col-4 orange-18-bold text-right">{{pool.providerFeeRate}} %</div>
-
-                <div class="py-1 col-8 blue-18-reg">Individual Min</div>
-                <div class="py-1 col-4 orange-18-bold text-right">{{pool.minContribution}} ETH</div>
-
-                <div class="py-1 col-8 blue-18-reg">Individual Max:</div>
-                <div class="py-1 col-4 orange-18-bold text-right">{{pool.maxContribution}} ETH</div>
-
-                <div class="py-1 col-8 blue-18-reg">Min pool goal:</div>
-                <div class="py-1 col-4 orange-18-bold text-right">{{pool.minPoolGoal}} ETH</div>
-
-                <div class="py-1 col-8 blue-18-reg">Max allocation:</div>
-                <div class="py-1 col-4 orange-18-bold text-right">{{pool.maxPoolAllocation}} ETH</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row mx-0 pt-5">
-            <div class="col-6 col-lg-2 orange-24-16-bold px-0 order-1">Total filled</div>
-            <div class="col-12 col-lg-4 pt-1 order-3 order-lg-2 px-0">
-              <div class="w-100">
-                <range-slider
-                  class="slider w-100 pt-1"
-                  min="0"
-                  :max="pool.maxPoolAllocation"
-                  :disabled="true"
-                  step="0.0000001"
-                  v-model="pool.allGrossContributions">
-                </range-slider>
-              </div>
-            </div>
-            <div class="col-6 col-lg-6 orange-24-16-bold px-0 order-2 order-lg-3 text-right text-lg-left">
-              <span class="ml-2">{{pool.allGrossContributions}}/{{pool.maxPoolAllocation}} ETH</span>
-            </div>
-          </div>
-
-          <div class="d-flex flex-row mt-5 flex-wrap">
-              <div class="col-12 col-lg-3 blue-18-reg mb-1">Pool Country blacklist:</div>
-              <div class="col-12 col-lg-9">{{ blacklistedCountriesText }}</div>
-          </div>
-
-          <div class="d-flex flex-row mt-3 flex-wrap">
-            <div class="col-12 col-lg-3 blue-18-reg mb-1">Time until end of sale:</div>
-            <div class="col-12 col-lg-9">
-              <countdown :time="timeUntilSaleEnd" :interval="1000" tag="p">
-                <template slot-scope="props">{{ props.days }} days, {{ props.hours }} hours, {{ props.minutes }} minutes, {{ props.seconds }} seconds. </template>
-              </countdown>
-            </div>
-          </div>
-
-          <hr class="blue-hr-fullw my-5">
-
-          <div class="d-flex flex-row flex-wrap">
-            <div>
-              <div class="o-border d-inline"></div>
-              <div class="d-inline mt-5 blue-36-20-bold"> Advanced details
-                <hr align="left" class="blue-hr-2">
-              </div>
-            </div>
-            <div class="mx-3 mt-sm-3">
-              <button class="btn white-submit px-4 mr-3" @click="showAdvancedDetails = !showAdvancedDetails">
-                {{ showAdvancedDetails ? 'Hide' : 'Show'}}
-              </button>
-            </div>
-          </div>
-
-          <div class="row pt-4">
-            <pool :pool="this.pool" :disabled="true" v-if="pool && showAdvancedDetails" />
-          </div>
-
-          <hr class="blue-hr-fullw my-5">
-
-          <div class="o-border d-inline "></div>
-          <div class="d-inline blue-36-20-bold"> Automations
-            <hr align="left" class="blue-hr-2">
-          </div>
-
-          <div class="d-flex flex-row align-items-center mb-3">
-            <div class="col-12 col-md-4 d-flex justify-content-end">
-              <div class="d-lg-inline-block orange-18-bold pr-2 px-0">Auto token withdraw order GAS Price in GWEI:</div>
-            </div>
-
-            <div class="col-12 col-md-8 d-flex flex-row align-items-center">
-              <div class="col-12 col-md-8">
-                <input type="number" v-validate="`required|decimal|min_value:1`"
-                       step="0.000001"
-                       class="form-control input-text w-100" data-vv-name="Gwei amount"
-                       v-model="autoTokenWithDrawGweiValue">
-                <span v-if="errors.has('Gwei amount')" v-text="errors.first('Gwei amount')" class="text-danger"></span>
-              </div>
-
-              <button class="btn px-4 blue-submit btn-block" @click="addPushOutToken" :disabled="pool.isStopped">Add auto push out tokens</button>
-            </div>
-          </div>
-
-          <hr class="blue-hr-fullw my-5">
-
-          <div class="o-border d-inline "></div>
-          <div class="d-inline blue-36-20-bold"> Contributions
-            <hr align="left" class="blue-hr-2">
-          </div>
-
-          <div class="d-flex flex-row align-items-center mb-3">
-            <div class="col-12 col-md-4 d-flex justify-content-end">
-              <div class="d-lg-inline-block orange-18-bold pr-2 px-0">Deposit Amount in ETH:</div>
-            </div>
-
-            <div class="col-12 col-md-8 d-flex flex-row align-items-center">
-              <div class="col-12 col-md-8">
-                <input type="number" v-validate="`required|decimal|max-deposit`"
-                       step="0.000001"
-                       class="form-control input-text w-100" data-vv-name="Deposit amount"
-                       v-model="depositAmount">
-                <span v-if="errors.has('Deposit amount')" v-text="errors.first('Deposit amount')" class="text-danger"></span>
-              </div>
-
-              <button class="btn px-4 blue-submit btn-block" @click="contribute" :disabled="pool.isStopped">Deposit ETH</button>
-            </div>
-          </div>
-
-          <div class="d-flex flex-row align-items-center mb-4">
-            <div class="col-12 col-md-4 d-flex justify-content-end">
-              <div class="d-lg-inline-block orange-18-bold pr-2 px-0">Withdraw Amount in ETH:</div>
-            </div>
-
-            <div class="col-12 col-md-8 d-flex flex-row align-items-center">
-              <div class="col-12 col-md-8">
-                <input type="number" v-validate="`required|max-withdraw`"
-                       step="0.000001"
-                       class="form-control input-text w-100" data-vv-name="Withdraw amount"
-                       v-model="withdrawAmount">
-                <span v-if="errors.has('Withdraw amount')" v-text="errors.first('Withdraw amount')" class="text-danger"></span>
-              </div>
-
-              <button class="btn px-4 blue-submit btn-block" @click="withdraw">Withdraw ETH</button>
-            </div>
-          </div>
-
-
-          <div class="d-flex flex-row mb-4">
-            <div class="col-12 col-lg-8 offset-lg-4 d-flex flex-row align-items-center">
-              <div class="col-12 col-lg-4">
-                <button class="btn btn-block px-4 white-submit" @click="withdrawTokens" :disabled="!pool.isSentToSale">Withdraw tokens</button>
-              </div>
-
-              <div class="col-12 col-lg-4">
-                <button class="btn btn-block px-4 white-submit" @click="withdrawRefund" :disabled="!withDrawRefundAvailable">Withdraw refund</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="d-flex flex-row mb-4">
-            <div class="col-12 col-lg-8 offset-lg-4 d-flex flex-row align-items-center">
-              <div class="col-12 col-lg-4">
-                <input type="text"
-                       v-validate="'required|eth-address'"
-                       data-vv-name="Custom token"
-                       class="form-control input-text w-100"
-                       v-model="customToken" placeholder="Custom token"
-                       :disabled="!pool.isSentToSale"/>
-              </div>
-
-              <div class="col-12 col-lg-4">
-                <button class="btn btn-block px-4 blue-submit text-lg-center" @click="withdrawCustomToken" :disabled="!pool.isSentToSale">Withdraw custom token</button>
-              </div>
-            </div>
-          </div>
-
-          <hr class="blue-hr-fullw my-5">
+        <div class="d-sm-none mobile-back row mx-0">
+          <div class="my-auto pl-3"><img src="../assets/chevron-left.png" alt=""></div>
+          <div class="white-16-bold my-auto">Project Name</div>
         </div>
-        <div class="col-1"></div>
-      </div>
+
+        <router-link class="btn blue-submit px-4 mr-3" :to="{name: 'project.edit', params: {address: pool.poolAddress}}">
+          Edit pool
+        </router-link>
+      </section>
+
+      <section class="mb-4">
+        <div class="o-border d-inline "></div>
+        <div class="d-inline blue-36-20-bold"> Project Description
+          <hr align="left" class="blue-hr-2">
+        </div>
+        <div class="blue-18-reg pl-3">
+          <p>
+            {{pool.poolDescription}}
+          </p>
+        </div>
+
+        <hr class="blue-hr-fullw my-5">
+      </section>
+
+      <section class="mb-4">
+        <div class="o-border d-inline "></div>
+
+        <div class="d-inline blue-36-20-bold"> Deal Details
+          <hr align="left" class="blue-hr-2">
+        </div>
+
+        <div class="row mx-0">
+          <div class="col-12 col-lg-6 pt-3">
+            <div class="blue-18-bold">Parameters</div>
+            <div class="row pt-3">
+              <div class="py-1 col-8 blue-18-reg">Fee</div>
+              <div class="py-1 col-4 orange-18-bold text-right">{{pool.creatorFeeRate}} %</div>
+
+              <div class="py-1 col-8 blue-18-reg">ConnectICO Fee</div>
+              <div class="py-1 col-4 orange-18-bold text-right">{{pool.providerFeeRate}} %</div>
+
+              <div class="py-1 col-8 blue-18-reg">Individual Min</div>
+              <div class="py-1 col-4 orange-18-bold text-right">{{pool.minContribution}} ETH</div>
+
+              <div class="py-1 col-8 blue-18-reg">Individual Max:</div>
+              <div class="py-1 col-4 orange-18-bold text-right">{{pool.maxContribution}} ETH</div>
+
+              <div class="py-1 col-8 blue-18-reg">Min pool goal:</div>
+              <div class="py-1 col-4 orange-18-bold text-right">{{pool.minPoolGoal}} ETH</div>
+
+              <div class="py-1 col-8 blue-18-reg">Max allocation:</div>
+              <div class="py-1 col-4 orange-18-bold text-right">{{pool.maxPoolAllocation}} ETH</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mx-0 pt-5">
+          <div class="col-6 col-lg-2 orange-24-16-bold px-0 order-1">Total filled</div>
+          <div class="col-12 col-lg-4 pt-1 order-3 order-lg-2 px-0">
+            <div class="w-100">
+              <range-slider
+                      class="slider w-100 pt-1"
+                      min="0"
+                      :max="pool.maxPoolAllocation"
+                      :disabled="true"
+                      step="0.0000001"
+                      v-model="pool.allGrossContributions">
+              </range-slider>
+            </div>
+          </div>
+          <div class="col-6 col-lg-6 orange-24-16-bold px-0 order-2 order-lg-3 text-right text-lg-left">
+            <span class="ml-2">{{pool.allGrossContributions}}/{{pool.maxPoolAllocation}} ETH</span>
+          </div>
+        </div>
+
+        <div class="d-flex flex-row mt-5 flex-wrap">
+          <div class="col-12 col-lg-3 blue-18-reg mb-1">Pool Country blacklist:</div>
+          <div class="col-12 col-lg-9">{{ blacklistedCountriesText }}</div>
+        </div>
+
+        <div class="d-flex flex-row mt-3 flex-wrap">
+          <div class="col-12 col-lg-3 blue-18-reg mb-1">Time until end of sale:</div>
+          <div class="col-12 col-lg-9">
+            <countdown :time="timeUntilSaleEnd" :interval="1000" tag="p">
+              <template slot-scope="props">{{ props.days }} days, {{ props.hours }} hours, {{ props.minutes }} minutes, {{ props.seconds }} seconds. </template>
+            </countdown>
+          </div>
+        </div>
+
+        <hr class="blue-hr-fullw my-5">
+      </section>
+
+      <section class="mb-4">
+        <div class="d-flex flex-row flex-wrap">
+          <div>
+            <div class="o-border d-inline"></div>
+            <div class="d-inline mt-5 blue-36-20-bold"> Advanced details
+              <hr align="left" class="blue-hr-2">
+            </div>
+          </div>
+          <div class="mx-3 mt-sm-3">
+            <button class="btn white-submit px-4 mr-3" @click="showAdvancedDetails = !showAdvancedDetails">
+              {{ showAdvancedDetails ? 'Hide' : 'Show'}}
+            </button>
+          </div>
+        </div>
+
+        <div class="" v-if="pool && showAdvancedDetails">
+          <pool :pool="this.pool" :disabled="true" />
+        </div>
+
+        <hr class="blue-hr-fullw my-5">
+      </section>
+
+      <section class="mb-4">
+        <div class="o-border d-inline "></div>
+        <div class="d-inline blue-36-20-bold"> Automations
+          <hr align="left" class="blue-hr-2">
+        </div>
+
+        <div class="row mx-0">
+          <div class="col-12 col-lg-4 mb-2 mb-lg-0">
+            <span class="orange-18-bold">Auto token withdraw order GAS Price in GWEI:</span>
+          </div>
+
+          <div class="col-12 col-lg-4 mb-2 mb-lg-0">
+            <input type="number" v-validate="`required|decimal|min_value:1`"
+                   step="0.000001"
+                   class="form-control input-text w-100" data-vv-name="Gwei amount"
+                   v-model="autoTokenWithDrawGweiValue">
+            <span v-if="errors.has('Gwei amount')" v-text="errors.first('Gwei amount')" class="text-danger"></span>
+          </div>
+
+          <div class="col-12 col-lg-4 mb-2 mb-lg-0">
+            <button class="btn blue-submit btn-block" @click="addPushOutToken" :disabled="pool.isStopped">
+              Add auto push out tokens
+            </button>
+          </div>
+        </div>
+
+        <hr class="blue-hr-fullw mb-5">
+      </section>
+
+      <section class="mb-4">
+        <div class="o-border d-inline "></div>
+        <div class="d-inline blue-36-20-bold">
+            Contributions
+            <hr align="left" class="blue-hr-2">
+        </div>
+
+        <div>
+            <div class="row mx-0 mb-3">
+                <div class="col-12 col-lg-6 mb-2 mb-lg-0">
+                    <span class="orange-18-bold">Deposit Amount in ETH:</span>
+                </div>
+
+                <div class="col-12 col-lg-3 mb-2 mb-lg-0">
+                    <input type="number" v-validate="`required|decimal|max-deposit`"
+                           step="0.000001"
+                           class="form-control input-text w-100" data-vv-name="Deposit amount"
+                           v-model="depositAmount">
+                    <span v-if="errors.has('Deposit amount')" v-text="errors.first('Deposit amount')" class="text-danger"></span>
+                </div>
+
+                <div class="col-12 col-lg-3 mb-2 mb-lg-0">
+                    <button class="btn px-4 blue-submit btn-block" @click="contribute" :disabled="pool.isStopped">
+                        Deposit ETH
+                    </button>
+                </div>
+            </div>
+
+            <div class="row mx-0 mb-3">
+                <div class="col-12 col-lg-6 mb-2 mb-lg-0">
+                    <span class="orange-18-bold">Withdraw Amount in ETH:</span>
+                </div>
+
+                <div class="col-12 col-lg-3 mb-2 mb-lg-0">
+                    <input type="number" v-validate="`required|max-withdraw`"
+                           step="0.000001"
+                           class="form-control input-text w-100" data-vv-name="Withdraw amount"
+                           v-model="withdrawAmount">
+                    <span v-if="errors.has('Withdraw amount')" v-text="errors.first('Withdraw amount')" class="text-danger"></span>
+                </div>
+
+                <div class="col-12 col-lg-3 mb-2 mb-lg-0">
+                    <button class="btn px-4 blue-submit btn-block" @click="withdraw">
+                        Withdraw ETH
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="row mx-0 mb-3">
+                <div class="col-12 col-lg-6 mb-2 mb-lg-0">
+                    <button class="btn btn-block px-4 white-submit" @click="withdrawTokens" :disabled="!pool.isSentToSale">
+                        Withdraw tokens
+                    </button>
+                </div>
+
+                <div class="col-12 col-lg-6 mb-2 mb-lg-0">
+                    <button class="btn btn-block px-4 white-submit" @click="withdrawRefund" :disabled="!withDrawRefundAvailable">
+                        Withdraw refund
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="row mx-0 mb-3">
+                <div class="col-12 col-lg-6 mb-2 mb-lg-0">
+                    <input type="text"
+                           v-validate="'required|eth-address'"
+                           data-vv-name="Custom token"
+                           class="form-control input-text w-100"
+                           v-model="customToken" placeholder="Custom token"
+                           :disabled="!pool.isSentToSale"/>
+                </div>
+
+                <div class="col-12 col-lg-6 mb-2 mb-lg-0">
+                    <button class="btn btn-block px-4 blue-submit text-lg-center" @click="withdrawCustomToken" :disabled="!pool.isSentToSale">
+                        Withdraw custom token
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <hr class="blue-hr-fullw my-5">
+      </section>
     </div>
-    <div class="d-none d-sm-flex col-1"></div>
   </div>
 </template>
 
