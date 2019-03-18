@@ -1,42 +1,44 @@
 <template>
   <div class="container pt-4">
-    <div class="row mb-3">
-      <div class="col-6 col-lg-3 mb-2 mb-lg-0">
-        <button class="btn btn-block blue-submit" @click="sendFundsToSale" :disabled="!pool || pool.isSentToSale || pool.isStopped">
-          Send funds to sale
-        </button>
+    <div class="mb-5">
+      <div class="row mb-3">
+        <div class="col-6 col-lg-3 mb-2 mb-lg-0">
+          <button class="btn btn-block blue-submit" @click="sendFundsToSale" :disabled="!pool || pool.isSentToSale || pool.isStopped">
+            Send funds to sale
+          </button>
+        </div>
+
+        <div class="col-6 col-lg-3 mb-2 mb-lg-0">
+          <button class="btn btn-block blue-submit" @click="stopPool" :disabled="(!pool || pool.isStopped) || (pool && pool.isSentToSale)">
+            Stop pool
+          </button>
+        </div>
+
+        <div class="col-6 col-lg-3 mb-2 mb-lg-0">
+          <button class="btn btn-block blue-submit" @click="confirmTokensReceived" :disabled="!pool || !pool.isSentToSale">
+            Confirms token received
+          </button>
+        </div>
+
+        <div class="col-6 col-lg-3 mb-2 mb-lg-0">
+          <button class="btn btn-block blue-submit" @click="creatorWithdraw">
+            Creator withdraw
+          </button>
+        </div>
       </div>
 
-      <div class="col-6 col-lg-3 mb-2 mb-lg-0">
-        <button class="btn btn-block blue-submit" @click="stopPool" :disabled="!pool || pool.isStopped">
-          Stop pool
-        </button>
-      </div>
+      <div class="row mb-3">
+        <div class="col-12 col-lg-6 mb-2 mb-lg-0">
+          <input type="text" v-validate="'required|eth-address'" data-vv-name="Recipient address"
+                 class="form-control input-text"
+                 v-model="recipientAddress" placeholder="Recipient address"/>
+        </div>
 
-      <div class="col-6 col-lg-3 mb-2 mb-lg-0">
-        <button class="btn btn-block blue-submit" @click="confirmTokensReceived" :disabled="!pool || !pool.isSentToSale">
-          Confirms token received
-        </button>
-      </div>
-
-      <div class="col-6 col-lg-3 mb-2 mb-lg-0">
-        <button class="btn btn-block blue-submit" @click="creatorWithdraw">
-          Creator withdraw
-        </button>
-      </div>
-    </div>
-
-    <div class="row mb-3">
-      <div class="col-12 col-lg-6 mb-2 mb-lg-0">
-        <input type="text" v-validate="'required|eth-address'" data-vv-name="Recipient address"
-               class="form-control input-text"
-               v-model="recipientAddress" placeholder="Recipient address"/>
-      </div>
-
-      <div class="col-12 col-lg-6 mb-2 mb-lg-0">
-        <button class="btn btn-block blue-submit" @click="pushOutTokens">
-          Push out tokens
-        </button>
+        <div class="col-12 col-lg-6 mb-2 mb-lg-0">
+          <button class="btn btn-block blue-submit" @click="pushOutTokens">
+            Push out tokens
+          </button>
+        </div>
       </div>
     </div>
 

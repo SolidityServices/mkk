@@ -28,7 +28,7 @@
           <div class="blue-24-16-bold py-3 pl-4"> Sale ETH address:</div>
           <input type="text" v-validate="'required|eth-address'" data-vv-name="Sale ETH address"
                  class="form-control input-text"
-                 :disabled="disabled || pool.isStopped"
+                 :disabled="disabled || pool.isStopped || pool.isSentToSale"
                  v-model="pool.saleAddress" placeholder="Sale ETH address"/>
           <span v-if="errors.has('Sale ETH address')" v-text="errors.first('Sale ETH address')" class="text-danger"></span>
         </div>
@@ -37,7 +37,7 @@
           <div class="blue-24-16-bold py-3 pl-4"> Token address (optional):</div>
           <input type="text" v-validate="'eth-address'" data-vv-name="Token address"
                  class="form-control input-text"
-                 :disabled="disabled || pool.isStopped"
+                 :disabled="disabled || pool.isStopped || pool.isSentToSale"
                  v-model="pool.tokenAddress" placeholder="Token ETH address"/>
           <span v-if="errors.has('Token address')" v-text="errors.first('Token address')" class="text-danger"></span>
         </div>
@@ -67,7 +67,7 @@
               <input type="text"
                      class="form-control input-text"
                      :disabled="true"
-                     v-model="pool.saleWithdrawFunctionSig" placeholder="pay()"/>
+                     v-model="pool.saleWithdrawFunctionSig"/>
             </div>
           </div>
 
@@ -77,7 +77,7 @@
               <input type="text"
                      class="form-control input-text"
                      :disabled="true"
-                     v-model="pool.saleWithdrawFunctionSig" placeholder="withdraw()"/>
+                     v-model="pool.saleWithdrawFunctionSig"/>
             </div>
           </div>
         </div>
@@ -101,7 +101,7 @@
             <div class="col-12 col-lg-6">
               <textarea
                       class="form-control input-text w-100"
-                      :disabled="disabled || pool.isStopped"
+                      :disabled="disabled || pool.isStopped || pool.isSentToSale"
                       rows="4"
                       v-model="pool.poolDescription"
                       v-validate="'required'"
@@ -123,7 +123,7 @@
               <input type="number" v-validate="'required|decimal|min_value:0|max_value:100'"
                      data-vv-name="Creator fee"
                      class="form-control input-text w-100"
-                     :disabled="disabled || pool.isStopped"
+                     :disabled="disabled || pool.isStopped || pool.isSentToSale"
                      placeholder="0.12"
                      step="0.01"
                      min="0"
@@ -145,7 +145,7 @@
               <date-picker v-model="pool.saleStartDate"
                            :config="datepickerOptions"
                            class="form-control input-text w-100"
-                           :disabled="disabled || pool.isStopped"
+                           :disabled="disabled || pool.isStopped || pool.isSentToSale"
               ></date-picker>
             </div>
           </div>
@@ -156,7 +156,7 @@
               <date-picker v-model="pool.saleEndDate"
                            :config="datepickerOptions"
                            class="form-control input-text w-100"
-                           :disabled="disabled || pool.isStopped"
+                           :disabled="disabled || pool.isStopped || pool.isSentToSale"
               ></date-picker>
             </div>
           </div>
@@ -167,7 +167,7 @@
               <input type="number" v-validate="'required|decimal|min_value:0'"
                      step="0.000001"
                      class="form-control input-text w-100"
-                     :disabled="disabled || pool.isStopped"
+                     :disabled="disabled || pool.isStopped || pool.isSentToSale"
                      data-vv-name="Minimum pool goal"
                      v-model="pool.minPoolGoal">
               <span v-if="errors.has('Minimum pool goal')" v-text="errors.first('Minimum pool goal')" class="text-danger"></span>
@@ -180,7 +180,7 @@
               <input type="number" v-validate="'required|decimal|min_value:0'"
                      step="0.000001"
                      class="form-control input-text w-100"
-                     :disabled="disabled || pool.isStopped"
+                     :disabled="disabled || pool.isStopped || pool.isSentToSale"
                      data-vv-name="Max allocation"
                      v-model="pool.maxPoolAllocation">
               <span v-if="errors.has('Max allocation')" v-text="errors.first('Max allocation')" class="text-danger"></span>
@@ -190,7 +190,7 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 d-flex flex-row align-items-center">
               <div class="input-cb mr-3">
-                <input type="checkbox" :disabled="disabled || pool.isStopped" v-model="pool.whitelistPool" id="whitelistPool" name=""/>
+                <input type="checkbox" :disabled="disabled || pool.isStopped || pool.isSentToSale" v-model="pool.whitelistPool" id="whitelistPool" name=""/>
                 <label for="whitelistPool"></label>
               </div>
               <label class="blue-18-reg mb-0" for="whitelistPool">Whitelist pool</label>
@@ -202,7 +202,7 @@
             <div class="col-12 col-lg-6">
               <input type="number" v-validate="'required|decimal|min_value:0'"
                      class="form-control input-text w-100"
-                     :disabled="disabled || pool.isStopped"
+                     :disabled="disabled || pool.isStopped || pool.isSentToSale"
                      data-vv-name="Withdraw time lock"
                      v-model="pool.withdrawTimelock">
               <span v-if="errors.has('Withdraw time lock')" v-text="errors.first('Withdraw time lock')" class="text-danger"></span>
@@ -215,7 +215,7 @@
               <input type="number" v-validate="'decimal|min_value:0'" min="0"
                      step="0.000001"
                      class="form-control input-text w-100"
-                     :disabled="disabled || pool.isStopped"
+                     :disabled="disabled || pool.isStopped || pool.isSentToSale"
                      data-vv-name="Minimum contribution"
                      v-model="pool.minContribution"/>
               <span v-if="errors.has('Minimum contribution')" v-text="errors.first('Minimum contribution')" class="text-danger"></span>
@@ -228,7 +228,7 @@
               <input type="number" v-validate="'decimal|min_value:0'" min="0"
                      step="0.000001"
                      class="form-control input-text"
-                     :disabled="disabled || pool.isStopped"
+                     :disabled="disabled || pool.isStopped || pool.isSentToSale"
                      data-vv-name="Maximum contribution"
                      v-model="pool.maxContribution"/>
               <span v-if="errors.has('Maximum contribution')" v-text="errors.first('Maximum contribution')" class="text-danger"></span>
@@ -297,11 +297,11 @@
                     multiple
                     v-model="countriesToAdd"
                     :options="selectableCountries"
-                    :disabled="pool.isStopped" />
+                    :disabled="pool.isStopped || pool.isSentToSale" />
           </div>
 
           <div class="col-12 col-md-4 mb-2 mb-lg-0">
-            <button class="btn btn-block blue-submit" @click="addToBlacklist" :disabled="pool.isStopped">
+            <button class="btn btn-block blue-submit" @click="addToBlacklist" :disabled="pool.isStopped || pool.isSentToSale">
               Add to blacklist
             </button>
           </div>
@@ -313,11 +313,11 @@
                     multiple
                     v-model="countriesToRemove"
                     :options="blacklistedCountries"
-                    :disabled="pool.isStopped"/>
+                    :disabled="pool.isStopped || pool.isSentToSale"/>
           </div>
 
           <div class="col-12 col-md-4 mb-2 mb-lg-0">
-            <button class="btn btn-block blue-submit" @click="removeFromBlacklist" :disabled="pool.isStopped">
+            <button class="btn btn-block blue-submit" @click="removeFromBlacklist" :disabled="pool.isStopped || pool.isSentToSale">
               Remove from blacklist
             </button>
           </div>
@@ -343,13 +343,13 @@
                     :options="[]"
                     :taggable="true"
                     @tag="addAdminAddressToAdd"
-                    :disabled="pool.isStopped">
+                    :disabled="pool.isStopped || pool.isSentToSale">
             </multiselect>
             <span v-if="errors.has('Add Admin addresses')" v-text="errors.first('Add Admin addresses')" class="text-danger"></span>
           </div>
 
           <div class="col-12 col-md-4 mb-2 mb-lg-0">
-            <button class="btn btn-block blue-submit" @click="addAdminAddresses" :disabled="pool.isStopped">
+            <button class="btn btn-block blue-submit" @click="addAdminAddresses" :disabled="pool.isStopped || pool.isSentToSale">
               Add Admin addresses
             </button>
           </div>
@@ -364,13 +364,13 @@
                     v-model="adminAddressesToRemove"
                     :multiple="true"
                     :options="adminAddresses"
-                    :disabled="pool.isStopped">
+                    :disabled="pool.isStopped || pool.isSentToSale">
             </multiselect>
             <span v-if="errors.has('Admin addresses')" v-text="errors.first('Admin addresses')" class="text-danger"></span>
           </div>
 
           <div class="col-12 col-md-4 mb-2 mb-lg-0">
-            <button class="btn btn-block blue-submit" @click="removeAdminAddresses" :disabled="pool.isStopped">
+            <button class="btn btn-block blue-submit" @click="removeAdminAddresses" :disabled="pool.isStopped || pool.isSentToSale">
               Remove Admin addresses
             </button>
           </div>
@@ -397,13 +397,13 @@
                       :options="[]"
                       :taggable="true"
                       @tag="addWhitelistAddressToAdd"
-                      :disabled="pool.isStopped">
+                      :disabled="pool.isStopped || pool.isSentToSale">
               </multiselect>
               <span v-if="errors.has('Add Whitelist addresses')" v-text="errors.first('Add Whitelist addresses')" class="text-danger"></span>
             </div>
 
             <div class="col-12 col-md-4 mb-2 mb-lg-0">
-              <button class="btn btn-block blue-submit" @click="addWhitelistAddresses" :disabled="pool.isStopped">
+              <button class="btn btn-block blue-submit" @click="addWhitelistAddresses" :disabled="pool.isStopped || pool.isSentToSale">
                 Add Whitelist addresses
               </button>
             </div>
@@ -418,13 +418,13 @@
                     v-model="whitelistAddressesToRemove"
                     :multiple="true"
                     :options="whitelistAddresses"
-                    :disabled="pool.isStopped">
+                    :disabled="pool.isStopped || pool.isSentToSale">
             </multiselect>
             <span v-if="errors.has('Whitelist addresses')" v-text="errors.first('Whitelist addresses')" class="text-danger"></span>
           </div>
 
           <div class="col-12 col-md-4 mb-2 mb-lg-0">
-            <button class="btn btn-block blue-submit" @click="removeWhitelistAddresses" :disabled="pool.isStopped">
+            <button class="btn btn-block blue-submit" @click="removeWhitelistAddresses" :disabled="pool.isStopped || pool.isSentToSale">
               Remove Whitelist addresses
             </button>
           </div>
@@ -455,7 +455,7 @@
                    step="0.000001"
                    class="form-control input-text w-100" data-vv-name="Gwei amount"
                    v-model="sendToSaleGweiValue"
-                   :disabled="disabled || pool.isStopped">
+                   :disabled="pool.isStopped || pool.isSentToSale">
             <span v-if="errors.has('Gwei amount')" v-text="errors.first('Gwei amount')" class="text-danger"></span>
           </div>
 
@@ -463,12 +463,14 @@
             <date-picker v-model="sendToSaleTime"
                          :config="datepickerOptions"
                          class="form-control input-text w-100"
-                         :disabled="disabled || pool.isStopped">
+                         :disabled="pool.isStopped || pool.isSentToSale">
             </date-picker>
           </div>
 
           <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
-            <button class="btn px-4 blue-submit btn-block" @click="addAutoSendToSale" :disabled="pool.isStopped">Add auto send to sale</button>
+            <button class="btn px-4 blue-submit btn-block" @click="addAutoSendToSale" :disabled="pool.isStopped || pool.isSentToSale">
+              Add auto send to sale
+            </button>
           </div>
         </div>
 
@@ -615,7 +617,7 @@ export default {
   },
   computed: {
     submitDisabled() {
-      return !window.ethInitSuccess || this.pool.isStopped;
+      return !window.ethInitSuccess || this.pool.isStopped || this.pool.isSentToSale;
     },
     ...mapGetters([
       'connectICO',

@@ -193,14 +193,16 @@
 
                 <div class="col-12 col-lg-3 mb-2 mb-lg-0">
                     <input type="number" v-validate="`required|decimal|max-deposit`"
+                           min="0"
                            step="0.000001"
                            class="form-control input-text w-100" data-vv-name="Deposit amount"
-                           v-model="depositAmount">
+                           v-model="depositAmount"
+                           :disabled="pool.isStopped || pool.isSentToSale">
                     <span v-if="errors.has('Deposit amount')" v-text="errors.first('Deposit amount')" class="text-danger"></span>
                 </div>
 
                 <div class="col-12 col-lg-3 mb-2 mb-lg-0">
-                    <button class="btn px-4 blue-submit btn-block" @click="contribute" :disabled="pool.isStopped">
+                    <button class="btn px-4 blue-submit btn-block" @click="contribute" :disabled="pool.isStopped || pool.isSentToSale">
                         Deposit ETH
                     </button>
                 </div>
@@ -213,14 +215,16 @@
 
                 <div class="col-12 col-lg-3 mb-2 mb-lg-0">
                     <input type="number" v-validate="`required|max-withdraw`"
+                           min="0"
                            step="0.000001"
                            class="form-control input-text w-100" data-vv-name="Withdraw amount"
-                           v-model="withdrawAmount">
+                           v-model="withdrawAmount"
+                           :disabled="!pool.isStopped && pool.isSentToSale">
                     <span v-if="errors.has('Withdraw amount')" v-text="errors.first('Withdraw amount')" class="text-danger"></span>
                 </div>
 
                 <div class="col-12 col-lg-3 mb-2 mb-lg-0">
-                    <button class="btn px-4 blue-submit btn-block" @click="withdraw">
+                    <button class="btn px-4 blue-submit btn-block" @click="withdraw" :disabled="!pool.isStopped && pool.isSentToSale">
                         Withdraw ETH
                     </button>
                 </div>
@@ -409,7 +413,9 @@ export default {
             text: `${this.withdrawAmount} ETH`,
             duration: -1,
           });
-        } else if (this.mode === 'mew') {
+        }
+
+        if (this.mode === 'mew') {
           const url = mewLinkBuilder(
             this.connectICO.pool.pool.address,
             response.callData,
@@ -419,6 +425,10 @@ export default {
           );
           openMewUrl(url);
         }
+
+        this.loadPool();
+        this.initUserContributions();
+        this.initWithDrawRefundAvailable();
       } catch (e) {
         this.$notify({
           type: 'error',
