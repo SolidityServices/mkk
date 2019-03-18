@@ -1,19 +1,21 @@
 <template>
   <div>
-    <div class="w-100 mb-4 mb-md-5" v-if="!disabled">
-      <div class="d-none d-sm-block mt-5">
-        <div class="blue-36-20-bold">{{pool.poolAddress}}</div>
-        <hr align="left" class="d-none d-sm-block blue-hr">
-      </div>
-
-      <div class="d-sm-none mobile-back d-flex flex-row">
-        <div class="d-flex justify-content-center align-items-center ml-3"><img src="../assets/chevron-left.png" alt="">
+    <section class="mb-4">
+      <div class="w-100 mb-4" v-if="!disabled">
+        <div class="d-none d-sm-block">
+          <div class="blue-36-20-bold">{{pool.poolAddress}}</div>
+          <hr align="left" class="d-none d-sm-block blue-hr">
         </div>
-        <div class="white-16-bold ml-2">{{pool.poolAddress}}</div>
-      </div>
-    </div>
 
-    <div class="d-flex flex-column mb-5">
+        <div class="d-sm-none mobile-back d-flex flex-row">
+          <div class="d-flex justify-content-center align-items-center ml-3"><img src="../assets/chevron-left.png" alt="">
+          </div>
+          <div class="white-16-bold ml-2">{{pool.poolAddress}}</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-4">
       <div class="d-flex flex-column">
         <div>
           <div class="o-border d-inline"></div>
@@ -42,8 +44,10 @@
       </div>
 
       <hr class="blue-hr-fullw my-5 w-100">
+    </section>
 
-      <div class="d-flex flex-column mt-3">
+    <section class="mb-4">
+      <div class="d-flex flex-column">
         <div class="d-flex flex-row flex-wrap">
           <div>
             <div class="o-border d-inline"></div>
@@ -55,6 +59,7 @@
             <button class="btn white-submit px-4 mr-3" @click="showFuncSig = !showFuncSig">{{ showFuncSig ? 'Hide' : 'Show'}}</button>
           </div>
         </div>
+
         <div class="d-flex flex-row flex-wrap" v-if="showFuncSig">
           <div class="col-12 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-4 blue-18-reg">Sale Participate Function Sig:</div>
@@ -75,31 +80,32 @@
                      v-model="pool.saleWithdrawFunctionSig" placeholder="withdraw()"/>
             </div>
           </div>
-
         </div>
       </div>
 
       <hr class="blue-hr-fullw my-5 w-100">
+    </section>
 
-      <div class="d-flex flex-column">
-        <div>
+    <section class="mb-4">
+      <div class="row">
+        <div class="col-12">
           <div class="o-border d-inline"></div>
           <div class="d-inline mt-5 blue-36-20-bold"> Deal Details
             <hr align="left" class="blue-hr-2">
           </div>
         </div>
 
-        <div class="d-flex flex-row flex-wrap">
+        <div class="row mx-0">
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Description:</div>
             <div class="col-12 col-lg-6">
               <textarea
-                class="form-control input-text w-100"
-                :disabled="disabled || pool.isStopped"
-                rows="4"
-                v-model="pool.poolDescription"
-                v-validate="'required'"
-                data-vv-name="Description"
+                      class="form-control input-text w-100"
+                      :disabled="disabled || pool.isStopped"
+                      rows="4"
+                      v-model="pool.poolDescription"
+                      v-validate="'required'"
+                      data-vv-name="Description"
               ></textarea>
               <span v-if="errors.has('Description')" v-text="errors.first('Description')" class="text-danger"></span>
             </div>
@@ -244,303 +250,295 @@
               Update
             </button>
           </div>
-
-          <div v-if="!disabled && pool.strictlyTrustlessPool">
-            <hr class="blue-hr-fullw my-5 w-100">
-
-            <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled && pool.strictlyTrustlessPool">
-              <div class="col-12 col-md-7">
-                <input type="text" class="form-control input-text" v-model="sendToSaleWithCalldataSig"/>
-              </div>
-
-              <div class="col-12 col-md-5 d-flex flex-row flex-wrap">
-                <button class="btn blue-submit px-4 w-100" @click="sendSaleParticipateWithCalldata">
-                  Send Sale Participate With Calldata
-                </button>
-              </div>
-            </div>
-
-            <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled && pool.strictlyTrustlessPool">
-              <div class="col-12 col-md-7">
-                <input type="text" class="form-control input-text" v-model="withdrawFromSaleWithCalldataSig"/>
-              </div>
-
-              <div class="col-12 col-md-5 d-flex flex-row flex-wrap">
-                <button class="btn blue-submit px-4 w-100" @click="sendSaleWithdrawRequestWithCalldata">
-                  Send Sale Withdraw Request With Calldata
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <hr class="blue-hr-fullw my-5 w-100">
-
-          <div class="col-12 d-flex flex-row mt-3 flex-wrap">
-            <div class="col-12 col-lg-3 blue-18-reg mb-1">Pool Country blacklist:</div>
-            <div class="col-12 col-lg-9">{{ blacklistedCountriesText }}</div>
-          </div>
-
-          <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
-              <div class="col-12 col-md-8 mb-2 mb-lg-0">
-                <country-select
-                        multiple
-                        v-model="countriesToAdd"
-                        :options="selectableCountries"
-                        :disabled="pool.isStopped" />
-              </div>
-
-              <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
-                <button class="btn blue-submit px-4 w-100" @click="addToBlacklist" :disabled="pool.isStopped">
-                  Add to blacklist
-                </button>
-              </div>
-          </div>
-
-          <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
-            <div class="col-12 col-md-8  mb-2 mb-lg-0">
-              <country-select
-                      multiple
-                      v-model="countriesToRemove"
-                      :options="blacklistedCountries"
-                      :disabled="pool.isStopped"/>
-            </div>
-
-            <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
-              <button class="btn blue-submit px-4 w-100"
-                      @click="removeFromBlacklist"
-                      :disabled="pool.isStopped">
-                Remove from blacklist
-              </button>
-            </div>
-          </div>
-
-          <hr class="blue-hr-fullw my-5 w-100">
-
-          <div v-if="!disabled" class="w-100">
-            <div class="w-100">
-              <div class="col-12 d-flex flex-row mt-3 flex-wrap">
-                <div class="col-12 blue-18-reg">Admin addresses:</div>
-                <div class="col-12">{{ adminAddressesText }}</div>
-              </div>
-            </div>
-
-            <!--v-if="!disabled && isCreator"-->
-            <div class="w-100">
-              <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
-                <div class="col-12 col-md-8 mb-2 mb-lg-0">
-                  <multiselect
-                          class="w-100"
-                          v-validate="'eth-address-array'"
-                          data-vv-name="Admin addresses"
-                          v-model="adminAddressesToAdd"
-                          :multiple="true"
-                          :options="[]"
-                          :taggable="true"
-                          @tag="addAdminAddressToAdd"
-                          :disabled="pool.isStopped">
-                  </multiselect>
-                  <span v-if="errors.has('Add Admin addresses')" v-text="errors.first('Add Admin addresses')" class="text-danger"></span>
-                </div>
-
-                <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
-                  <button class="btn btn-block blue-submit px-4 w-100" @click="addAdminAddresses" :disabled="pool.isStopped">
-                    Add Admin addresses
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div class="w-100">
-              <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
-                <div class="col-12 col-md-8 mb-2 mb-lg-0">
-                  <multiselect
-                          class="w-100"
-                          v-validate="'eth-address-array'"
-                          data-vv-name="Add Admin addresses"
-                          v-model="adminAddressesToRemove"
-                          :multiple="true"
-                          :options="adminAddresses"
-                          :disabled="pool.isStopped">
-                  </multiselect>
-                  <span v-if="errors.has('Admin addresses')" v-text="errors.first('Admin addresses')" class="text-danger"></span>
-                </div>
-
-                <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
-                  <button class="btn btn-block blue-submit px-4 w-100" @click="removeAdminAddresses" :disabled="pool.isStopped">
-                    Remove Admin addresses
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <hr class="blue-hr-fullw my-5 w-100">
-          </div>
-
-          <div class="w-100">
-            <div class="col-12 d-flex flex-row mt-3 flex-wrap">
-              <div class="col-12 blue-18-reg">Whitelist addresses:</div>
-              <div class="col-12">{{ whitelistAddressesText }}</div>
-            </div>
-          </div>
-
-          <!--v-if="!disabled"-->
-          <div class="w-100">
-            <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
-              <div class="col-12 col-md-8 mb-2 mb-lg-0">
-                <multiselect
-                        class="w-100"
-                        v-validate="'eth-address-array'"
-                        data-vv-name="Add Whitelist addresses"
-                        v-model="whitelistAddressesToAdd"
-                        :multiple="true"
-                        :options="[]"
-                        :taggable="true"
-                        @tag="addWhitelistAddressToAdd"
-                        :disabled="pool.isStopped">
-                </multiselect>
-                <span v-if="errors.has('Add Whitelist addresses')" v-text="errors.first('Add Whitelist addresses')" class="text-danger"></span>
-              </div>
-
-              <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
-                <button class="btn btn-block blue-submit px-4 w-100" @click="addWhitelistAddresses" :disabled="pool.isStopped">
-                  Add Whitelist addresses
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="w-100">
-            <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
-              <div class="col-12 col-md-8 mb-2 mb-lg-0">
-                <multiselect
-                        class="w-100"
-                        v-validate="'eth-address-array'"
-                        data-vv-name="Whitelist addresses"
-                        v-model="whitelistAddressesToRemove"
-                        :multiple="true"
-                        :options="whitelistAddresses"
-                        :disabled="pool.isStopped">
-                </multiselect>
-                <span v-if="errors.has('Whitelist addresses')" v-text="errors.first('Whitelist addresses')" class="text-danger"></span>
-              </div>
-
-              <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
-                <button class="btn btn-block blue-submit px-4 w-100" @click="removeWhitelistAddresses" :disabled="pool.isStopped">
-                  Remove Whitelist addresses
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <hr class="blue-hr-fullw my-5 w-100">
-
-          <div class="w-100" v-if="!disabled">
-            <div class="w-100">
-              <div class="o-border d-inline "></div>
-              <div class="d-inline blue-36-20-bold"> Automations
-                <hr align="left" class="blue-hr-2">
-              </div>
-            </div>
-
-            <div class="w-100">
-              <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap">
-                <div class="col-12 col-md-3 d-flex justify-content-end">
-                  <div class="d-lg-inline-block orange-18-bold pr-2 px-0">Add auto send to sale GAS price in GWEI:</div>
-                </div>
-
-                <div class="col-12 col-md-3 mb-2 mb-lg-0">
-                  <input type="number" v-validate="`required|decimal`"
-                         step="0.000001"
-                         class="form-control input-text w-100" data-vv-name="Gwei amount"
-                         v-model="sendToSaleGweiValue"
-                         :disabled="disabled || pool.isStopped">
-                  <span v-if="errors.has('Gwei amount')" v-text="errors.first('Gwei amount')" class="text-danger"></span>
-                </div>
-
-                <div class="col-12 col-md-3 mb-2 mb-lg-0">
-                  <date-picker v-model="sendToSaleTime"
-                               :config="datepickerOptions"
-                               class="form-control input-text w-100"
-                               :disabled="disabled || pool.isStopped">
-                  </date-picker>
-                </div>
-
-                <div class="col-12 col-md-3 d-flex flex-row flex-wrap">
-                  <button class="btn px-4 blue-submit btn-block" @click="addAutoSendToSale" :disabled="pool.isStopped">Add auto send to sale</button>
-                </div>
-              </div>
-            </div>
-
-            <hr class="blue-hr-fullw my-5 w-100">
-          </div>
-
-          <div class="w-100" v-if="!disabled">
-            <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap">
-              <button class="btn px-4 blue-submit btn-block" @click="sendToSaleWithCalldata" :disabled="pool.isSentToSale || pool.isStopped">
-                Send to sale with predefined calldata
-              </button>
-            </div>
-          </div>
-
-          <div class="w-100" v-if="!disabled">
-            <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap">
-              <button class="btn px-4 blue-submit btn-block" @click="withdrawFromSaleWithCalldata" :disabled="!pool.isSentToSale">
-                Withdraw with predefined calldata
-              </button>
-            </div>
-          </div>
-
-          <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
-            <div class="col-12 col-md-7">
-              <input type="text" class="form-control input-text" v-model="sendToSaleCalldataFunctionSig" :disabled="pool.isSentToSale || pool.isStopped" />
-            </div>
-
-            <div class="col-12 col-md-5 d-flex flex-row flex-wrap">
-              <button class="btn blue-submit px-4 w-100" @click="setSaleParticipateCalldata" :disabled="pool.isSentToSale || pool.isStopped">
-                Set send to sale calldata
-              </button>
-            </div>
-          </div>
-
-          <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
-            <div class="col-12 col-md-7">
-              <input type="text" class="form-control input-text" v-model="saleWithdrawCalldataFunctionSig" :disabled="!pool.isSentToSale" />
-            </div>
-
-            <div class="col-12 col-md-5 d-flex flex-row flex-wrap">
-              <button class="btn blue-submit px-4 w-100" @click="setSaleWithdrawCalldata" :disabled="!pool.isSentToSale">
-                Set withdraw calldata
-              </button>
-            </div>
-          </div>
-
-          <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
-            <div class="col-12 col-md-7">
-              <input type="text" class="form-control input-text" v-model="sendToSaleWithCalldataParameterFunctionSig" :disabled="pool.isSentToSale || pool.isStopped" />
-            </div>
-
-            <div class="col-12 col-md-5 d-flex flex-row flex-wrap">
-              <button class="btn blue-submit px-4 w-100" @click="sendToSaleWithCalldataParameter" :disabled="pool.isSentToSale || pool.isStopped">
-                Send to sale with dynamic calldata
-              </button>
-            </div>
-          </div>
-
-          <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled">
-            <div class="col-12 col-md-7">
-              <input type="text" class="form-control input-text" v-model="withdrawFromSaleWithCalldataParameterFunctionSig" :disabled="!pool.isSentToSale" />
-            </div>
-
-            <div class="col-12 col-md-5 d-flex flex-row flex-wrap">
-              <button class="btn blue-submit px-4 w-100" @click="withdrawFromSaleWithCalldataParameter" :disabled="!pool.isSentToSale">
-                Withdraw with dynamic calldata
-              </button>
-            </div>
-          </div>
-
         </div>
       </div>
-    </div>
+    </section>
+
+    <section class="mb-4">
+      <div v-if="!disabled && pool.strictlyTrustlessPool">
+        <hr class="blue-hr-fullw my-5 w-100">
+
+        <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled && pool.strictlyTrustlessPool">
+          <div class="col-12 col-md-7">
+            <input type="text" class="form-control input-text" v-model="sendToSaleWithCalldataSig"/>
+          </div>
+
+          <div class="col-12 col-md-5 d-flex flex-row flex-wrap">
+            <button class="btn blue-submit px-4 w-100" @click="sendSaleParticipateWithCalldata">
+              Send Sale Participate With Calldata
+            </button>
+          </div>
+        </div>
+
+        <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled && pool.strictlyTrustlessPool">
+          <div class="col-12 col-md-7">
+            <input type="text" class="form-control input-text" v-model="withdrawFromSaleWithCalldataSig"/>
+          </div>
+
+          <div class="col-12 col-md-5 d-flex flex-row flex-wrap">
+            <button class="btn blue-submit px-4 w-100" @click="sendSaleWithdrawRequestWithCalldata">
+              Send Sale Withdraw Request With Calldata
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <hr class="blue-hr-fullw my-5 w-100">
+    </section>
+
+    <section class="mb-4">
+      <div>
+        <div class="row mx-0 mb-2">
+          <div class="col-12 col-lg-3 blue-18-reg mb-1">Pool Country blacklist:</div>
+          <div class="col-12 col-lg-9">{{ blacklistedCountriesText }}</div>
+        </div>
+
+        <div class="row mx-0 mb-2" v-if="!disabled">
+          <div class="col-12 col-md-8 mb-2 mb-lg-0">
+            <country-select
+                    multiple
+                    v-model="countriesToAdd"
+                    :options="selectableCountries"
+                    :disabled="pool.isStopped" />
+          </div>
+
+          <div class="col-12 col-md-4 mb-2 mb-lg-0">
+            <button class="btn btn-block blue-submit" @click="addToBlacklist" :disabled="pool.isStopped">
+              Add to blacklist
+            </button>
+          </div>
+        </div>
+
+        <div class="row mx-0 mb-2" v-if="!disabled">
+          <div class="col-12 col-md-8 mb-2 mb-lg-0">
+            <country-select
+                    multiple
+                    v-model="countriesToRemove"
+                    :options="blacklistedCountries"
+                    :disabled="pool.isStopped"/>
+          </div>
+
+          <div class="col-12 col-md-4 mb-2 mb-lg-0">
+            <button class="btn btn-block blue-submit" @click="removeFromBlacklist" :disabled="pool.isStopped">
+              Remove from blacklist
+            </button>
+          </div>
+        </div>
+
+        <hr class="blue-hr-fullw my-5 w-100">
+      </div>
+
+      <div v-if="!disabled">
+        <div class="row mx-0 mb-2">
+            <div class="col-12 blue-18-reg">Admin addresses:</div>
+            <div class="col-12">{{ adminAddressesText }}</div>
+        </div>
+
+        <div class="row mx-0 mb-2" v-if="!disabled">
+          <div class="col-12 col-md-8 mb-2 mb-lg-0">
+            <multiselect
+                    class="w-100"
+                    v-validate="'eth-address-array'"
+                    data-vv-name="Admin addresses"
+                    v-model="adminAddressesToAdd"
+                    :multiple="true"
+                    :options="[]"
+                    :taggable="true"
+                    @tag="addAdminAddressToAdd"
+                    :disabled="pool.isStopped">
+            </multiselect>
+            <span v-if="errors.has('Add Admin addresses')" v-text="errors.first('Add Admin addresses')" class="text-danger"></span>
+          </div>
+
+          <div class="col-12 col-md-4 mb-2 mb-lg-0">
+            <button class="btn btn-block blue-submit" @click="addAdminAddresses" :disabled="pool.isStopped">
+              Add Admin addresses
+            </button>
+          </div>
+        </div>
+
+        <div class="row mx-0 mb-2" v-if="!disabled">
+          <div class="col-12 col-md-8 mb-2 mb-lg-0">
+            <multiselect
+                    class="w-100"
+                    v-validate="'eth-address-array'"
+                    data-vv-name="Add Admin addresses"
+                    v-model="adminAddressesToRemove"
+                    :multiple="true"
+                    :options="adminAddresses"
+                    :disabled="pool.isStopped">
+            </multiselect>
+            <span v-if="errors.has('Admin addresses')" v-text="errors.first('Admin addresses')" class="text-danger"></span>
+          </div>
+
+          <div class="col-12 col-md-4 mb-2 mb-lg-0">
+            <button class="btn btn-block blue-submit" @click="removeAdminAddresses" :disabled="pool.isStopped">
+              Remove Admin addresses
+            </button>
+          </div>
+        </div>
+
+        <hr class="blue-hr-fullw my-5 w-100">
+      </div>
+
+      <div>
+        <div class="row mx-0 mb-2">
+          <div class="col-12 blue-18-reg">Whitelist addresses:</div>
+          <div class="col-12">{{ whitelistAddressesText }}</div>
+        </div>
+
+        <!--v-if="!disabled"-->
+        <div class="row mx-0 mb-2" v-if="!disabled">
+            <div class="col-12 col-md-8 mb-2 mb-lg-0">
+              <multiselect
+                      class="w-100"
+                      v-validate="'eth-address-array'"
+                      data-vv-name="Add Whitelist addresses"
+                      v-model="whitelistAddressesToAdd"
+                      :multiple="true"
+                      :options="[]"
+                      :taggable="true"
+                      @tag="addWhitelistAddressToAdd"
+                      :disabled="pool.isStopped">
+              </multiselect>
+              <span v-if="errors.has('Add Whitelist addresses')" v-text="errors.first('Add Whitelist addresses')" class="text-danger"></span>
+            </div>
+
+            <div class="col-12 col-md-4 mb-2 mb-lg-0">
+              <button class="btn btn-block blue-submit" @click="addWhitelistAddresses" :disabled="pool.isStopped">
+                Add Whitelist addresses
+              </button>
+            </div>
+        </div>
+
+        <div class="row mx-0 mb-2" v-if="!disabled">
+          <div class="col-12 col-md-8 mb-2 mb-lg-0">
+            <multiselect
+                    class="w-100"
+                    v-validate="'eth-address-array'"
+                    data-vv-name="Whitelist addresses"
+                    v-model="whitelistAddressesToRemove"
+                    :multiple="true"
+                    :options="whitelistAddresses"
+                    :disabled="pool.isStopped">
+            </multiselect>
+            <span v-if="errors.has('Whitelist addresses')" v-text="errors.first('Whitelist addresses')" class="text-danger"></span>
+          </div>
+
+          <div class="col-12 col-md-4 mb-2 mb-lg-0">
+            <button class="btn btn-block blue-submit" @click="removeWhitelistAddresses" :disabled="pool.isStopped">
+              Remove Whitelist addresses
+            </button>
+          </div>
+        </div>
+
+        <hr class="blue-hr-fullw my-5 w-100">
+      </div>
+    </section>
+
+    <section class="mb-4">
+      <div class="w-100" v-if="!disabled">
+        <div class="w-100">
+          <div class="o-border d-inline "></div>
+          <div class="d-inline blue-36-20-bold"> Automations
+            <hr align="left" class="blue-hr-2">
+          </div>
+        </div>
+
+        <div class="row mx-0 mb-2">
+          <div class="col-12">
+            <span class="d-lg-inline-block orange-18-bold pr-2 px-0">Add auto send to sale GAS price in GWEI:</span>
+          </div>
+        </div>
+
+        <div class="row mx-0 mb-2">
+          <div class="col-12 col-md-4 mb-2 mb-lg-0">
+            <input type="number" v-validate="`required|decimal`"
+                   step="0.000001"
+                   class="form-control input-text w-100" data-vv-name="Gwei amount"
+                   v-model="sendToSaleGweiValue"
+                   :disabled="disabled || pool.isStopped">
+            <span v-if="errors.has('Gwei amount')" v-text="errors.first('Gwei amount')" class="text-danger"></span>
+          </div>
+
+          <div class="col-12 col-md-4 mb-2 mb-lg-0">
+            <date-picker v-model="sendToSaleTime"
+                         :config="datepickerOptions"
+                         class="form-control input-text w-100"
+                         :disabled="disabled || pool.isStopped">
+            </date-picker>
+          </div>
+
+          <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
+            <button class="btn px-4 blue-submit btn-block" @click="addAutoSendToSale" :disabled="pool.isStopped">Add auto send to sale</button>
+          </div>
+        </div>
+
+        <hr class="blue-hr-fullw my-5 w-100">
+      </div>
+
+      <div class="row mx-0 mb-2" v-if="!disabled">
+        <div class="col-12 col-md-6 mb-2 mb-lg-0">
+          <button class="btn px-4 blue-submit btn-block" @click="sendToSaleWithCalldata" :disabled="pool.isSentToSale || pool.isStopped">
+            Send to sale with predefined calldata
+          </button>
+        </div>
+
+        <div class="col-12 col-md-6 mb-2 mb-lg-0">
+          <button class="btn px-4 blue-submit btn-block" @click="withdrawFromSaleWithCalldata" :disabled="!pool.isSentToSale">
+            Withdraw with predefined calldata
+          </button>
+        </div>
+      </div>
+
+      <div class="row mx-0 mb-2" v-if="!disabled">
+        <div class="col-12 col-md-6 mb-2 mb-lg-0">
+          <input type="text" class="form-control input-text" v-model="sendToSaleCalldataFunctionSig" :disabled="pool.isSentToSale || pool.isStopped" />
+        </div>
+
+        <div class="col-12 col-md-6 mb-2 mb-lg-0">
+          <button class="btn blue-submit px-4 w-100" @click="setSaleParticipateCalldata" :disabled="pool.isSentToSale || pool.isStopped">
+            Set send to sale calldata
+          </button>
+        </div>
+      </div>
+
+      <div class="row mx-0 mb-2" v-if="!disabled">
+        <div class="col-12 col-md-6 mb-2 mb-lg-0">
+          <input type="text" class="form-control input-text" v-model="saleWithdrawCalldataFunctionSig" :disabled="!pool.isSentToSale" />
+        </div>
+
+        <div class="col-12 col-md-6 mb-2 mb-lg-0">
+          <button class="btn blue-submit px-4 w-100" @click="setSaleWithdrawCalldata" :disabled="!pool.isSentToSale">
+            Set withdraw calldata
+          </button>
+        </div>
+      </div>
+
+      <div class="row mx-0 mb-2" v-if="!disabled">
+        <div class="col-12 col-md-6 mb-2 mb-lg-0">
+          <input type="text" class="form-control input-text" v-model="sendToSaleWithCalldataParameterFunctionSig" :disabled="pool.isSentToSale || pool.isStopped" />
+        </div>
+
+        <div class="col-12 col-md-6 mb-2 mb-lg-0">
+          <button class="btn blue-submit px-4 w-100" @click="sendToSaleWithCalldataParameter" :disabled="pool.isSentToSale || pool.isStopped">
+            Send to sale with dynamic calldata
+          </button>
+        </div>
+      </div>
+
+      <div class="row mx-0 mb-2" v-if="!disabled">
+        <div class="col-12 col-md-6 mb-2 mb-lg-0">
+          <input type="text" class="form-control input-text" v-model="withdrawFromSaleWithCalldataParameterFunctionSig" :disabled="!pool.isSentToSale" />
+        </div>
+
+        <div class="col-12 col-md-6 mb-2 mb-lg-0">
+          <button class="btn blue-submit px-4 w-100" @click="withdrawFromSaleWithCalldataParameter" :disabled="!pool.isSentToSale">
+            Withdraw with dynamic calldata
+          </button>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
