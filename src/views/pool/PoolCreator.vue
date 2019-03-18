@@ -517,11 +517,8 @@ export default {
       }
 
       const ethTransferDetails = await this.getTransferDetailsETH();
-      // const transferDetails = await this.getTransferDetails();
-      // console.log(transferDetails);
-      // console.log(ethTransferDetails);
-
       const weiTransferValue = await window.web3.utils.toWei((ethTransferDetails.transferValue).toString(), 'ether');
+      const ethTransferValue = ethTransferDetails.transferValue;
 
       try {
         const response = await this.connectICO.poolFactory.createPool(this.pool, weiTransferValue);
@@ -547,7 +544,7 @@ export default {
           const url = mewLinkBuilder(
             this.connectICO.poolFactory.poolFactory.address,
             response.callData,
-            weiTransferValue,
+            ethTransferValue,
             network,
             response.gasLimit,
           );
