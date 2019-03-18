@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="w-100 mb-4 mb-md-5" v-if="!disabled">
-      <div class="container d-none d-sm-block mt-5">
+      <div class="d-none d-sm-block mt-5">
         <div class="blue-36-20-bold">{{pool.poolAddress}}</div>
         <hr align="left" class="d-none d-sm-block blue-hr">
       </div>
@@ -13,8 +13,8 @@
       </div>
     </div>
 
-    <div class="container d-flex flex-column mb-5">
-      <div class="d-flex flex-column ml-sm-5">
+    <div class="d-flex flex-column mb-5">
+      <div class="d-flex flex-column">
         <div>
           <div class="o-border d-inline"></div>
           <div class="d-inline blue-36-20-bold"> Creator
@@ -43,7 +43,7 @@
 
       <hr class="blue-hr-fullw my-5 w-100">
 
-      <div class="d-flex flex-column ml-sm-5 mt-3">
+      <div class="d-flex flex-column mt-3">
         <div class="d-flex flex-row flex-wrap">
           <div>
             <div class="o-border d-inline"></div>
@@ -81,7 +81,7 @@
 
       <hr class="blue-hr-fullw my-5 w-100">
 
-      <div class="d-flex flex-column ml-sm-5">
+      <div class="d-flex flex-column">
         <div>
           <div class="o-border d-inline"></div>
           <div class="d-inline mt-5 blue-36-20-bold"> Deal Details

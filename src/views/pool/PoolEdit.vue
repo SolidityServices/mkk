@@ -1,31 +1,43 @@
 <template>
-  <div class="d-flex flex-column">
-    <div class="d-flex flex-row justify-content-center pt-3">
-      <button class="btn blue-submit px-4 mx-3" @click="sendFundsToSale" :disabled="!pool || pool.isSentToSale || pool.isStopped">
-        Send funds to sale
-      </button>
+  <div class="container pt-4">
+    <div class="row mb-3">
+      <div class="col-6 col-lg-3">
+        <button class="btn btn-block blue-submit" @click="sendFundsToSale" :disabled="!pool || pool.isSentToSale || pool.isStopped">
+          Send funds to sale
+        </button>
+      </div>
 
-      <button class="btn blue-submit px-4 mx-3" @click="stopPool" :disabled="!pool || pool.isStopped">
-        Stop pool
-      </button>
+      <div class="col-6 col-lg-3">
+        <button class="btn btn-block blue-submit" @click="stopPool" :disabled="!pool || pool.isStopped">
+          Stop pool
+        </button>
+      </div>
 
-      <button class="btn blue-submit px-4 mx-3" @click="confirmTokensReceived" :disabled="!pool || !pool.isSentToSale">
-        Confirms token received
-      </button>
+      <div class="col-6 col-lg-3">
+        <button class="btn btn-block blue-submit" @click="confirmTokensReceived" :disabled="!pool || !pool.isSentToSale">
+          Confirms token received
+        </button>
+      </div>
 
-      <button class="btn blue-submit px-4 mx-3" @click="creatorWithdraw">
-        Creator withdraw
-      </button>
+      <div class="col-6 col-lg-3">
+        <button class="btn btn-block blue-submit" @click="creatorWithdraw">
+          Creator withdraw
+        </button>
+      </div>
     </div>
 
-    <div class="d-flex flex-row justify-content-center col-12 col-lg-6 m-auto pt-3">
-      <input type="text" v-validate="'required|eth-address'" data-vv-name="Recipient address"
-             class="form-control input-text"
-             v-model="recipientAddress" placeholder="Recipient address"/>
+    <div class="row mb-3">
+      <div class="col-12 col-lg-6">
+        <input type="text" v-validate="'required|eth-address'" data-vv-name="Recipient address"
+               class="form-control input-text"
+               v-model="recipientAddress" placeholder="Recipient address"/>
+      </div>
 
-      <button class="btn blue-submit px-4 mx-3" @click="pushOutTokens">
-        Push out tokens
-      </button>
+      <div class="col-12 col-lg-6">
+        <button class="btn btn-block blue-submit" @click="pushOutTokens">
+          Push out tokens
+        </button>
+      </div>
     </div>
 
     <pool :pool="this.pool" :disabled="false" v-if="pool" />
