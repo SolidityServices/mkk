@@ -252,34 +252,32 @@
           </div>
         </div>
       </div>
+
+      <hr class="blue-hr-fullw my-5 w-100">
     </section>
 
-    <section class="mb-4">
-      <div v-if="!disabled && pool.strictlyTrustlessPool">
-        <hr class="blue-hr-fullw my-5 w-100">
-
-        <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled && pool.strictlyTrustlessPool">
-          <div class="col-12 col-md-7">
-            <input type="text" class="form-control input-text" v-model="sendToSaleWithCalldataSig"/>
-          </div>
-
-          <div class="col-12 col-md-5 d-flex flex-row flex-wrap">
-            <button class="btn blue-submit px-4 w-100" @click="sendSaleParticipateWithCalldata">
-              Send Sale Participate With Calldata
-            </button>
-          </div>
+    <section class="mb-4" v-if="!disabled && pool.strictlyTrustlessPool">
+      <div class="row mx-0 mb-2">
+        <div class="col-12 col-md-6 mb-2 mb-lg-0">
+          <input type="text" class="form-control input-text" v-model="sendToSaleWithCalldataSig"/>
         </div>
 
-        <div class="col-12 d-flex flex-row mt-3 align-items-center flex-wrap" v-if="!disabled && pool.strictlyTrustlessPool">
-          <div class="col-12 col-md-7">
-            <input type="text" class="form-control input-text" v-model="withdrawFromSaleWithCalldataSig"/>
-          </div>
+        <div class="col-12 col-md-6 mb-2 mb-lg-0">
+          <button class="btn blue-submit btn-block" @click="sendSaleParticipateWithCalldata">
+            Send Sale Participate With Calldata
+          </button>
+        </div>
+      </div>
 
-          <div class="col-12 col-md-5 d-flex flex-row flex-wrap">
-            <button class="btn blue-submit px-4 w-100" @click="sendSaleWithdrawRequestWithCalldata">
-              Send Sale Withdraw Request With Calldata
-            </button>
-          </div>
+      <div class="row mx-0 mb-2">
+        <div class="col-12 col-md-6 mb-2 mb-lg-0">
+          <input type="text" class="form-control input-text" v-model="withdrawFromSaleWithCalldataSig"/>
+        </div>
+
+        <div class="col-12 col-md-6 mb-2 mb-lg-0">
+          <button class="btn blue-submit btn-block" @click="sendSaleWithdrawRequestWithCalldata">
+            Send Sale Withdraw Request With Calldata
+          </button>
         </div>
       </div>
 
