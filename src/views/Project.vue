@@ -37,56 +37,71 @@
           <hr align="left" class="blue-hr-2">
         </div>
 
-        <div class="row mx-0">
-          <div class="col-12 col-lg-6 pt-3">
-            <div class="blue-18-bold">Parameters</div>
-            <div class="row pt-3">
-              <div class="py-1 col-8 blue-18-reg">Fee</div>
-              <div class="py-1 col-4 orange-18-bold text-right">{{pool.creatorFeeRate}} %</div>
+          <div class="row mx-0 mb-4">
+            <div class="col-12 col-lg-6">
+                <div class="blue-18-bold mb-4">Parameters</div>
 
-              <div class="py-1 col-8 blue-18-reg">ConnectICO Fee</div>
-              <div class="py-1 col-4 orange-18-bold text-right">{{pool.providerFeeRate}} %</div>
+                <div>
+                    <div class="orange-24-16-bold d-flex justify-content-between">
+                        <span class="blue-18-reg">Fee</span>
+                        <span class="orange-18-bold text-right">{{pool.creatorFeeRate}} %</span>
+                    </div>
 
-              <div class="py-1 col-8 blue-18-reg">Individual Min</div>
-              <div class="py-1 col-4 orange-18-bold text-right">{{pool.minContribution}} ETH</div>
+                    <div class="orange-24-16-bold d-flex justify-content-between">
+                        <span class="blue-18-reg">ConnectICO Fee</span>
+                        <span class="orange-18-bold text-right">{{pool.providerFeeRate}} %</span>
+                    </div>
 
-              <div class="py-1 col-8 blue-18-reg">Individual Max:</div>
-              <div class="py-1 col-4 orange-18-bold text-right">{{pool.maxContribution}} ETH</div>
+                    <div class="orange-24-16-bold d-flex justify-content-between">
+                        <span class="blue-18-reg">Individual Min</span>
+                        <span class="orange-18-bold text-right">{{pool.minContribution}} ETH</span>
+                    </div>
 
-              <div class="py-1 col-8 blue-18-reg">Min pool goal:</div>
-              <div class="py-1 col-4 orange-18-bold text-right">{{pool.minPoolGoal}} ETH</div>
+                    <div class="orange-24-16-bold d-flex justify-content-between">
+                        <span class="blue-18-reg">Individual Max:</span>
+                        <span class="orange-18-bold text-right">{{pool.maxContribution}} ETH</span>
+                    </div>
 
-              <div class="py-1 col-8 blue-18-reg">Max allocation:</div>
-              <div class="py-1 col-4 orange-18-bold text-right">{{pool.maxPoolAllocation}} ETH</div>
+                    <div class="orange-24-16-bold d-flex justify-content-between">
+                        <span class="blue-18-reg">Min pool goal:</span>
+                        <span class="orange-18-bold text-right">{{pool.minPoolGoal}} ETH</span>
+                    </div>
+
+                    <div class="orange-24-16-bold d-flex justify-content-between">
+                        <span class="blue-18-reg">Max allocation:</span>
+                        <span class="orange-18-bold text-right">{{pool.maxPoolAllocation}} ETH</span>
+                    </div>
+                </div>
+
             </div>
-          </div>
         </div>
 
-        <div class="row mx-0 pt-5">
-          <div class="col-6 col-lg-2 orange-24-16-bold px-0 order-1">Total filled</div>
-          <div class="col-12 col-lg-4 pt-1 order-3 order-lg-2 px-0">
-            <div class="w-100">
-              <range-slider
-                      class="slider w-100 pt-1"
-                      min="0"
-                      :max="pool.maxPoolAllocation"
-                      :disabled="true"
-                      step="0.0000001"
-                      v-model="pool.allGrossContributions">
-              </range-slider>
+        <div class="row mx-0 mb-4">
+            <div class="col-12 col-lg-12">
+                <div class="orange-24-16-bold d-flex justify-content-between">
+                    <span>Total filled</span>
+                    <span>{{pool.allGrossContributions}}/{{pool.maxPoolAllocation}} ETH</span>
+                </div>
+
+                <div class="pt-1 px-0">
+                    <range-slider
+                            class="slider w-100 p-0"
+                            min="0"
+                            :max="pool.maxPoolAllocation"
+                            :disabled="true"
+                            step="0.0000001"
+                            v-model="pool.allGrossContributions">
+                    </range-slider>
+                </div>
             </div>
-          </div>
-          <div class="col-6 col-lg-6 orange-24-16-bold px-0 order-2 order-lg-3 text-right text-lg-left">
-            <span class="ml-2">{{pool.allGrossContributions}}/{{pool.maxPoolAllocation}} ETH</span>
-          </div>
         </div>
 
-        <div class="d-flex flex-row mt-5 flex-wrap">
+        <div class="row mx-0 mb-4">
           <div class="col-12 col-lg-3 blue-18-reg mb-1">Pool Country blacklist:</div>
           <div class="col-12 col-lg-9">{{ blacklistedCountriesText }}</div>
         </div>
 
-        <div class="d-flex flex-row mt-3 flex-wrap">
+        <div class="row mx-0 mb-4">
           <div class="col-12 col-lg-3 blue-18-reg mb-1">Time until end of sale:</div>
           <div class="col-12 col-lg-9">
             <countdown :time="timeUntilSaleEnd" :interval="1000" tag="p">
