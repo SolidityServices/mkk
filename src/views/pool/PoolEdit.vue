@@ -54,7 +54,7 @@ export default {
     ]),
   },
   methods: {
-    async search() {
+    async loadPool() {
       try {
         await this.connectICO.pool.pool.at(this.address);
         this.pool = new LocalPool(this.address);
@@ -81,7 +81,9 @@ export default {
             text: 'Successfully sent funds to sale!',
             duration: -1,
           });
-        } else if (this.mode === 'mew') {
+        }
+
+        if (this.mode === 'mew') {
           const url = mewLinkBuilder(
             this.address,
             response.callData,
@@ -91,6 +93,8 @@ export default {
           );
           openMewUrl(url);
         }
+
+        this.loadPool();
       } catch (e) {
         this.$notify({
           type: 'error',
@@ -113,7 +117,9 @@ export default {
             text: 'Pool successfully stopped!',
             duration: -1,
           });
-        } else if (this.mode === 'mew') {
+        }
+
+        if (this.mode === 'mew') {
           const url = mewLinkBuilder(
             this.address,
             response.callData,
@@ -123,6 +129,8 @@ export default {
           );
           openMewUrl(url);
         }
+
+        this.loadPool();
       } catch (e) {
         this.$notify({
           type: 'error',
@@ -145,8 +153,9 @@ export default {
             text: response,
             duration: -1,
           });
-        } else if (this.mode === 'mew') {
-          // @TODO
+        }
+
+        if (this.mode === 'mew') {
           const url = mewLinkBuilder(
             this.address,
             response.callData,
@@ -178,7 +187,9 @@ export default {
             text: 'Successful creator withdraw!',
             duration: -1,
           });
-        } else if (this.mode === 'mew') {
+        }
+
+        if (this.mode === 'mew') {
           const url = mewLinkBuilder(
             this.address,
             response.callData,
@@ -210,7 +221,9 @@ export default {
             text: 'Successful sale token push out!',
             duration: -1,
           });
-        } else if (this.mode === 'mew') {
+        }
+
+        if (this.mode === 'mew') {
           const url = mewLinkBuilder(
             this.address,
             response.callData,
@@ -234,14 +247,8 @@ export default {
   created() {
     if (this.$route.params.address) {
       this.address = this.$route.params.address;
-      this.search();
+      this.loadPool();
     }
   },
-  // mounted() {
-  //   if (this.$route.params.address) {
-  //     this.address = this.$route.params.address;
-  //     this.search();
-  //   }
-  // },
 };
 </script>
