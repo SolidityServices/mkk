@@ -336,7 +336,7 @@ export default {
     async initUserContributions() {
       const userContribution = await this.connectICO.pool.getGrossContributionByContributor(this.address, this.connectICO.account);
 
-      this.userContribution = Web3.utils.fromWei(Web3.utils.toBN(userContribution), 'ether');
+      this.userContribution = Web3.utils.fromWei((userContribution).toString(), 'ether');
     },
     async initTokens() {
       this.tokensConfirmed = await this.connectICO.pool.areTokensReceivedConfirmed(this.address);
