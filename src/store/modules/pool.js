@@ -3,17 +3,29 @@ function filterPools(pools, account, filter, category) {
   return pools.filter((item) => {
     switch (category) {
       case 'active':
-        if (item.saleStartDate <= now && item.saleEndDate > now && item.isStopped === false) {
+        if (
+          item.saleStartDate <= now && item.saleEndDate > now
+          && item.isStopped === false
+          && item.isSentToSale === false
+        ) {
           break;
         }
         return false;
       case 'upcoming':
-        if (item.saleStartDate > now) {
+        if (
+          item.saleStartDate > now
+          && item.isStopped === false
+          && item.isSentToSale === false
+        ) {
           break;
         }
         return false;
       case 'closed':
-        if (item.saleEndDate <= now || item.isStopped === true) {
+        if (
+          item.saleEndDate <= now
+          || item.isStopped === true
+          || item.isSentToSale === true
+        ) {
           break;
         }
         return false;
