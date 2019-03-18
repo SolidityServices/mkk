@@ -108,10 +108,7 @@
           </div>
 
           <div class="row pt-4">
-            <pool :pool="this.pool"
-                  :disabled="true"
-                  v-if="pool && showAdvancedDetails"
-            />
+            <pool :pool="this.pool" :disabled="true" v-if="pool && showAdvancedDetails" />
           </div>
 
           <hr class="blue-hr-fullw my-5">
@@ -135,7 +132,7 @@
                 <span v-if="errors.has('Gwei amount')" v-text="errors.first('Gwei amount')" class="text-danger"></span>
               </div>
 
-              <button class="btn px-4 blue-submit btn-block" @click="addPushOutToken">Add auto push out tokens</button>
+              <button class="btn px-4 blue-submit btn-block" @click="addPushOutToken" :disabled="pool.isStopped">Add auto push out tokens</button>
             </div>
           </div>
 
@@ -164,7 +161,7 @@
             </div>
           </div>
 
-          <div class="d-flex flex-row align-items-center mb-3">
+          <div class="d-flex flex-row align-items-center mb-4">
             <div class="col-12 col-md-4 d-flex justify-content-end">
               <div class="d-lg-inline-block orange-18-bold pr-2 px-0">Withdraw Amount in ETH:</div>
             </div>
@@ -182,28 +179,37 @@
             </div>
           </div>
 
-          <div class="row mt-5">
-            <div class="d-flex row justify-content-center w-100 py-5">
-              <div class="text-center text-lg-left mx-2">
-                <button class="btn px-4 white-submit" @click="withdrawTokens" :disabled="!pool.isSentToSale">Withdraw tokens</button>
+
+          <div class="d-flex flex-row mb-4">
+            <div class="col-12 col-lg-8 offset-lg-4 d-flex flex-row align-items-center">
+              <div class="col-12 col-lg-4">
+                <button class="btn btn-block px-4 white-submit" @click="withdrawTokens" :disabled="!pool.isSentToSale">Withdraw tokens</button>
               </div>
 
-
-              <div class="text-center text-lg-left mx-2">
-                <button class="btn px-4 white-submit" @click="withdrawRefund" :disabled="!withDrawRefundAvailable">Withdraw refund</button>
+              <div class="col-12 col-lg-4">
+                <button class="btn btn-block px-4 white-submit" @click="withdrawRefund" :disabled="!withDrawRefundAvailable">Withdraw refund</button>
               </div>
-            </div>
-            <div class="d-flex flex-row justify-content-center col-12 col-lg-6 mx-auto pb-5">
-              <input type="text"
-                     v-validate="'required|eth-address'"
-                     data-vv-name="Custom token"
-                     class="form-control input-text w-100 mx-2"
-                     v-model="customToken" placeholder="Custom token"
-                     :disabled="!pool.isSentToSale"/>
-              <button class="btn px-4 blue-submit text-lg-center mx-2" @click="withdrawCustomToken" :disabled="!pool.isSentToSale">Withdraw custom token</button>
             </div>
           </div>
 
+          <div class="d-flex flex-row mb-4">
+            <div class="col-12 col-lg-8 offset-lg-4 d-flex flex-row align-items-center">
+              <div class="col-12 col-lg-4">
+                <input type="text"
+                       v-validate="'required|eth-address'"
+                       data-vv-name="Custom token"
+                       class="form-control input-text w-100"
+                       v-model="customToken" placeholder="Custom token"
+                       :disabled="!pool.isSentToSale"/>
+              </div>
+
+              <div class="col-12 col-lg-4">
+                <button class="btn btn-block px-4 blue-submit text-lg-center" @click="withdrawCustomToken" :disabled="!pool.isSentToSale">Withdraw custom token</button>
+              </div>
+            </div>
+          </div>
+
+          <hr class="blue-hr-fullw my-5">
         </div>
         <div class="col-1"></div>
       </div>
@@ -240,7 +246,6 @@ export default {
     withdrawAmount: 0.000001,
     showAdvancedDetails: false,
     customToken: '',
-    contributions: [],
     blacklistedCountries: [],
     withDrawRefundAvailable: false,
     userContribution: 0,
@@ -276,13 +281,10 @@ export default {
 
       this.userContribution = Web3.utils.fromWei(Web3.utils.toBN(userContribution), 'ether');
     },
-    async reloadPool() {
-      console.log('Reload pool called.');
-
+    async loadPool() {
       try {
         await this.connectICO.pool.pool.at(this.address);
         this.pool = new LocalPool(this.address);
-        await this.fetchContributions();
       } catch (e) {
         this.$notify({
           type: 'error',
@@ -293,25 +295,6 @@ export default {
 
         console.log(e);
       }
-    },
-    async search() {
-      try {
-        await this.connectICO.pool.pool.at(this.address);
-        this.pool = new LocalPool(this.address);
-        await this.fetchContributions();
-      } catch (e) {
-        this.$notify({
-          type: 'error',
-          title: 'Not found!',
-          text: 'Pool not found by the given address!',
-          duration: -1,
-        });
-
-        console.log(e);
-      }
-    },
-    async fetchContributions() {
-      this.contributions = await this.connectICO.pool.getContributionsByContributor(this.address, this.connectICO.account);
     },
     async contribute() {
       const isValid = await this.$validator.validate('Deposit amount', this.depositAmount);
@@ -520,7 +503,7 @@ export default {
   mounted() {
     if (this.$route.params.address) {
       this.address = this.$route.params.address;
-      this.search();
+      this.loadPool();
       this.initUserContributions();
       this.initCountryData();
       this.initWithDrawRefundAvailable();
@@ -528,7 +511,7 @@ export default {
       const self = this;
 
       this.connectICO.pool.watchContributionEvents(this.address, null, () => {
-        self.reloadPool();
+        self.loadPool();
         self.initUserContributions();
         self.initWithDrawRefundAvailable();
       });

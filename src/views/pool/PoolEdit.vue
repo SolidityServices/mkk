@@ -1,15 +1,15 @@
 <template>
   <div class="d-flex flex-column">
     <div class="d-flex flex-row justify-content-center pt-3">
-      <button class="btn blue-submit px-4 mx-3" @click="sendFundsToSale">
+      <button class="btn blue-submit px-4 mx-3" @click="sendFundsToSale" :disabled="!pool || pool.isSentToSale || pool.isStopped">
         Send funds to sale
       </button>
 
-      <button class="btn blue-submit px-4 mx-3" @click="stopPool">
+      <button class="btn blue-submit px-4 mx-3" @click="stopPool" :disabled="!pool || pool.isStopped">
         Stop pool
       </button>
 
-      <button class="btn blue-submit px-4 mx-3" @click="confirmTokensReceived">
+      <button class="btn blue-submit px-4 mx-3" @click="confirmTokensReceived" :disabled="!pool || !pool.isSentToSale">
         Confirms token received
       </button>
 
@@ -28,10 +28,7 @@
       </button>
     </div>
 
-    <pool :pool="this.pool"
-          :disabled="false"
-          v-if="pool"
-    />
+    <pool :pool="this.pool" :disabled="false" v-if="pool" />
   </div>
 </template>
 <script>
@@ -234,11 +231,17 @@ export default {
       }
     },
   },
-  mounted() {
+  created() {
     if (this.$route.params.address) {
       this.address = this.$route.params.address;
       this.search();
     }
   },
+  // mounted() {
+  //   if (this.$route.params.address) {
+  //     this.address = this.$route.params.address;
+  //     this.search();
+  //   }
+  // },
 };
 </script>
