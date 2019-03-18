@@ -81,9 +81,16 @@
                     </div>
 
                     <div class="orange-24-16-bold d-flex justify-content-between" v-if="tokensConfirmed">
-                        <span class="blue-18-reg">Tokens:</span>
+                        <span class="blue-18-reg">Pool Tokens:</span>
                         <span class="orange-18-bold text-right">
                             {{ tokenBalance }} {{ tokenSymbol }}
+                        </span>
+                    </div>
+
+                    <div class="orange-24-16-bold d-flex justify-content-between" v-if="tokensConfirmed && userTokens > 0">
+                        <span class="blue-18-reg">User Tokens:</span>
+                        <span class="orange-18-bold text-right">
+                            {{ userTokens }} {{ tokenSymbol }}
                         </span>
                     </div>
                 </div>
@@ -307,8 +314,9 @@ export default {
     autoTokenWithDrawDate: '',
     autoTokenWithDrawGweiValue: 0,
     tokensConfirmed: false,
-    tokenBalance: 0,
     tokenSymbol: '',
+    tokenBalance: 0,
+    userTokens: 0,
   }),
   computed: {
     ...mapGetters([
@@ -344,6 +352,7 @@ export default {
       if (this.tokensConfirmed) {
         this.tokenSymbol = await this.connectICO.erc.getSymbol(this.pool.tokenAddress);
         this.tokenBalance = await this.connectICO.erc.getBalance(this.pool.tokenAddress, this.address);
+        this.userTokens = await this.connectICO.pool.getTokensOwedToContributor(this.address, this.connectICO.account);
       }
     },
     async loadPool() {
