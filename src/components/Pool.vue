@@ -474,6 +474,15 @@
 
         <hr class="blue-hr-fullw my-5 w-100">
       </div>
+    </section>
+
+    <section class="mb-4">
+      <div class="mb-4">
+        <div class="o-border d-inline"></div>
+        <div class="d-inline blue-36-20-bold"> Advanced Sale details
+          <hr align="left" class="blue-hr-2">
+        </div>
+      </div>
 
       <div class="row mx-0 mb-2" v-if="!disabled">
         <div class="col-12 col-md-6 mb-2 mb-lg-0">
