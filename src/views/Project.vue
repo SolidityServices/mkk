@@ -192,7 +192,7 @@
             <hr align="left" class="blue-hr-2">
         </div>
 
-        <div>
+        <div class="mb-4">
             <div class="row mx-0 mb-3">
                 <div class="col-12 col-lg-6 mb-2 mb-lg-0">
                     <span class="orange-18-bold">Deposit Amount in ETH:</span>
@@ -233,6 +233,18 @@
                 <div class="col-12 col-lg-3 mb-2 mb-lg-0">
                     <button class="btn px-4 blue-submit btn-block" @click="withdraw" :disabled="!pool.isStopped && pool.isSentToSale">
                         Withdraw ETH
+                    </button>
+                </div>
+            </div>
+
+            <div class="row mx-0 mb-3">
+                <div class="col-12 col-lg-6 mb-2 mb-lg-0">
+                    <span class="orange-18-bold">Withdraw all ETH:</span>
+                </div>
+
+                <div class="col-12 col-lg-6 mb-2 mb-lg-0">
+                    <button class="btn px-4 blue-submit btn-block" @click="withdrawAll" :disabled="(!pool.isStopped && pool.isSentToSale) || !(parseFloat(userContribution) > 0)">
+                        Withdraw all ETH
                     </button>
                 </div>
             </div>
@@ -415,6 +427,42 @@ export default {
 
       try {
         const response = await this.connectICO.pool.withdraw(this.address, this.withdrawAmount);
+        if (this.mode === 'mm') {
+          this.$notify({
+            type: 'success',
+            title: 'Successful withdraw!',
+            text: `${this.withdrawAmount} ETH`,
+            duration: -1,
+          });
+        }
+
+        if (this.mode === 'mew') {
+          const url = mewLinkBuilder(
+            this.connectICO.pool.pool.address,
+            response.callData,
+            this.withdrawAmount,
+            await window.web3.eth.net.getNetworkType(),
+            response.gasLimit,
+          );
+          openMewUrl(url);
+        }
+
+        this.loadPool();
+        this.initUserContributions();
+        this.initWithDrawRefundAvailable();
+      } catch (e) {
+        this.$notify({
+          type: 'error',
+          text: e.message,
+          duration: -1,
+        });
+
+        console.log(e);
+      }
+    },
+    async withdrawAll() {
+      try {
+        const response = await this.connectICO.pool.withdraw(this.address, 0);
         if (this.mode === 'mm') {
           this.$notify({
             type: 'success',
