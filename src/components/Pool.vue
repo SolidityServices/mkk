@@ -829,7 +829,7 @@ export default {
     async addAutoSendToSale() {
       try {
         const date = moment(this.sendToSaleTime, this.datepickerOptions.format).unix();
-        const gasPrice = Web3.utils.toWei(Web3.utils.toBN(this.sendToSaleGweiValue).toString(), 'gwei');
+        const gasPrice = Web3.utils.toWei((this.sendToSaleGweiValue).toString(), 'gwei');
         const response = await this.connectICO.automations.addSendToSale(this.pool.poolAddress, date, gasPrice);
 
         if (this.mode === 'mm') {
@@ -840,7 +840,7 @@ export default {
           });
         } else if (this.mode === 'mew') {
           const gasCost = await this.connectICO.automations.getSendToSaleGasCost();
-          const value = Web3.utils.toBN(gasPrice * gasCost).toString();
+          const value = (gasPrice * gasCost).toString();
           const url = mewLinkBuilder(this.address, response.callData, value, await window.web3.eth.net.getNetworkType(), response.gasLimit);
           openMewUrl(url);
         }

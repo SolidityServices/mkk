@@ -600,7 +600,7 @@ export default {
     },
     async addPushOutToken() {
       try {
-        const gasPrice = Web3.utils.toWei(Web3.utils.toBN(this.autoTokenWithDrawGweiValue).toString(), 'gwei');
+        const gasPrice = Web3.utils.toWei((this.autoTokenWithDrawGweiValue).toString(), 'gwei');
         const response = await this.connectICO.automations.addPushOutToken(this.address, this.connectICO.account, gasPrice);
 
         if (this.mode === 'mm') {
