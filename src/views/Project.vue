@@ -466,8 +466,7 @@ export default {
         if (this.mode === 'mm') {
           this.$notify({
             type: 'success',
-            title: 'Successful withdraw!',
-            text: `${this.withdrawAmount} ETH`,
+            title: 'All your ETH Successfully withdrawn!',
             duration: -1,
           });
         }
