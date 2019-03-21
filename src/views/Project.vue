@@ -86,13 +86,6 @@
                             {{ tokenBalance }} {{ tokenSymbol }}
                         </span>
                     </div>
-
-                    <div class="orange-24-16-bold d-flex justify-content-between" v-if="tokensConfirmed && userTokens > 0">
-                        <span class="blue-18-reg">User Tokens:</span>
-                        <span class="orange-18-bold text-right">
-                            {{ userTokens }} {{ tokenSymbol }}
-                        </span>
-                    </div>
                 </div>
             </div>
         </div>
@@ -251,6 +244,12 @@
         </div>
 
         <div>
+            <div class="row mx-0 mb-3">
+                <div class="col-12 col-lg-6 mb-2 mb-lg-0">
+                    <span class="orange-18-bold">Available tokens to withdraw: {{ userTokens }} {{ tokenSymbol }}</span>
+                </div>
+            </div>
+
             <div class="row mx-0 mb-3">
                 <div class="col-12 col-lg-6 mb-2 mb-lg-0">
                     <button class="btn btn-block px-4 white-submit" @click="withdrawTokens" :disabled="!pool.isSentToSale">
