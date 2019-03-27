@@ -55,6 +55,7 @@ export default class LocalPool {
 
   async init() {
     let params = this.initParams();
+
     if (this.poolAddress) {
       params = await this.connectIco.pool.getPoolParams(this.poolAddress);
       params.balance = await this.connectIco.pool.getPoolBalance(this.poolAddress);
@@ -70,15 +71,15 @@ export default class LocalPool {
     this.kycAddress = params.kycAddress;
     this.provider = params.provider;
     this.creator = params.creator;
-    this.minContribution = Web3.utils.fromWei((params.minContribution).toString(), 'ether');
-    this.maxContribution = Web3.utils.fromWei((params.maxContribution).toString(), 'ether');
-    this.minPoolGoal = Web3.utils.fromWei((params.minPoolGoal).toString(), 'ether');
+    this.minContribution = params.minContribution !== '' ? Web3.utils.fromWei(`${(params.minContribution / (1000 * 1000)).toString()}000000`, 'ether') : '';
+    this.maxContribution = params.maxContribution !== '' ? Web3.utils.fromWei(`${(params.maxContribution / (1000 * 1000)).toString()}000000`, 'ether') : '';
+    this.minPoolGoal = params.minPoolGoal !== '' ? Web3.utils.fromWei(`${(params.minPoolGoal / (1000 * 1000)).toString()}000000`, 'ether') : '';
+    this.maxPoolAllocation = params.maxPoolAllocation !== '' ? Web3.utils.fromWei(`${(params.maxPoolAllocation / (1000 * 1000)).toString()}000000`, 'ether') : '';
     this.saleStartDate = new Date(params.saleStartDate * 1000);
     this.saleEndDate = new Date(params.saleEndDate * 1000);
-    this.maxPoolAllocation = Web3.utils.fromWei((params.maxPoolAllocation).toString(), 'ether');
-    this.withdrawTimelock = params.withdrawTimelock !== 0 ? params.withdrawTimelock / 60 / 60 : 0;
+    this.withdrawTimelock = params.withdrawTimelock !== '' ? params.withdrawTimelock / 60 / 60 : '';
     this.providerFeeRate = params.providerFeeRate !== 0 ? params.providerFeeRate / 100 : 0;
-    this.creatorFeeRate = params.creatorFeeRate !== 0 ? params.creatorFeeRate / 10 : 0;
+    this.creatorFeeRate = params.creatorFeeRate !== '' ? params.creatorFeeRate / 100 : '';
     this.whitelistPool = params.whitelistPool;
     this.strictlyTrustlessPool = params.strictlyTrustlessPool;
     this.adminAddresses = params.adminAddresses ? params.adminAddresses : [];
@@ -87,7 +88,7 @@ export default class LocalPool {
     this.balance = params.balance;
     this.isStopped = params.isStopped;
     this.isSentToSale = params.isSentToSale;
-    this.allGrossContributions = Web3.utils.fromWei((params.allGrossContributions).toString(), 'ether');
+    this.allGrossContributions = Web3.utils.fromWei((`${(params.allGrossContributions / (1000 * 1000)).toString()}000000`).toString(), 'ether');
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -99,15 +100,15 @@ export default class LocalPool {
     params.saleParticipateFunctionSig = '';
     params.saleWithdrawFunctionSig = '';
     params.poolDescription = '';
-    params.creatorFeeRate = 0;
+    params.creatorFeeRate = '';
     const date = Math.floor(new Date() / 1000);
     params.saleStartDate = date;
     params.saleEndDate = date + (24 * 60 * 60 * 7); // add 7 days
-    params.minContribution = 1000000000000;
-    params.maxContribution = 1000000000000;
-    params.minPoolGoal = 1000000000000;
-    params.maxPoolAllocation = 10000000000000000;
-    params.withdrawTimelock = 0;
+    params.minContribution = '';
+    params.maxContribution = '';
+    params.minPoolGoal = '';
+    params.maxPoolAllocation = '';
+    params.withdrawTimelock = '';
     params.whitelistPool = false;
     params.strictlyTrustlessPool = false;
     params.adminAddresses = [];

@@ -117,7 +117,8 @@
                      class="form-control input-text w-100"
                      step="0.01"
                      min="0"
-                     max="100"
+                     max="0.1"
+                     placeholder="0"
                      v-model="pool.creatorFeeRate">
               <span v-if="errors.has('Creator fee')" v-text="errors.first('Creator fee')" class="text-danger"></span>
             </div>
@@ -163,12 +164,13 @@
           </div>
         </div>
 
-        <div class="d-flex flex-row flex-wrap">
+        <div class="row">
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Minimum pool goal in ETH</div>
             <div class="col-12 col-lg-6">
-              <input type="number" v-validate="'required|decimal|min_value:0'"
+              <input type="number" v-validate="'decimal|min_value:0'"
                      step=0.01
+                     placeholder="10,00"
                      class="form-control input-text w-100" data-vv-name="Minimum pool goal"
                      v-model="pool.minPoolGoal">
               <span v-if="errors.has('Minimum pool goal')" v-text="errors.first('Minimum pool goal')" class="text-danger"></span>
@@ -181,41 +183,50 @@
               <input type="number" v-validate="'required|decimal|min_value:0.01'"
                      step=0.01
                      min=0.01
+                     placeholder="1000"
                      class="form-control input-text w-100" data-vv-name="Max allocation"
                      v-model="pool.maxPoolAllocation">
               <span v-if="errors.has('Max allocation')" v-text="errors.first('Max allocation')" class="text-danger"></span>
             </div>
           </div>
+        </div>
 
+        <div class="row">
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Withdraw timelock in hours</div>
             <div class="col-12 col-lg-6">
-              <input type="number" v-validate="'required|numeric|min_value:0|max_value:72'"
-                     class="form-control input-text w-100" data-vv-name="Withdraw time lock"
+              <input type="number"
+                     v-validate="'required|numeric|min_value:0|max_value:72'" data-vv-name="Withdraw time lock"
+                     placeholder="0"
+                     class="form-control input-text w-100"
                      v-model="pool.withdrawTimelock">
               <span v-if="errors.has('Withdraw time lock')" v-text="errors.first('Withdraw time lock')" class="text-danger"></span>
             </div>
           </div>
+        </div>
 
+        <div class="row">
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Minimum ETH contribution (optional)</div>
+            <div class="col-12 col-lg-6 blue-18-reg">Soft cap ETH (optional)</div>
             <div class="col-12 col-lg-6">
               <input type="number" v-validate="'decimal|min_value:0'" min="0"
                      step="0.000001"
-                     class="form-control input-text w-100" data-vv-name="Minimum contribution"
+                     placeholder="0,10"
+                     class="form-control input-text w-100" data-vv-name="Soft cap"
                      v-model="pool.minContribution"/>
-              <span v-if="errors.has('Minimum contribution')" v-text="errors.first('Minimum contribution')" class="text-danger"></span>
+              <span v-if="errors.has('Soft cap')" v-text="errors.first('Soft cap')" class="text-danger"></span>
             </div>
           </div>
 
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Maximum ETH contribution (optional)</div>
+            <div class="col-12 col-lg-6 blue-18-reg">Hard cap ETH (optional)</div>
             <div class="col-12 col-lg-6">
               <input type="number" v-validate="'decimal|min_value:0'" min="0"
                      step="0.000001"
-                     class="form-control input-text" data-vv-name="Maximum contribution"
+                     placeholder="100"
+                     class="form-control input-text" data-vv-name="Hard cap"
                      v-model="pool.maxContribution"/>
-              <span v-if="errors.has('Maximum contribution')" v-text="errors.first('Maximum contribution')" class="text-danger"></span>
+              <span v-if="errors.has('Hard cap')" v-text="errors.first('Hard cap')" class="text-danger"></span>
             </div>
           </div>
         </div>
@@ -345,7 +356,7 @@
             Created pool address
           </div>
           <div class="card-body orange-24-bold">
-            <a :href="`https://etherscan.io/address/${poolAddress}`">
+            <a target="_blank" :href="`https://etherscan.io/address/${poolAddress}`">
               {{ poolAddress }}
             </a>
           </div>
@@ -535,6 +546,8 @@ export default {
               text: `${response}`,
               duration: -1,
             });
+
+            // this.$router.push({ name: 'project', params: { address: this.poolAddress } });
           }
         }
 
