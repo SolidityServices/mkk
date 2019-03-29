@@ -11,7 +11,9 @@
           <div class="white-16-bold my-auto">Project Name</div>
         </div>
 
-        <router-link class="btn blue-submit px-4 mr-3" :to="{name: 'project.edit', params: {address: pool.poolAddress}}" v-if="pool && pool.creator === connectICO.account">
+        <router-link class="btn blue-submit px-4 mr-3"
+                     :to="{name: 'project.edit', params: {address: pool.poolAddress}}"
+                     v-if="isEditable">
           Edit pool
         </router-link>
       </section>
@@ -344,6 +346,23 @@ export default {
 
       return 0;
     },
+    isEditable() {
+      if (this.pool && this.pool.creator && this.pool.creator.toUpperCase() === this.connectICO.account.toUpperCase()) {
+        return true;
+      }
+
+      if (this.pool && this.pool.adminAddresses) {
+        const adminAddressesUppercase = this.pool.adminAddresses.map((address) => {
+          return address.toUpperCase();
+        });
+
+        if (adminAddressesUppercase.indexOf(this.connectICO.account.toUpperCase()) !== -1) {
+          return true;
+        }
+      }
+
+      return false;
+    },
   },
   methods: {
     async initCountryData() {
@@ -632,7 +651,7 @@ export default {
           openMewUrl(url);
         }
 
-        console.log(response);
+        // console.log(response);
       } catch (e) {
         this.$notify({
           type: 'error',
