@@ -882,7 +882,7 @@ export default {
           this.poolAddress = response;
           this.$notify({
             type: 'success',
-            text: `Pool created! ${response}`,
+            text: 'Pool edit succesful!',
             duration: 5000,
           });
         }

@@ -545,8 +545,7 @@ export default {
 
             this.$notify({
               type: 'success',
-              title: 'Pool created!',
-              text: `${response}`,
+              text: `Pool created! ${response}`,
               duration: 5000,
             });
 
