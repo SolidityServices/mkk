@@ -232,7 +232,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
   },

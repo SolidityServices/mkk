@@ -377,7 +377,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async contribute() {
@@ -427,7 +427,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async withdraw() {
@@ -468,7 +468,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async withdrawAll() {
@@ -503,7 +503,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async withdrawTokens() {
@@ -532,7 +532,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async withdrawRefund() {
@@ -562,7 +562,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async withdrawCustomToken() {
@@ -591,7 +591,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async checkWithDrawRefundAvailable() {
@@ -640,7 +640,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
   },

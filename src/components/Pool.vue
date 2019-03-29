@@ -687,7 +687,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async removeAdminAddresses() {
@@ -707,7 +707,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async addWhitelistAddressToAdd(address) {
@@ -755,7 +755,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async removeWhitelistAddresses() {
@@ -775,7 +775,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async initCountryData() {
@@ -803,7 +803,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async removeFromBlacklist() {
@@ -823,7 +823,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async addAutoSendToSale() {
@@ -853,7 +853,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async submit() {
@@ -893,7 +893,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async sendSaleParticipateWithCalldata() {
@@ -925,7 +925,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async sendSaleWithdrawRequestWithCalldata() {
@@ -957,7 +957,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async sendToSaleWithCalldata() {
@@ -989,7 +989,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async withdrawFromSaleWithCalldata() {
@@ -1021,7 +1021,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async setSaleParticipateCalldata() {
@@ -1053,7 +1053,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async setSaleWithdrawCalldata() {
@@ -1085,7 +1085,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async sendToSaleWithCalldataParameter() {
@@ -1117,7 +1117,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async withdrawFromSaleWithCalldataParameter() {
@@ -1149,7 +1149,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
   },

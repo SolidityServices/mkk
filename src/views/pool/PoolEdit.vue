@@ -79,7 +79,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async sendFundsToSale() {
@@ -115,7 +115,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async stopPool() {
@@ -151,7 +151,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async confirmTokensReceived() {
@@ -185,7 +185,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async creatorWithdraw() {
@@ -219,7 +219,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
     async pushOutTokens() {
@@ -253,7 +253,7 @@ export default {
           duration: 5000,
         });
 
-        console.log(e);
+        // console.log(e);
       }
     },
   },
