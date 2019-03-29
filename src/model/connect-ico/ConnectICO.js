@@ -3,7 +3,7 @@ import PoolFactory from './PoolFactory';
 import Pool from './Pool';
 import KYC from './KYC';
 import Automations from './Automations';
-import DetailedERC20 from './DetailedERC20';
+import ERC20 from './DetailedERC20';
 
 export default class ConnectICO {
   constructor(mode) {
@@ -51,7 +51,7 @@ export default class ConnectICO {
       this.poolFactory = new PoolFactory(this.web3.currentProvider, this.account, this.web3, this.mode);
       this.KYC = new KYC(this.web3.currentProvider, this.account, this.web3);
       this.automations = new Automations(this.web3.currentProvider, this.account, this.web3, this.mode);
-      this.erc = new DetailedERC20(this.web3.currentProvider, this.account, this.web3);
+      this.erc = new ERC20(this.web3.currentProvider, this.account, this.web3);
 
       console.log('Application initialized');
       this.loaded = true;
