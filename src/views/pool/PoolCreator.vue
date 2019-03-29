@@ -167,46 +167,6 @@
           </div>
         </div>
 
-        <div class="row">
-          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Minimum pool goal in ETH</div>
-            <div class="col-12 col-lg-6">
-              <input type="number" v-validate="'decimal|min_value:0'"
-                     step=0.01
-                     placeholder="10,00"
-                     class="form-control input-text w-100" data-vv-name="Minimum pool goal"
-                     v-model="pool.minPoolGoal">
-              <span v-if="errors.has('Minimum pool goal')" v-text="errors.first('Minimum pool goal')" class="text-danger"></span>
-            </div>
-          </div>
-
-          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Max allocation in ETH</div>
-            <div class="col-12 col-lg-6">
-              <input type="number" v-validate="'required|decimal|min_value:0.01'"
-                     step=0.01
-                     min=0.01
-                     placeholder="1000"
-                     class="form-control input-text w-100" data-vv-name="Max allocation"
-                     v-model="pool.maxPoolAllocation">
-              <span v-if="errors.has('Max allocation')" v-text="errors.first('Max allocation')" class="text-danger"></span>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Withdraw timelock in hours</div>
-            <div class="col-12 col-lg-6">
-              <input type="number"
-                     v-validate="'required|numeric|min_value:0|max_value:72'" data-vv-name="Withdraw time lock"
-                     placeholder="0"
-                     class="form-control input-text w-100"
-                     v-model="pool.withdrawTimelock">
-              <span v-if="errors.has('Withdraw time lock')" v-text="errors.first('Withdraw time lock')" class="text-danger"></span>
-            </div>
-          </div>
-        </div>
 
         <div class="row">
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
@@ -235,6 +195,50 @@
         </div>
       </div>
 
+
+      <div class="row">
+        <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
+          <div class="col-12 col-lg-6 blue-18-reg">Withdraw timelock in hours</div>
+          <div class="col-12 col-lg-6">
+            <input type="number"
+                   v-validate="'required|numeric|min_value:0|max_value:72'" data-vv-name="Withdraw time lock"
+                   placeholder="0"
+                   class="form-control input-text w-100"
+                   v-model="pool.withdrawTimelock">
+            <span v-if="errors.has('Withdraw time lock')" v-text="errors.first('Withdraw time lock')" class="text-danger"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
+          <div class="col-12 col-lg-6 blue-18-reg">Minimum pool goal in ETH</div>
+          <div class="col-12 col-lg-6">
+            <input type="number"
+                   v-validate="'required|decimal|min_value:0'"
+                   step=0.01
+                   placeholder="10,00"
+                   class="form-control input-text w-100" data-vv-name="Minimum pool goal"
+                   v-model="pool.minPoolGoal">
+            <span v-if="errors.has('Minimum pool goal')" v-text="errors.first('Minimum pool goal')" class="text-danger"></span>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
+          <div class="col-12 col-lg-6 blue-18-reg">Max allocation in ETH</div>
+          <div class="col-12 col-lg-6">
+            <input type="number"
+                   v-validate="'required|decimal|min_value:0.01'"
+                   data-vv-name="Max allocation"
+                   step=0.01
+                   min=0.01
+                   placeholder="1000"
+                   class="form-control input-text w-100"
+                   v-model="pool.maxPoolAllocation">
+            <span v-if="errors.has('Max allocation')" v-text="errors.first('Max allocation')" class="text-danger"></span>
+          </div>
+        </div>
+      </div>
 
       <hr class="blue-hr-fullw my-5 w-100">
 

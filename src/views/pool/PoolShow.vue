@@ -119,7 +119,8 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Minimum pool goal in ETH</div>
             <div class="col-12 col-lg-6">
-              <input type="number" v-validate="'required|numeric|min_value:0'"
+              <input type="number"
+                     v-validate="'required|numeric|min_value:0'"
                      class="form-control input-text w-100" disabled
                      data-vv-name="Minimum pool goal"
                      v-model="pool.minPoolGoal">
@@ -129,7 +130,8 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Max allocation in ETH</div>
             <div class="col-12 col-lg-6">
-              <input type="number" v-validate="'required|numeric|min_value:0'"
+              <input type="number"
+                     v-validate="'required|decimal|min_value:0.01'"
                      class="form-control input-text w-100" disabled
                      data-vv-name="Max allocation"
                      v-model="pool.maxPoolAllocation">
