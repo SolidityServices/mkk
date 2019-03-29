@@ -909,7 +909,13 @@ export default {
             duration: -1,
           });
         } else if (this.mode === 'mew') {
-          const url = mewLinkBuilder(this.address, response.callData, 0, await window.web3.eth.net.getNetworkType(), response.gasLimit);
+          const url = mewLinkBuilder(
+            this.address,
+            response.callData,
+            0,
+            await window.web3.eth.net.getNetworkType(),
+            response.gasLimit,
+          );
           openMewUrl(url);
         }
 
@@ -935,7 +941,13 @@ export default {
             duration: -1,
           });
         } else if (this.mode === 'mew') {
-          const url = mewLinkBuilder(this.address, response.callData, 0, await window.web3.eth.net.getNetworkType(), response.gasLimit);
+          const url = mewLinkBuilder(
+            this.address,
+            response.callData,
+            0,
+            await window.web3.eth.net.getNetworkType(),
+            response.gasLimit,
+          );
           openMewUrl(url);
         }
 
@@ -961,7 +973,13 @@ export default {
             duration: -1,
           });
         } else if (this.mode === 'mew') {
-          const url = mewLinkBuilder(this.address, response.callData, 0, await window.web3.eth.net.getNetworkType(), response.gasLimit);
+          const url = mewLinkBuilder(
+            this.address,
+            response.callData,
+            0,
+            await window.web3.eth.net.getNetworkType(),
+            response.gasLimit,
+          );
           openMewUrl(url);
         }
 
@@ -987,7 +1005,13 @@ export default {
             duration: -1,
           });
         } else if (this.mode === 'mew') {
-          const url = mewLinkBuilder(this.address, response.callData, 0, await window.web3.eth.net.getNetworkType(), response.gasLimit);
+          const url = mewLinkBuilder(
+            this.address,
+            response.callData,
+            0,
+            await window.web3.eth.net.getNetworkType(),
+            response.gasLimit,
+          );
           openMewUrl(url);
         }
 
@@ -1013,7 +1037,13 @@ export default {
             duration: -1,
           });
         } else if (this.mode === 'mew') {
-          const url = mewLinkBuilder(this.address, response.callData, 0, await window.web3.eth.net.getNetworkType(), response.gasLimit);
+          const url = mewLinkBuilder(
+            this.address,
+            response.callData,
+            0,
+            await window.web3.eth.net.getNetworkType(),
+            response.gasLimit,
+          );
           openMewUrl(url);
         }
 
@@ -1039,7 +1069,13 @@ export default {
             duration: -1,
           });
         } else if (this.mode === 'mew') {
-          const url = mewLinkBuilder(this.address, response.callData, 0, await window.web3.eth.net.getNetworkType(), response.gasLimit);
+          const url = mewLinkBuilder(
+            this.address,
+            response.callData,
+            0,
+            await window.web3.eth.net.getNetworkType(),
+            response.gasLimit,
+          );
           openMewUrl(url);
         }
 
@@ -1065,7 +1101,13 @@ export default {
             duration: -1,
           });
         } else if (this.mode === 'mew') {
-          const url = mewLinkBuilder(this.address, response.callData, 0, await window.web3.eth.net.getNetworkType(), response.gasLimit);
+          const url = mewLinkBuilder(
+            this.address,
+            response.callData,
+            0,
+            await window.web3.eth.net.getNetworkType(),
+            response.gasLimit,
+          );
           openMewUrl(url);
         }
 
@@ -1091,7 +1133,13 @@ export default {
             duration: -1,
           });
         } else if (this.mode === 'mew') {
-          const url = mewLinkBuilder(this.address, response.callData, 0, await window.web3.eth.net.getNetworkType(), response.gasLimit);
+          const url = mewLinkBuilder(
+            this.address,
+            response.callData,
+            0,
+            await window.web3.eth.net.getNetworkType(),
+            response.gasLimit,
+          );
           openMewUrl(url);
         }
 
