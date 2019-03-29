@@ -649,10 +649,11 @@ export default class Pool {
    * @param {number} amount ETH amount to send in wei
    */
   async contribute(poolAddress, amount) {
-    if (this.mode === 'mew') {
-      const instanceRawWeb3 = new this.web3.eth.Contract(this.pool.abi, poolAddress);
-      const callData = instanceRawWeb3.methods.contribute().encodeABI();
+    const instance = await this.pool.at(poolAddress);
 
+    if (this.mode === 'mew') {
+      // @TODO convert ether to wei,
+      const callData = await instance.contribute.request({ from: this.account, value: amount * 1000000000000000000 }).params[0].data;
       const gasLimit = 1000 * 1000;
 
       return {
@@ -660,8 +661,6 @@ export default class Pool {
         gasLimit,
       };
     }
-
-    const instance = await this.pool.at(poolAddress);
 
     return instance.contribute({
       from: this.account,
