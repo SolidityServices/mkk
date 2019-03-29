@@ -86,12 +86,10 @@ export default {
       try {
         const response = await this.connectICO.pool.sendToSale(this.pool.poolAddress);
 
-        console.log(response);
-
         if (this.mode === 'mm') {
           this.$notify({
             type: 'success',
-            text: 'Successfully sent funds to sale!',
+            text: 'Send to sale succesful!',
             duration: 5000,
           });
         }
@@ -122,7 +120,7 @@ export default {
       try {
         const response = await this.connectICO.pool.stopPool(this.pool.poolAddress);
 
-        console.log(response);
+        // console.log(response);
 
         if (this.mode === 'mm') {
           this.$notify({
@@ -158,7 +156,7 @@ export default {
       try {
         const response = await this.connectICO.pool.confirmTokensReceived(this.pool.poolAddress, 0);
 
-        console.log(response);
+        // console.log(response);
 
         if (this.mode === 'mm') {
           this.$notify({
@@ -192,7 +190,7 @@ export default {
       try {
         const response = await this.connectICO.pool.creatorWithdraw(this.pool.poolAddress);
 
-        console.log(response);
+        // console.log(response);
 
         if (this.mode === 'mm') {
           this.$notify({
@@ -226,7 +224,7 @@ export default {
       try {
         const response = await this.connectICO.pool.pushOutToken(this.pool.poolAddress, this.recipientAddress);
 
-        console.log(response);
+        // console.log(response);
 
         if (this.mode === 'mm') {
           this.$notify({
