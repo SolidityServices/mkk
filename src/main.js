@@ -6,11 +6,11 @@ import VueCountdown from '@chenfengyuan/vue-countdown';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import Web3 from 'web3';
+import moment from 'moment';
 import App from './App.vue';
 
 import router from './router';
 import store from './store/index';
-
 
 Validator.extend('eth-address', {
   getMessage: field => `The ${field} value is not an Ethereum address.`,
@@ -29,6 +29,15 @@ Validator.extend('eth-address-array', {
     });
 
     return valid;
+  },
+});
+
+Validator.extend('after_current_date', {
+  getMessage(field) {
+    return `${field} must be after than ${moment().format('DD/MM/YYYY H:mm')}`;
+  },
+  validate(value) {
+    return moment().isSameOrBefore(moment(value, 'DD/MM/YYYY H:mm'));
   },
 });
 

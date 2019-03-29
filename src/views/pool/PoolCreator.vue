@@ -147,7 +147,10 @@
               <date-picker v-model="pool.saleEndDate"
                            :config="datepickerOptions"
                            class="form-control input-text w-100"
+                           v-validate="'after_current_date'"
+                           data-vv-name="Sale end date"
               ></date-picker>
+              <span v-if="errors.has('Sale end date')" v-text="errors.first('Sale end date')" class="text-danger"></span>
             </div>
           </div>
 
@@ -390,7 +393,7 @@ export default {
         format: 'DD/MM/YYYY H:mm',
         useCurrent: false,
         sideBySide: true,
-        minDate: moment().startOf('day'),
+        minDate: moment(),
       },
       calculatedFee: null,
       poolAddress: null,
