@@ -1377,7 +1377,7 @@ export default class Pool {
 
   // eslint-disable-next-line class-methods-use-this
   getActiveListItems(logs) {
-    console.log(logs);
+    // console.log(logs);
     const mostRecentEvents = {};
     const activeItems = [];
     logs.forEach((item) => {
@@ -1393,10 +1393,10 @@ export default class Pool {
         };
       }
     });
-    console.log('mostRecentEvents:');
-    console.log(mostRecentEvents);
+    // console.log('mostRecentEvents:');
+    // console.log(mostRecentEvents);
     const allItems = Object.keys(mostRecentEvents);
-    console.log(allItems);
+    // console.log(allItems);
     allItems.forEach((item) => {
       if (mostRecentEvents[item].isActive) activeItems.push(item);
     });

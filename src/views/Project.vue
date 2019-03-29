@@ -82,7 +82,7 @@
                         </span>
                     </div>
 
-                    <div class="orange-24-16-bold d-flex justify-content-between" v-if="tokensConfirmed">
+                    <div class="orange-24-16-bold d-flex justify-content-between">
                         <span class="blue-18-reg">Pool Tokens:</span>
                         <span class="orange-18-bold text-right">
                             {{ tokenBalance }} {{ tokenSymbol }}
@@ -327,7 +327,7 @@ export default {
     autoTokenWithDrawDate: '',
     autoTokenWithDrawGweiValue: 0,
     tokensConfirmed: false,
-    tokenSymbol: '',
+    tokenSymbol: 'Symbol not available',
     tokenBalance: 0,
     userTokens: 0,
   }),
@@ -377,8 +377,13 @@ export default {
     async initTokens() {
       this.tokensConfirmed = await this.connectICO.pool.areTokensReceivedConfirmed(this.address);
 
-      if (this.tokensConfirmed) {
+      const dummyTokenAddress = '0x0000000000000000000000000000000000000000';
+
+      if (this.pool && this.pool.tokenAddress && this.pool.tokenAddress !== dummyTokenAddress) {
         this.tokenSymbol = await this.connectICO.erc.getSymbol(this.pool.tokenAddress);
+      }
+
+      if (this.tokensConfirmed) {
         this.tokenBalance = await this.connectICO.erc.getBalance(this.pool.tokenAddress, this.address);
         this.userTokens = await this.connectICO.pool.getTokensOwedToContributor(this.address, this.connectICO.account);
       }

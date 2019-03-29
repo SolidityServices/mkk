@@ -15,7 +15,7 @@ export default class ConnectICO {
 
   async start() {
     // Bootstrap the abstractions for Use.
-    console.log(this.web3.currentProvider);
+    // console.log(this.web3.currentProvider);
 
     // set the initial this.account balance so it can be displayed.
     this.web3.eth.getAccounts((err, accounts) => {
