@@ -68,7 +68,7 @@ export default {
             type: 'error',
             title: 'Metamask is not detected',
             text: 'In order to use the site please install the MetaMask extension!',
-            duration: -1,
+            duration: 5000,
           });
         }
       } else {
@@ -77,7 +77,7 @@ export default {
           type: 'error',
           title: 'Metamask is not detected',
           text: 'In order to use the site please install the MetaMask extension!',
-          duration: -1,
+          duration: 5000,
         });
       }
     },

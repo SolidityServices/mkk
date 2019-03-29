@@ -75,9 +75,8 @@ export default {
       } catch (e) {
         this.$notify({
           type: 'error',
-          title: 'Not found!',
           text: 'Pool not found by the given address!',
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -93,7 +92,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Successfully sent funds to sale!',
-            duration: -1,
+            duration: 5000,
           });
         }
 
@@ -113,7 +112,7 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -129,7 +128,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Pool successfully stopped!',
-            duration: -1,
+            duration: 5000,
           });
         }
 
@@ -149,7 +148,7 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -165,7 +164,7 @@ export default {
           this.$notify({
             type: 'success',
             text: response,
-            duration: -1,
+            duration: 5000,
           });
         }
 
@@ -183,7 +182,7 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -199,7 +198,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Successful creator withdraw!',
-            duration: -1,
+            duration: 5000,
           });
         }
 
@@ -217,7 +216,7 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -233,7 +232,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Successful sale token push out!',
-            duration: -1,
+            duration: 5000,
           });
         }
 
@@ -251,7 +250,7 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);

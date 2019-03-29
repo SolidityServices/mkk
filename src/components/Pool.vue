@@ -678,13 +678,13 @@ export default {
         this.$notify({
           type: 'success',
           text: 'Admin addresses successfully added!',
-          duration: -1,
+          duration: 5000,
         });
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -698,13 +698,13 @@ export default {
         this.$notify({
           type: 'success',
           text: 'Admin addresses successfully removed!',
-          duration: -1,
+          duration: 5000,
         });
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -746,13 +746,13 @@ export default {
         this.$notify({
           type: 'success',
           text: 'Whitelist addresses successfully added!',
-          duration: -1,
+          duration: 5000,
         });
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -766,13 +766,13 @@ export default {
         this.$notify({
           type: 'success',
           text: 'Whitelist addresses successfully removed!',
-          duration: -1,
+          duration: 5000,
         });
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -794,13 +794,13 @@ export default {
         this.$notify({
           type: 'success',
           text: 'Countries successfully added to blacklist.',
-          duration: -1,
+          duration: 5000,
         });
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -814,13 +814,13 @@ export default {
         this.$notify({
           type: 'success',
           text: 'Countries successfully removed from blacklist.',
-          duration: -1,
+          duration: 5000,
         });
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -836,7 +836,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Auto send to sale successfully added!',
-            duration: -1,
+            duration: 5000,
           });
         } else if (this.mode === 'mew') {
           const gasCost = await this.connectICO.automations.getSendToSaleGasCost();
@@ -850,7 +850,7 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -862,9 +862,8 @@ export default {
         this.errors.items.forEach((item) => {
           this.$notify({
             type: 'error',
-            title: `${item.field}`,
-            text: `${item.msg}`,
-            duration: -1,
+            text: `${item.field}: ${item.msg}`,
+            duration: 5000,
           });
         });
         return;
@@ -883,16 +882,15 @@ export default {
           this.poolAddress = response;
           this.$notify({
             type: 'success',
-            title: 'Pool created!',
-            text: `${response}`,
-            duration: -1,
+            text: `Pool created! ${response}`,
+            duration: 5000,
           });
         }
       } catch (e) {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -906,7 +904,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Successful Send to Sale Participate With Calldata!',
-            duration: -1,
+            duration: 5000,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
@@ -924,7 +922,7 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -938,7 +936,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Successful Send to Sale Withdraw Request With Calldata!',
-            duration: -1,
+            duration: 5000,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
@@ -956,7 +954,7 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -970,7 +968,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Successful SendToSale with predefined calldata!',
-            duration: -1,
+            duration: 5000,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
@@ -988,7 +986,7 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -1002,7 +1000,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Successful Withdraw with predefined calldata!',
-            duration: -1,
+            duration: 5000,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
@@ -1020,7 +1018,7 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -1034,7 +1032,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Successful Set SendToSale calldata!',
-            duration: -1,
+            duration: 5000,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
@@ -1052,7 +1050,7 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -1066,7 +1064,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Successful Set Withdraw calldata!',
-            duration: -1,
+            duration: 5000,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
@@ -1084,7 +1082,7 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -1098,7 +1096,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Successful SendToSale with dynamic calldata!',
-            duration: -1,
+            duration: 5000,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
@@ -1116,7 +1114,7 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -1130,7 +1128,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Successful Withdraw with dynamic calldata!',
-            duration: -1,
+            duration: 5000,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
@@ -1148,7 +1146,7 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);

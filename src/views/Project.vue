@@ -373,9 +373,8 @@ export default {
       } catch (e) {
         this.$notify({
           type: 'error',
-          title: 'Not found!',
           text: 'Pool not found by the given address!',
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -388,18 +387,28 @@ export default {
         return;
       }
 
+      this.$notify({
+        type: 'warn',
+        text: '<i class="fa fa-spin fa-circle-o-notch"></i> Deposit in progress...',
+        duration: -1,
+      });
+
       try {
         const response = await this.connectICO.pool.contribute(this.address, this.depositAmount);
         if (this.mode === 'mm') {
+          this.$notify({ clean: true });
           this.$notify({
             type: 'success',
-            title: 'Successful deposit!',
-            text: `${this.depositAmount} ETH`,
-            duration: -1,
+            text: `Successful deposit! ${this.depositAmount} ETH`,
+            duration: 5000,
           });
-        } else if (this.mode === 'mew') {
+        }
+
+        if (this.mode === 'mew') {
           const network = await window.web3.eth.net.getNetworkType();
           const to = this.address;
+
+          this.$notify({ clean: true });
 
           const url = mewLinkBuilder(
             to,
@@ -411,10 +420,11 @@ export default {
           openMewUrl(url);
         }
       } catch (e) {
+        this.$notify({ clean: true });
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -432,9 +442,8 @@ export default {
         if (this.mode === 'mm') {
           this.$notify({
             type: 'success',
-            title: 'Successful withdraw!',
-            text: `${this.withdrawAmount} ETH`,
-            duration: -1,
+            text: `Successful withdraw! ${this.withdrawAmount} ETH`,
+            duration: 5000,
           });
         }
 
@@ -456,7 +465,7 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -469,7 +478,7 @@ export default {
           this.$notify({
             type: 'success',
             title: 'All your ETH Successfully withdrawn!',
-            duration: -1,
+            duration: 5000,
           });
         }
 
@@ -491,7 +500,7 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -504,7 +513,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Tokens successfully withdrawn!',
-            duration: -1,
+            duration: 5000,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
@@ -520,7 +529,7 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -534,7 +543,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Refund successfully withdrawn!',
-            duration: -1,
+            duration: 5000,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
@@ -550,7 +559,7 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -563,7 +572,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Token successfully withdrawn!',
-            duration: -1,
+            duration: 5000,
           });
         } else if (this.mode === 'mew') {
           const url = mewLinkBuilder(
@@ -579,7 +588,7 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);
@@ -608,7 +617,7 @@ export default {
           this.$notify({
             type: 'success',
             text: 'Auto push out tokens successfully added!',
-            duration: -1,
+            duration: 5000,
           });
         } else if (this.mode === 'mew') {
           const gasCost = await this.connectICO.automations.getPushGasCost();
@@ -628,7 +637,7 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);

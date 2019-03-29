@@ -228,9 +228,8 @@ export default {
       } catch (e) {
         this.$notify({
           type: 'error',
-          title: 'Not found!',
           text: 'Pool not found by the given address!',
-          duration: -1,
+          duration: 5000,
         });
 
         console.log(e);

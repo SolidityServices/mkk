@@ -507,7 +507,7 @@ export default {
             type: 'error',
             title: `${item.field}`,
             text: `${item.msg}`,
-            duration: -1,
+            duration: 5000,
           });
         });
         return;
@@ -544,7 +544,7 @@ export default {
               type: 'success',
               title: 'Pool created!',
               text: `${response}`,
-              duration: -1,
+              duration: 5000,
             });
 
             // this.$router.push({ name: 'project', params: { address: this.poolAddress } });
@@ -574,7 +574,7 @@ export default {
         this.$notify({
           type: 'error',
           text: e.message,
-          duration: -1,
+          duration: 5000,
         });
         this.loading = false;
         throw e;
