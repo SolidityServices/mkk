@@ -11,7 +11,7 @@
           <div class="white-16-bold my-auto">Project Name</div>
         </div>
 
-        <router-link class="btn blue-submit px-4 mr-3" :to="{name: 'project.edit', params: {address: pool.poolAddress}}">
+        <router-link class="btn blue-submit px-4 mr-3" :to="{name: 'project.edit', params: {address: pool.poolAddress}}" v-if="pool && pool.creator === connectICO.account">
           Edit pool
         </router-link>
       </section>
