@@ -352,9 +352,7 @@ export default {
       }
 
       if (this.pool && this.pool.adminAddresses) {
-        const adminAddressesUppercase = this.pool.adminAddresses.map((address) => {
-          return address.toUpperCase();
-        });
+        const adminAddressesUppercase = this.pool.adminAddresses.map(address => address.toUpperCase());
 
         if (adminAddressesUppercase.indexOf(this.connectICO.account.toUpperCase()) !== -1) {
           return true;
@@ -719,9 +717,14 @@ export default {
 
     this.$validator.extend('max-withdraw', {
       getMessage: (field) => {
-        if (this.pool.isStopped) {
+        if (this.pool.isStopped && this.userContribution > 0) {
           return `The ${field} must bigger than 0 and lesser or equal ${this.userContribution}.`;
         }
+
+        if (this.pool.minContribution > 0 && this.userContribution <= this.pool.minContribution) {
+          return 'Click withdraw all to receive all the remaining ETH';
+        }
+
         if (this.userContribution > 0) {
           return `The ${field} must bigger than 0 and lesser or equal ${this.userContribution - this.pool.minContribution}.`;
         }
@@ -729,7 +732,7 @@ export default {
         return 'You must deposit ETH first if you want a withdraw';
       },
       validate: (value) => {
-        if (this.pool.isStopped) {
+        if (this.pool.isStopped && this.userContribution > 0) {
           return value > 0 && value <= this.userContribution;
         }
 
