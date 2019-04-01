@@ -112,14 +112,14 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Creator fee in %:</div>
             <div class="col-12 col-lg-6">
-              <input type="number" v-validate="'required|decimal|min_value:0|max_value:100'"
+              <input type="number" v-validate="'required|decimal|min_value:0|max_value:1'"
                      data-vv-name="Creator fee"
                      class="form-control input-text w-100"
                      step="0.01"
-                     min="0"
-                     max="0.1"
-                     placeholder="0"
-                     v-model="pool.creatorFeeRate">
+                     min="0.01"
+                     max="1"
+                     v-model="pool.creatorFeeRate"
+                     @focus="(pool.creatorFeeRate === 0.01) ? pool.creatorFeeRate = '' : false">
               <span v-if="errors.has('Creator fee')" v-text="errors.first('Creator fee')" class="text-danger"></span>
             </div>
           </div>
@@ -170,72 +170,73 @@
 
         <div class="row">
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Soft cap ETH (optional)</div>
+            <div class="col-12 col-lg-6 blue-18-reg">Soft Cap</div>
             <div class="col-12 col-lg-6">
-              <input type="number" v-validate="'decimal|min_value:0'" min="0"
-                     step="0.000001"
-                     placeholder="0,10"
-                     class="form-control input-text w-100" data-vv-name="Soft cap"
-                     v-model="pool.minContribution"/>
-              <span v-if="errors.has('Soft cap')" v-text="errors.first('Soft cap')" class="text-danger"></span>
+              <input type="number"
+                     v-validate="'required|decimal|min_value:0'"
+                     data-vv-name="Soft Cap"
+                     step=0.01
+                     class="form-control input-text w-100"
+                     v-model="pool.minPoolGoal"
+                     @focus="(pool.minPoolGoal === 10) ? pool.minPoolGoal = '' : false">
+              <span v-if="errors.has('Soft Cap')" v-text="errors.first('Soft Cap')" class="text-danger"></span>
             </div>
           </div>
 
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Hard cap ETH (optional)</div>
+            <div class="col-12 col-lg-6 blue-18-reg">Hard Cap</div>
             <div class="col-12 col-lg-6">
-              <input type="number" v-validate="'decimal|min_value:0'" min="0"
-                     step="0.000001"
-                     placeholder="100"
-                     class="form-control input-text" data-vv-name="Hard cap"
-                     v-model="pool.maxContribution"/>
-              <span v-if="errors.has('Hard cap')" v-text="errors.first('Hard cap')" class="text-danger"></span>
+              <input type="number"
+                     v-validate="'required|decimal|min_value:0.01'"
+                     data-vv-name="Hard Cap"
+                     step=0.01
+                     min=0.01
+                     class="form-control input-text w-100"
+                     v-model="pool.maxPoolAllocation"
+                     @focus="(pool.maxPoolAllocation === 1000) ? pool.maxPoolAllocation = '' : false">
+              <span v-if="errors.has('Hard Cap')" v-text="errors.first('Hard Cap')" class="text-danger"></span>
             </div>
           </div>
         </div>
-      </div>
 
-
-      <div class="row">
-        <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-          <div class="col-12 col-lg-6 blue-18-reg">Withdraw timelock in hours</div>
-          <div class="col-12 col-lg-6">
-            <input type="number"
-                   v-validate="'required|numeric|min_value:0|max_value:72'" data-vv-name="Withdraw time lock"
-                   placeholder="0"
-                   class="form-control input-text w-100"
-                   v-model="pool.withdrawTimelock">
-            <span v-if="errors.has('Withdraw time lock')" v-text="errors.first('Withdraw time lock')" class="text-danger"></span>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-          <div class="col-12 col-lg-6 blue-18-reg">Minimum pool goal in ETH</div>
-          <div class="col-12 col-lg-6">
-            <input type="number"
-                   v-validate="'required|decimal|min_value:0'"
-                   step=0.01
-                   placeholder="10,00"
-                   class="form-control input-text w-100" data-vv-name="Minimum pool goal"
-                   v-model="pool.minPoolGoal">
-            <span v-if="errors.has('Minimum pool goal')" v-text="errors.first('Minimum pool goal')" class="text-danger"></span>
+        <div class="row">
+          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
+            <div class="col-12 col-lg-6 blue-18-reg">Withdraw timelock in hours</div>
+            <div class="col-12 col-lg-6">
+              <input type="number"
+                     v-validate="'required|numeric|min_value:0|max_value:72'" data-vv-name="Withdraw time lock"
+                     placeholder="0"
+                     class="form-control input-text w-100"
+                     v-model="pool.withdrawTimelock"
+                     @focus="(pool.withdrawTimelock === 0) ? pool.withdrawTimelock = '' : false">
+              <span v-if="errors.has('Withdraw time lock')" v-text="errors.first('Withdraw time lock')" class="text-danger"></span>
+            </div>
           </div>
         </div>
 
-        <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-          <div class="col-12 col-lg-6 blue-18-reg">Max allocation in ETH</div>
-          <div class="col-12 col-lg-6">
-            <input type="number"
-                   v-validate="'required|decimal|min_value:0.01'"
-                   data-vv-name="Max allocation"
-                   step=0.01
-                   min=0.01
-                   placeholder="1000"
-                   class="form-control input-text w-100"
-                   v-model="pool.maxPoolAllocation">
-            <span v-if="errors.has('Max allocation')" v-text="errors.first('Max allocation')" class="text-danger"></span>
+        <div class="row">
+          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
+            <div class="col-12 col-lg-6 blue-18-reg">Minimum contribution</div>
+            <div class="col-12 col-lg-6">
+              <input type="number" v-validate="'decimal|min_value:0'" min="0"
+                     step="0.000001"
+                     class="form-control input-text w-100" data-vv-name="Minimum contribution"
+                     v-model="pool.minContribution"
+                     @focus="(pool.minContribution === 0.10) ? pool.minContribution = '' : false"/>
+              <span v-if="errors.has('Minimum contribution')" v-text="errors.first('Minimum contribution')" class="text-danger"></span>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
+            <div class="col-12 col-lg-6 blue-18-reg">Maximum contribution</div>
+            <div class="col-12 col-lg-6">
+              <input type="number" v-validate="'decimal|min_value:0'" min="0"
+                     step="0.000001"
+                     class="form-control input-text" data-vv-name="Maximum contribution"
+                     v-model="pool.maxContribution"
+                     @focus="(pool.maxContribution === 100) ? pool.maxContribution = '' : false"/>
+              <span v-if="errors.has('Maximum contribution')" v-text="errors.first('Maximum contribution')" class="text-danger"></span>
+            </div>
           </div>
         </div>
       </div>

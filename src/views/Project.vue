@@ -55,22 +55,22 @@
                     </div>
 
                     <div class="orange-24-16-bold d-flex justify-content-between">
-                        <span class="blue-18-reg">Individual Min</span>
+                        <span class="blue-18-reg">Minimum Contribution</span>
                         <span class="orange-18-bold text-right">{{pool.minContribution}} ETH</span>
                     </div>
 
                     <div class="orange-24-16-bold d-flex justify-content-between">
-                        <span class="blue-18-reg">Individual Max:</span>
+                        <span class="blue-18-reg">Maximum Contribution:</span>
                         <span class="orange-18-bold text-right">{{pool.maxContribution}} ETH</span>
                     </div>
 
                     <div class="orange-24-16-bold d-flex justify-content-between">
-                        <span class="blue-18-reg">Min pool goal:</span>
+                        <span class="blue-18-reg">Soft Cap:</span>
                         <span class="orange-18-bold text-right">{{pool.minPoolGoal}} ETH</span>
                     </div>
 
                     <div class="orange-24-16-bold d-flex justify-content-between">
-                        <span class="blue-18-reg">Max allocation:</span>
+                        <span class="blue-18-reg">Hard Cap:</span>
                         <span class="orange-18-bold text-right">{{pool.maxPoolAllocation}} ETH</span>
                     </div>
 
