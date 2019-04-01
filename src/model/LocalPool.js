@@ -102,7 +102,7 @@ export default class LocalPool {
     params.poolDescription = '';
     params.creatorFeeRate = 0.01;
     const date = Math.floor(new Date() / 1000);
-    params.saleStartDate = date;
+    params.saleStartDate = date + (1);
     params.saleEndDate = date + (24 * 60 * 60 * 7); // add 7 days
     params.minContribution = 0.10;
     params.maxContribution = 100;
