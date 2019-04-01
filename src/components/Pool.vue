@@ -237,10 +237,10 @@
             <div class="col-12 col-lg-6">
               <input type="number"
                      :disabled="disabled || pool.isStopped || pool.isSentToSale"
-                     v-validate="'required|decimal|min_value:0.01'"
+                     v-validate="'decimal|min_value:0'"
                      data-vv-name="Hard Cap"
                      step=0.01
-                     min=0.01
+                     min=0
                      class="form-control input-text w-100"
                      v-model="pool.maxPoolAllocation">
               <span v-if="errors.has('Hard Cap')" v-text="errors.first('Hard Cap')" class="text-danger"></span>

@@ -187,10 +187,10 @@
             <div class="col-12 col-lg-6 blue-18-reg">Hard Cap</div>
             <div class="col-12 col-lg-6">
               <input type="number"
-                     v-validate="'required|decimal|min_value:0.01'"
+                     v-validate="'decimal|min_value:0'"
                      data-vv-name="Hard Cap"
                      step=0.01
-                     min=0.01
+                     min=0
                      class="form-control input-text w-100"
                      v-model="pool.maxPoolAllocation"
                      @focus="(pool.maxPoolAllocation === 1000) ? pool.maxPoolAllocation = '' : false">
