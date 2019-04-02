@@ -174,7 +174,7 @@ export default class PoolFactory {
           pool.poolDescription,
         ],
         [
-          parseFloat(pool.creatorFeeRate) * 100, // convert percentage to "per thousandth"
+          parseFloat(pool.creatorFeeRate) * 10, // convert percentage to "per thousandth"
           Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
           Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
           pool.minContribution * 1000000000000000000, // convert ether to wei
@@ -215,7 +215,7 @@ export default class PoolFactory {
         pool.poolDescription,
       ],
       [
-        parseFloat(pool.creatorFeeRate) * 100, // convert percentage to integer
+        parseFloat(pool.creatorFeeRate) * 10, // convert percentage to integer
         Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
         Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
         pool.minContribution * 1000000000000000000, // convert ether to wei

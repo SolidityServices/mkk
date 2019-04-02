@@ -120,14 +120,14 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Creator fee in %:</div>
             <div class="col-12 col-lg-6">
-              <input type="number" v-validate="'required|decimal|min_value:0|max_value:1'"
+              <input type="number" v-validate="'required|decimal|min_value:0|max_value:15'"
                      data-vv-name="Creator fee"
                      class="form-control input-text w-100"
                      :disabled="disabled || pool.isStopped || pool.isSentToSale"
                      placeholder="0.12"
                      step="0.01"
                      min="0.01"
-                     max="1"
+                     max="15"
                      v-model="pool.creatorFeeRate">
               <span v-if="errors.has('Creator fee')" v-text="errors.first('Creator fee')" class="text-danger"></span>
             </div>

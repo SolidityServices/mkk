@@ -1029,7 +1029,7 @@ export default class Pool {
     if (this.mode === 'mew') {
       const callData = await instance.setParamsCreator.request(
         pool.creator,
-        pool.creatorFeeRate * 100, // convert percentage to integer
+        pool.creatorFeeRate * 10, // convert percentage to integer
         Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
         Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
         pool.withdrawTimelock * 60 * 60, // convert to unix time
@@ -1053,7 +1053,7 @@ export default class Pool {
 
     return instance.setParamsCreator(
       pool.creator,
-      pool.creatorFeeRate * 100, // convert percentage to integer
+      pool.creatorFeeRate * 10, // convert percentage to integer
       Math.floor(pool.saleStartDate / 1000), // convert to unix timestamp
       Math.floor(pool.saleEndDate / 1000), // convert to unix timestamp
       pool.withdrawTimelock * 60 * 60, // convert to unix time

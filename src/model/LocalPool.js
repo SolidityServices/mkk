@@ -79,7 +79,7 @@ export default class LocalPool {
     this.saleEndDate = new Date(params.saleEndDate * 1000);
     this.withdrawTimelock = params.withdrawTimelock !== '' ? params.withdrawTimelock / 60 / 60 : '';
     this.providerFeeRate = params.providerFeeRate !== 0 ? params.providerFeeRate / 100 : 0;
-    this.creatorFeeRate = params.creatorFeeRate !== 0.01 ? params.creatorFeeRate / 100 : 0.01;
+    this.creatorFeeRate = params.creatorFeeRate !== 0.01 ? params.creatorFeeRate / 10 : 0.01;
     this.whitelistPool = params.whitelistPool;
     this.strictlyTrustlessPool = params.strictlyTrustlessPool;
     this.adminAddresses = params.adminAddresses ? params.adminAddresses : [];
