@@ -12,6 +12,9 @@ export default class PoolFactory {
     this.mode = mode;
   }
 
+  /**
+   * Returns contract address
+   */
   async getAddress() {
     const instance = await this.poolFactory.deployed();
     return instance.address;

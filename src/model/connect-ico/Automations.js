@@ -127,6 +127,22 @@ export default class Automations {
     return instance.setPushGasCost(pushGasCost, { from: this.account });
   }
 
+  async setSendToSaleGasCost(sendToSaleGas) {
+    const instance = await this.automations.deployed();
+
+    if (this.mode === 'mew') {
+      const callData = await instance.setSendToSaleGasCost.request(sendToSaleGas, { from: this.account }).params[0].data;
+      const gasLimit = 1000 * 1000;
+
+      return {
+        callData,
+        gasLimit,
+      };
+    }
+
+    return instance.setSendToSaleGasCost(sendToSaleGas, { from: this.account });
+  }
+
   async getNewPushOutTokenEvent(poolAddress) {
     const instance = await this.pool.at(poolAddress);
     const instanceRawWeb3 = new this.web3.eth.Contract(instance.abi, instance.address);

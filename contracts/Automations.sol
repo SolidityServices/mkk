@@ -48,6 +48,10 @@ contract Automations is Ownable {
     function setPushGasCost(uint _pushGasCost) public onlyOwner {
         pushGasCost = _pushGasCost;
     }
+    
+    function setSendToSlaeGasCost(uint _sendToSaleGasCost) public onlyOwner {
+        sendToSaleGasCost = _sendToSaleGasCost;
+    }
 
     modifier onlyPushServer{
         require(msg.sender == pushServer, "onlyPushServer onlyOwner: Error, tx was not initiated by owner push server");
