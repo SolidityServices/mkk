@@ -121,7 +121,9 @@
           <div class="col-12 col-lg-3 blue-18-reg mb-1">Time until end of sale:</div>
           <div class="col-12 col-lg-9">
             <countdown :time="timeUntilSaleEnd" :interval="1000" tag="p">
-              <template slot-scope="props">{{ props.days }} days, {{ props.hours }} hours, {{ props.minutes }} minutes, {{ props.seconds }} seconds. </template>
+              <template slot-scope="props">
+                  <span class="orange-18-bold text-right">{{ props.days }} days, {{ props.hours }} hours, {{ props.minutes }} minutes, {{ props.seconds }} seconds.</span>
+              </template>
             </countdown>
           </div>
         </div>
