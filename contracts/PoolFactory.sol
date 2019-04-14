@@ -10,7 +10,7 @@ contract PoolFactory is Ownable {
     struct Params {
         address kycContractAddress;
         uint256 flatFee;
-        uint16 maxAllocationFeeRate; // 1/1000
+        uint16 maxAllocationFeeRate; // 1/1000000
         uint16 maxCreatorFeeRate; // 1/1000
         uint16 providerFeeRate; // 1/1000
         bool useWhitelist;
@@ -60,7 +60,7 @@ contract PoolFactory is Ownable {
     ) public payable {
         require(KYC(params.kycContractAddress).checkKYC(msg.sender), "createPool: tx by not KYC address");
         if (params.useWhitelist) require(whitelist[msg.sender], "createPool: tx by not whitelisted address");
-        require(msg.value >= SafeMath.add(params.flatFee, SafeMath.mul(params.maxAllocationFeeRate, uints[6]) / 1000), "createPool: not enough tx value");
+        require(msg.value >= SafeMath.add(params.flatFee, SafeMath.mul(params.maxAllocationFeeRate, uints[6]) / 1000000), "createPool: not enough tx value");
         require(params.maxCreatorFeeRate >= uints[0], "createPool: fee rate > max");
         require(uints[1] <= uints[2], "createPool: saleStartDate > saleEndDate");
         require(uints[3] <= uints[4] || uints[4] == 0, "createPool: minContribution > maxContribution");
@@ -103,7 +103,7 @@ contract PoolFactory is Ownable {
         address _owner,
         address _kycContractAddress,
         uint256 _flatFee,
-        uint16 _maxAllocationFeeRate, // 1/1000
+        uint16 _maxAllocationFeeRate, // 1/1000000
         uint16 _maxCreatorFeeRate, // 1/1000
         uint16 _providerFeeRate, // 1/1000
         bool _useWhitelist,
