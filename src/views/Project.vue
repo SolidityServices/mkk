@@ -14,7 +14,7 @@
         <router-link class="btn blue-submit px-4 mr-3"
                      :to="{name: 'project.edit', params: {address: pool.poolAddress}}"
                      v-if="isEditable">
-          Edit pool
+            Owner view
         </router-link>
       </section>
 
