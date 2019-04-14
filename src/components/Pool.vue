@@ -47,46 +47,6 @@
     </section>
 
     <section class="mb-4">
-      <div class="d-flex flex-column">
-        <div class="d-flex flex-row flex-wrap">
-          <div>
-            <div class="o-border d-inline"></div>
-            <div class="d-inline mt-5 blue-36-20-bold"> Function signatures
-              <hr align="left" class="blue-hr-2">
-            </div>
-          </div>
-          <div class="mx-3 mt-sm-3">
-            <button class="btn white-submit px-4 mr-3" @click="showFuncSig = !showFuncSig">{{ showFuncSig ? 'Hide' : 'Show'}}</button>
-          </div>
-        </div>
-
-        <div class="d-flex flex-row flex-wrap" v-if="showFuncSig">
-          <div class="col-12 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-4 blue-18-reg">Sale Participate Function Sig:</div>
-            <div class="col-12 col-lg-8">
-              <input type="text"
-                     class="form-control input-text"
-                     :disabled="true"
-                     v-model="pool.saleWithdrawFunctionSig"/>
-            </div>
-          </div>
-
-          <div class="col-12 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-4 blue-18-reg">Sale Withdraw Function Sig:</div>
-            <div class="col-12 col-lg-8">
-              <input type="text"
-                     class="form-control input-text"
-                     :disabled="true"
-                     v-model="pool.saleWithdrawFunctionSig"/>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <hr class="blue-hr-fullw my-5 w-100">
-    </section>
-
-    <section class="mb-4">
       <div class="row">
         <div class="col-12">
           <div class="o-border d-inline"></div>
@@ -559,6 +519,46 @@
           </button>
         </div>
       </div>
+    </section>
+
+    <section class="mb-4">
+      <div class="d-flex flex-column">
+        <div class="d-flex flex-row flex-wrap">
+          <div>
+            <div class="o-border d-inline"></div>
+            <div class="d-inline mt-5 blue-36-20-bold"> Advanced Withdraw
+              <hr align="left" class="blue-hr-2">
+            </div>
+          </div>
+          <div class="mx-3 mt-sm-3">
+            <button class="btn white-submit px-4 mr-3" @click="showFuncSig = !showFuncSig">{{ showFuncSig ? 'Hide' : 'Show'}}</button>
+          </div>
+        </div>
+
+        <div class="d-flex flex-row flex-wrap" v-if="showFuncSig">
+          <div class="col-12 d-flex flex-row align-items-center mt-3 flex-wrap">
+            <div class="col-12 col-lg-4 blue-18-reg">Sale Participate Function Sig:</div>
+            <div class="col-12 col-lg-8">
+              <input type="text"
+                     class="form-control input-text"
+                     :disabled="true"
+                     v-model="pool.saleWithdrawFunctionSig"/>
+            </div>
+          </div>
+
+          <div class="col-12 d-flex flex-row align-items-center mt-3 flex-wrap">
+            <div class="col-12 col-lg-4 blue-18-reg">Sale Withdraw Function Sig:</div>
+            <div class="col-12 col-lg-8">
+              <input type="text"
+                     class="form-control input-text"
+                     :disabled="true"
+                     v-model="pool.saleWithdrawFunctionSig"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="blue-hr-fullw my-5 w-100">
     </section>
   </div>
 </template>
