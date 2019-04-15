@@ -321,7 +321,7 @@
         <div class="d-flex flex-row flex-wrap">
           <div>
             <div class="o-border d-inline"></div>
-            <div class="d-inline mt-5 blue-36-20-bold"> Advanced Withdraw
+            <div class="d-inline mt-5 blue-36-20-bold"> Custom sale functions
               <hr align="left" class="blue-hr-2">
             </div>
           </div>
