@@ -91,6 +91,10 @@
             <div class="col-12 col-lg-6"></div>
           </div>
 
+<!--          <div class="col-12 d-flex flex-row align-items-center mt-3 flex-wrap">-->
+<!--              <div class="col-12 col-lg-3 blue-18-reg">Timezone</div>-->
+<!--              <div class="col-12 col-lg-3 blue-18-reg">{{ timezoneText }}</div>-->
+<!--          </div>-->
 
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Sale start date</div>
@@ -378,7 +382,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import datePicker from 'vue-bootstrap-datetimepicker';
 import Multiselect from 'vue-multiselect';
 import CountrySelect from '../../components/form/CountrySelect.vue';
@@ -422,6 +426,9 @@ export default {
       'countries',
       'mode',
     ]),
+    timezoneText() {
+      return moment.tz.guess();
+    },
   },
   methods: {
     async getTransferDetails() {

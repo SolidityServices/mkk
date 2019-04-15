@@ -16,6 +16,7 @@
     "font-awesome": "^4.7.0",
     "module": "^1.2.5",
     "moment": "^2.23.0",
+    "moment-timezone": "^0.5.23",
     "openzeppelin-solidity": "^1.12.0",
     "solc": "^0.4.25",
     "string-argv": "^0.1.1",
