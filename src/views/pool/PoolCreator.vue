@@ -562,7 +562,11 @@ export default {
               duration: 5000,
             });
 
-            // this.$router.push({ name: 'project', params: { address: this.poolAddress } });
+            this.$router.push({ name: 'project', params: { address: this.poolAddress } });
+
+            const url = `https://etherscan.io/address/${this.poolAddress}`;
+            const tab = window.open(url, '_blank');
+            tab.focus();
           }
         }
 
