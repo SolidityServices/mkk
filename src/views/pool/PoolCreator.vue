@@ -136,7 +136,7 @@
 
         <div class="row">
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Soft Cap</div>
+            <div class="col-12 col-lg-6 blue-18-reg">Soft Cap in ETH</div>
             <div class="col-12 col-lg-6">
               <input type="number"
                      v-validate="'required|decimal|min_value:0'"
@@ -150,7 +150,7 @@
           </div>
 
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Hard Cap</div>
+            <div class="col-12 col-lg-6 blue-18-reg">Hard Cap in ETH</div>
             <div class="col-12 col-lg-6">
               <input type="number"
                      v-validate="'decimal|min_value:0'"
@@ -182,7 +182,7 @@
 
         <div class="row">
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Minimum contribution</div>
+            <div class="col-12 col-lg-6 blue-18-reg">Minimum contribution in ETH</div>
             <div class="col-12 col-lg-6">
               <input type="number" v-validate="'decimal|min_value:0'" min="0"
                      step="0.000001"
@@ -194,7 +194,7 @@
           </div>
 
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
-            <div class="col-12 col-lg-6 blue-18-reg">Maximum contribution</div>
+            <div class="col-12 col-lg-6 blue-18-reg">Maximum contribution in ETH</div>
             <div class="col-12 col-lg-6">
               <input type="number" v-validate="'decimal|min_value:0'" min="0"
                      step="0.000001"
