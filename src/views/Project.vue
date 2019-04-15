@@ -2,7 +2,11 @@
   <div class="container">
     <div v-if="pool">
       <section class="mb-4">
-        <div class="d-none d-sm-block mt-5 blue-36-20-bold">{{pool.poolAddress}}</div>
+        <div>
+          <a target="_blank" :href="`https://etherscan.io/address/${pool.poolAddress}`" class="d-none d-sm-block mt-5 blue-36-20-bold">
+              {{pool.poolAddress}}
+          </a>
+        </div>
 
         <hr align="left" class="d-none d-sm-block blue-hr">
 
