@@ -43,56 +43,60 @@
           <hr align="left" class="blue-hr-2">
         </div>
 
-          <div class="row mx-0 mb-4">
-            <div class="col-12 col-lg-6">
+          <div class="row mx-0 mb-5">
+            <div class="col-12">
                 <div class="blue-18-bold mb-4">Parameters</div>
 
-                <div>
-                    <div class="orange-24-16-bold d-flex justify-content-between">
-                        <span class="blue-18-reg">Fee</span>
-                        <span class="orange-18-bold text-right">{{pool.creatorFeeRate}} %</span>
-                    </div>
+              <div class="d-flex flex-wrap">
+                <div class="col-12 col-lg-6">
+                  <div class="orange-24-16-bold d-flex justify-content-between">
+                    <span class="blue-18-reg">Fee</span>
+                    <span class="orange-18-bold text-right">{{pool.creatorFeeRate}} %</span>
+                  </div>
 
-                    <div class="orange-24-16-bold d-flex justify-content-between">
-                        <span class="blue-18-reg">ConnectICO Fee</span>
-                        <span class="orange-18-bold text-right">{{pool.providerFeeRate}} %</span>
-                    </div>
+                  <div class="orange-24-16-bold d-flex justify-content-between">
+                    <span class="blue-18-reg">ConnectICO Fee</span>
+                    <span class="orange-18-bold text-right">{{pool.providerFeeRate}} %</span>
+                  </div>
 
-                    <div class="orange-24-16-bold d-flex justify-content-between">
-                        <span class="blue-18-reg">Minimum Contribution</span>
-                        <span class="orange-18-bold text-right">{{pool.minContribution}} ETH</span>
-                    </div>
+                  <div class="orange-24-16-bold d-flex justify-content-between">
+                    <span class="blue-18-reg">Minimum Contribution</span>
+                    <span class="orange-18-bold text-right">{{pool.minContribution}} ETH</span>
+                  </div>
 
-                    <div class="orange-24-16-bold d-flex justify-content-between">
-                        <span class="blue-18-reg">Maximum Contribution:</span>
-                        <span class="orange-18-bold text-right">{{pool.maxContribution}} ETH</span>
-                    </div>
+                  <div class="orange-24-16-bold d-flex justify-content-between">
+                    <span class="blue-18-reg">Maximum Contribution:</span>
+                    <span class="orange-18-bold text-right">{{pool.maxContribution}} ETH</span>
+                  </div>
+                </div>
 
-                    <div class="orange-24-16-bold d-flex justify-content-between">
-                        <span class="blue-18-reg">Soft Cap:</span>
-                        <span class="orange-18-bold text-right">{{pool.minPoolGoal}} ETH</span>
-                    </div>
+                <div class="col-12 col-lg-6">
+                  <div class="orange-24-16-bold d-flex justify-content-between">
+                    <span class="blue-18-reg">Soft Cap:</span>
+                    <span class="orange-18-bold text-right">{{pool.minPoolGoal}} ETH</span>
+                  </div>
 
-                    <div class="orange-24-16-bold d-flex justify-content-between">
-                        <span class="blue-18-reg">Hard Cap:</span>
-                        <span class="orange-18-bold text-right">{{pool.maxPoolAllocation}} ETH</span>
-                    </div>
+                  <div class="orange-24-16-bold d-flex justify-content-between">
+                    <span class="blue-18-reg">Hard Cap:</span>
+                    <span class="orange-18-bold text-right">{{pool.maxPoolAllocation}} ETH</span>
+                  </div>
 
-                    <div class="orange-24-16-bold d-flex justify-content-between">
-                        <span class="blue-18-reg">Tokens Confirmed:</span>
-                        <span class="orange-18-bold text-right">
+                  <div class="orange-24-16-bold d-flex justify-content-between">
+                    <span class="blue-18-reg">Tokens Confirmed:</span>
+                    <span class="orange-18-bold text-right">
                             <i class="fa fa-check" v-if="tokensConfirmed"></i>
                             <i class="fa fa-times" v-if="!tokensConfirmed"></i>
                         </span>
-                    </div>
+                  </div>
 
-                    <div class="orange-24-16-bold d-flex justify-content-between">
-                        <span class="blue-18-reg">Pool Tokens:</span>
-                        <span class="orange-18-bold text-right">
+                  <div class="orange-24-16-bold d-flex justify-content-between">
+                    <span class="blue-18-reg">Pool Tokens:</span>
+                    <span class="orange-18-bold text-right">
                             {{ tokenBalance }} {{ tokenSymbol }}
                         </span>
-                    </div>
+                  </div>
                 </div>
+              </div>
             </div>
         </div>
 
