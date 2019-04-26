@@ -81,7 +81,7 @@
                      min="0.01"
                      max="15"
                      v-model="pool.creatorFeeRate"
-                     @focus="(pool.creatorFeeRate === 0.01) ? pool.creatorFeeRate = '' : false">
+                     @click="(pool.creatorFeeRate === 0.01) ? pool.creatorFeeRate = '' : false">
               <span v-if="errors.has('Creator fee')" v-text="errors.first('Creator fee')" class="text-danger"></span>
             </div>
           </div>
@@ -143,7 +143,7 @@
                      step=0.01
                      class="form-control input-text w-100"
                      v-model="pool.minPoolGoal"
-                     @focus="(pool.minPoolGoal === 10) ? pool.minPoolGoal = '' : false">
+                     @click="(pool.minPoolGoal === 10) ? pool.minPoolGoal = '' : false">
               <span v-if="errors.has('Soft Cap')" v-text="errors.first('Soft Cap')" class="text-danger"></span>
             </div>
           </div>
@@ -158,7 +158,7 @@
                      min=0
                      class="form-control input-text w-100"
                      v-model="pool.maxPoolAllocation"
-                     @focus="(pool.maxPoolAllocation === 1000) ? pool.maxPoolAllocation = '' : false">
+                     @click="(pool.maxPoolAllocation === 1000) ? pool.maxPoolAllocation = '' : false">
               <span v-if="errors.has('Hard Cap')" v-text="errors.first('Hard Cap')" class="text-danger"></span>
             </div>
           </div>
@@ -173,7 +173,7 @@
                      placeholder="0"
                      class="form-control input-text w-100"
                      v-model="pool.withdrawTimelock"
-                     @focus="(pool.withdrawTimelock === 0) ? pool.withdrawTimelock = '' : false">
+                     @click="(pool.withdrawTimelock === 0) ? pool.withdrawTimelock = '' : false">
               <span v-if="errors.has('Withdraw time lock')" v-text="errors.first('Withdraw time lock')" class="text-danger"></span>
             </div>
           </div>
@@ -187,7 +187,7 @@
                      step="0.000001"
                      class="form-control input-text w-100" data-vv-name="Minimum contribution"
                      v-model="pool.minContribution"
-                     @focus="(pool.minContribution === 0.10) ? pool.minContribution = '' : false"/>
+                     @click="(pool.minContribution === 0.10) ? pool.minContribution = '' : false"/>
               <span v-if="errors.has('Minimum contribution')" v-text="errors.first('Minimum contribution')" class="text-danger"></span>
             </div>
           </div>
@@ -199,7 +199,7 @@
                      step="0.000001"
                      class="form-control input-text" data-vv-name="Maximum contribution"
                      v-model="pool.maxContribution"
-                     @focus="(pool.maxContribution === 100) ? pool.maxContribution = '' : false"/>
+                     @click="(pool.maxContribution === 100) ? pool.maxContribution = '' : false"/>
               <span v-if="errors.has('Maximum contribution')" v-text="errors.first('Maximum contribution')" class="text-danger"></span>
             </div>
           </div>
