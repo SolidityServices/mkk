@@ -544,7 +544,9 @@ export default {
       }
 
       const ethTransferDetails = await this.getTransferDetailsETH();
-      const weiTransferValue = await window.web3.utils.toWei((ethTransferDetails.transferValue).toString(), 'ether');
+      let stringEthTransferValue = (ethTransferDetails.transferValue).toString().substring(0, 20);
+      stringEthTransferValue = (stringEthTransferValue === '0.000000000000000000') ? '0.000000000000000001' : stringEthTransferValue;
+      const weiTransferValue = await window.web3.utils.toWei(stringEthTransferValue, 'ether');
       const ethTransferValue = ethTransferDetails.transferValue;
 
       try {
