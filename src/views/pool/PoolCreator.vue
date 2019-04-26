@@ -77,8 +77,8 @@
               <input type="number" v-validate="'required|decimal|min_value:0|max_value:15'"
                      data-vv-name="Creator fee"
                      class="form-control input-text w-100"
-                     step="0.01"
-                     min="0.01"
+                     step="0.1"
+                     min="0.1"
                      max="15"
                      v-model="pool.creatorFeeRate"
                      @click="(pool.creatorFeeRate === 0.01) ? pool.creatorFeeRate = '' : false">
