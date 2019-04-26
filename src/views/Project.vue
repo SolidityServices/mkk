@@ -154,8 +154,38 @@
           </div>
         </div>
 
-        <div class="" v-if="pool && showAdvancedDetails">
-          <pool :pool="this.pool" :disabled="true" />
+        <div class="d-flex flex-column col-6" v-if="pool && showAdvancedDetails">
+          <div class="orange-24-16-bold d-flex justify-content-between">
+            <span class="blue-18-reg">Sale start date:</span>
+            <span class="orange-18-bold text-right">{{formatDate(pool.saleStartDate)}}</span>
+          </div>
+
+          <div class="orange-24-16-bold d-flex justify-content-between">
+            <span class="blue-18-reg">Sale end date:</span>
+            <span class="orange-18-bold text-right">{{formatDate(pool.saleEndDate)}}</span>
+          </div>
+
+          <div class="orange-24-16-bold d-flex justify-content-between">
+            <span class="blue-18-reg">Whitelist pool:</span>
+            <span class="orange-18-bold text-right">
+              <i class="fa fa-check" v-if="pool.whitelistPool"></i>
+              <i class="fa fa-times" v-else></i>
+            </span>
+          </div>
+
+          <div class="orange-24-16-bold d-flex justify-content-between">
+            <span class="blue-18-reg">Trustless pool:</span>
+            <span class="orange-18-bold text-right">
+              <i class="fa fa-check" v-if="pool.strictlyTrustlessPool"></i>
+              <i class="fa fa-times" v-else></i>
+            </span>
+          </div>
+
+          <div class="orange-24-16-bold d-flex justify-content-between">
+            <span class="blue-18-reg">Withdraw timelock:</span>
+            <span class="orange-18-bold text-right">{{pool.withdrawTimelock}} h</span>
+          </div>
+
         </div>
 
         <hr class="blue-hr-fullw my-5">
@@ -309,14 +339,12 @@ import 'vue-range-slider/dist/vue-range-slider.css';
 import Web3 from 'web3';
 import moment from 'moment';
 import LocalPool from '../model/LocalPool';
-import Pool from '../components/Pool.vue';
 import mewLinkBuilder from '../utils/mewLinkBuilder';
 import openMewUrl from '../utils/openMewUrl';
 
 export default {
   components: {
     RangeSlider,
-    Pool,
   },
   data: () => ({
     datepickerOptions: {
@@ -373,6 +401,9 @@ export default {
     },
   },
   methods: {
+    formatDate(date) {
+      return moment(date, 'DD/MM/YYYY HH:mm:ss').format('DD/MM/YYYY HH:mm');
+    },
     async initCountryData() {
       this.blacklistedCountries = await this.connectICO.pool.getKycCountryBlacklist(this.address);
     },
