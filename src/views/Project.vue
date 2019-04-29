@@ -272,7 +272,7 @@
                 </div>
             </div>
 
-            <div class="row mx-0 mb-3" v-if="(pool.isStopped || !pool.isSentToSale) && (parseFloat(userContribution) > 0)">
+            <div class="row mx-0 mb-3" v-if="!(!pool.isStopped && pool.isSentToSale) || !(this.mode === 'mm' && parseFloat(userContribution) > 0)">
                 <div class="col-12 col-lg-6 mb-2 mb-lg-0">
                     <span class="orange-18-bold">Withdraw all ETH:</span>
                 </div>
