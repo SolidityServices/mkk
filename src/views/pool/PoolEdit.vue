@@ -2,20 +2,20 @@
   <div class="container pt-4">
     <div class="mb-5">
       <div class="row mb-3">
-        <div class="col-6 col-lg-3 mb-2 mb-lg-0">
-          <button class="btn btn-block blue-submit" @click="sendFundsToSale" :disabled="!pool || pool.isSentToSale || pool.isStopped">
+        <div class="col-6 col-lg-3 mb-2 mb-lg-0" v-if="pool && !pool.isSentToSale && !pool.isStopped">
+          <button class="btn btn-block blue-submit" @click="sendFundsToSale">
             Send funds to sale
           </button>
         </div>
 
-        <div class="col-6 col-lg-3 mb-2 mb-lg-0">
-          <button class="btn btn-block blue-submit" @click="stopPool" :disabled="(!pool || pool.isStopped) || (pool && pool.isSentToSale)">
+        <div class="col-6 col-lg-3 mb-2 mb-lg-0" v-if="!((!pool || pool.isStopped) || (pool && pool.isSentToSale))">
+          <button class="btn btn-block blue-submit" @click="stopPool">
             Stop pool
           </button>
         </div>
 
-        <div class="col-6 col-lg-3 mb-2 mb-lg-0">
-          <button class="btn btn-block blue-submit" @click="confirmTokensReceived" :disabled="!pool || !pool.isSentToSale">
+        <div class="col-6 col-lg-3 mb-2 mb-lg-0" v-if="pool && pool.isSentToSale">
+          <button class="btn btn-block blue-submit" @click="confirmTokensReceived">
             Confirms token received
           </button>
         </div>

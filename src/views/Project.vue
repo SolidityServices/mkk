@@ -272,58 +272,53 @@
                 </div>
             </div>
 
-            <div class="row mx-0 mb-3">
+            <div class="row mx-0 mb-3" v-if="(pool.isStopped || !pool.isSentToSale) && (parseFloat(userContribution) > 0)">
                 <div class="col-12 col-lg-6 mb-2 mb-lg-0">
                     <span class="orange-18-bold">Withdraw all ETH:</span>
                 </div>
 
                 <div class="col-12 col-lg-6 mb-2 mb-lg-0">
-                    <button class="btn px-4 blue-submit btn-block" @click="withdrawAll" :disabled="(!pool.isStopped && pool.isSentToSale) || !(parseFloat(userContribution) > 0)">
+                    <button class="btn px-4 blue-submit btn-block" @click="withdrawAll">
                         Withdraw all ETH
                     </button>
                 </div>
             </div>
         </div>
 
-        <div>
-            <div class="row mx-0 mb-3">
-                <div class="col-12 col-lg-6 mb-2 mb-lg-0">
-                    <span class="orange-18-bold">Available tokens to withdraw: {{ userTokens }} {{ tokenSymbol }}</span>
-                </div>
-            </div>
-
-            <div class="row mx-0 mb-3">
-                <div class="col-12 col-lg-6 mb-2 mb-lg-0">
-                    <button class="btn btn-block px-4 white-submit" @click="withdrawTokens" :disabled="!pool.isSentToSale">
-                        Withdraw tokens
-                    </button>
-                </div>
-
-                <div class="col-12 col-lg-6 mb-2 mb-lg-0">
-                    <button class="btn btn-block px-4 white-submit" @click="withdrawRefund" :disabled="!withDrawRefundAvailable">
-                        Withdraw refund
-                    </button>
-                </div>
-            </div>
+        <div class="row mx-0 mb-3">
+          <div class="col-12 col-lg-6 mb-2 mb-lg-0">
+            <span class="orange-18-bold">Available tokens to withdraw: {{ userTokens }} {{ tokenSymbol }}</span>
+          </div>
         </div>
 
-        <div>
-            <div class="row mx-0 mb-3">
-                <div class="col-12 col-lg-6 mb-2 mb-lg-0">
-                    <input type="text"
-                           v-validate="'required|eth-address'"
-                           data-vv-name="Custom token"
-                           class="form-control input-text w-100"
-                           v-model="customToken" placeholder="Custom token"
-                           :disabled="!pool.isSentToSale"/>
-                </div>
+        <div class="row mx-0 mb-3">
+          <div class="col-12 col-lg-6 mb-2 mb-lg-0" v-if="pool.isSentToSale">
+            <button class="btn btn-block px-4 white-submit" @click="withdrawTokens">
+              Withdraw tokens
+            </button>
+          </div>
 
-                <div class="col-12 col-lg-6 mb-2 mb-lg-0">
-                    <button class="btn btn-block px-4 blue-submit text-lg-center" @click="withdrawCustomToken" :disabled="!pool.isSentToSale">
-                        Withdraw custom token
-                    </button>
-                </div>
-            </div>
+          <div class="col-12 col-lg-6 mb-2 mb-lg-0" v-if="withDrawRefundAvailable">
+            <button class="btn btn-block px-4 white-submit" @click="withdrawRefund">
+              Withdraw refund
+            </button>
+          </div>
+        </div>
+
+        <div class="row mx-0 mb-3" v-if="pool.isSentToSale">
+          <div class="col-12 col-lg-6 mb-2 mb-lg-0">
+            <input type="text"
+                   v-validate="'required|eth-address'"
+                   data-vv-name="Custom token"
+                   class="form-control input-text w-100"
+                   v-model="customToken" placeholder="Custom token"/>
+          </div>
+
+          <div class="col-12 col-lg-6 mb-2 mb-lg-0">
+            <button class="btn btn-block px-4 blue-submit text-lg-center" @click="withdrawCustomToken">
+              Withdraw custom token
+            </button>
+          </div>
         </div>
 
         <hr class="blue-hr-fullw my-5">

@@ -263,33 +263,31 @@
           <div class="col-12 col-lg-9">{{ blacklistedCountriesText }}</div>
         </div>
 
-        <div class="row mx-0 mb-2" v-if="!disabled">
+        <div class="row mx-0 mb-2" v-if="!disabled && !(pool.isStopped || pool.isSentToSale) ">
           <div class="col-12 col-md-8 mb-2 mb-lg-0">
             <country-select
                     multiple
                     v-model="countriesToAdd"
-                    :options="selectableCountries"
-                    :disabled="pool.isStopped || pool.isSentToSale" />
+                    :options="selectableCountries" />
           </div>
 
           <div class="col-12 col-md-4 mb-2 mb-lg-0">
-            <button class="btn btn-block blue-submit" @click="addToBlacklist" :disabled="pool.isStopped || pool.isSentToSale">
+            <button class="btn btn-block blue-submit" @click="addToBlacklist">
               Add to blacklist
             </button>
           </div>
         </div>
 
-        <div class="row mx-0 mb-2" v-if="!disabled">
+        <div class="row mx-0 mb-2" v-if="!disabled && !(pool.isStopped || pool.isSentToSale)">
           <div class="col-12 col-md-8 mb-2 mb-lg-0">
             <country-select
                     multiple
                     v-model="countriesToRemove"
-                    :options="blacklistedCountries"
-                    :disabled="pool.isStopped || pool.isSentToSale"/>
+                    :options="blacklistedCountries"/>
           </div>
 
           <div class="col-12 col-md-4 mb-2 mb-lg-0">
-            <button class="btn btn-block blue-submit" @click="removeFromBlacklist" :disabled="pool.isStopped || pool.isSentToSale">
+            <button class="btn btn-block blue-submit" @click="removeFromBlacklist">
               Remove from blacklist
             </button>
           </div>
@@ -304,7 +302,7 @@
             <div class="col-12">{{ adminAddressesText }}</div>
         </div>
 
-        <div class="row mx-0 mb-2" v-if="!disabled">
+        <div class="row mx-0 mb-2" v-if="!disabled && !(pool.isStopped || pool.isSentToSale)">
           <div class="col-12 col-md-8 mb-2 mb-lg-0">
             <multiselect
                     class="w-100"
@@ -314,20 +312,19 @@
                     :multiple="true"
                     :options="[]"
                     :taggable="true"
-                    @tag="addAdminAddressToAdd"
-                    :disabled="pool.isStopped || pool.isSentToSale">
+                    @tag="addAdminAddressToAdd">
             </multiselect>
             <span v-if="errors.has('Add Admin addresses')" v-text="errors.first('Add Admin addresses')" class="text-danger"></span>
           </div>
 
           <div class="col-12 col-md-4 mb-2 mb-lg-0">
-            <button class="btn btn-block blue-submit" @click="addAdminAddresses" :disabled="pool.isStopped || pool.isSentToSale">
+            <button class="btn btn-block blue-submit" @click="addAdminAddresses">
               Add Admin addresses
             </button>
           </div>
         </div>
 
-        <div class="row mx-0 mb-2" v-if="!disabled">
+        <div class="row mx-0 mb-2" v-if="!disabled && !(pool.isStopped || pool.isSentToSale)">
           <div class="col-12 col-md-8 mb-2 mb-lg-0">
             <multiselect
                     class="w-100"
@@ -335,14 +332,13 @@
                     data-vv-name="Add Admin addresses"
                     v-model="adminAddressesToRemove"
                     :multiple="true"
-                    :options="adminAddresses"
-                    :disabled="pool.isStopped || pool.isSentToSale">
+                    :options="adminAddresses">
             </multiselect>
             <span v-if="errors.has('Admin addresses')" v-text="errors.first('Admin addresses')" class="text-danger"></span>
           </div>
 
           <div class="col-12 col-md-4 mb-2 mb-lg-0">
-            <button class="btn btn-block blue-submit" @click="removeAdminAddresses" :disabled="pool.isStopped || pool.isSentToSale">
+            <button class="btn btn-block blue-submit" @click="removeAdminAddresses">
               Remove Admin addresses
             </button>
           </div>
@@ -358,7 +354,7 @@
         </div>
 
         <!--v-if="!disabled"-->
-        <div class="row mx-0 mb-2" v-if="!disabled">
+        <div class="row mx-0 mb-2" v-if="!disabled && !(pool.isStopped || pool.isSentToSale)">
             <div class="col-12 col-md-8 mb-2 mb-lg-0">
               <multiselect
                       class="w-100"
@@ -368,20 +364,19 @@
                       :multiple="true"
                       :options="[]"
                       :taggable="true"
-                      @tag="addWhitelistAddressToAdd"
-                      :disabled="pool.isStopped || pool.isSentToSale">
+                      @tag="addWhitelistAddressToAdd">
               </multiselect>
               <span v-if="errors.has('Add Whitelist addresses')" v-text="errors.first('Add Whitelist addresses')" class="text-danger"></span>
             </div>
 
             <div class="col-12 col-md-4 mb-2 mb-lg-0">
-              <button class="btn btn-block blue-submit" @click="addWhitelistAddresses" :disabled="pool.isStopped || pool.isSentToSale">
+              <button class="btn btn-block blue-submit" @click="addWhitelistAddresses">
                 Add Whitelist addresses
               </button>
             </div>
         </div>
 
-        <div class="row mx-0 mb-2" v-if="!disabled">
+        <div class="row mx-0 mb-2" v-if="!disabled && !(pool.isStopped || pool.isSentToSale)">
           <div class="col-12 col-md-8 mb-2 mb-lg-0">
             <multiselect
                     class="w-100"
@@ -389,14 +384,13 @@
                     data-vv-name="Whitelist addresses"
                     v-model="whitelistAddressesToRemove"
                     :multiple="true"
-                    :options="whitelistAddresses"
-                    :disabled="pool.isStopped || pool.isSentToSale">
+                    :options="whitelistAddresses">
             </multiselect>
             <span v-if="errors.has('Whitelist addresses')" v-text="errors.first('Whitelist addresses')" class="text-danger"></span>
           </div>
 
           <div class="col-12 col-md-4 mb-2 mb-lg-0">
-            <button class="btn btn-block blue-submit" @click="removeWhitelistAddresses" :disabled="pool.isStopped || pool.isSentToSale">
+            <button class="btn btn-block blue-submit" @click="removeWhitelistAddresses">
               Remove Whitelist addresses
             </button>
           </div>
@@ -421,26 +415,24 @@
           </div>
         </div>
 
-        <div class="row mx-0 mb-2">
+        <div class="row mx-0 mb-2" v-if="!(pool.isStopped || pool.isSentToSale)">
           <div class="col-12 col-md-4 mb-2 mb-lg-0">
             <input type="number" v-validate="`required|decimal`"
                    step="0.000001"
                    class="form-control input-text w-100" data-vv-name="Gwei amount"
-                   v-model="sendToSaleGweiValue"
-                   :disabled="pool.isStopped || pool.isSentToSale">
+                   v-model="sendToSaleGweiValue">
             <span v-if="errors.has('Gwei amount')" v-text="errors.first('Gwei amount')" class="text-danger"></span>
           </div>
 
           <div class="col-12 col-md-4 mb-2 mb-lg-0">
             <date-picker v-model="sendToSaleTime"
                          :config="datepickerOptions"
-                         class="form-control input-text w-100"
-                         :disabled="pool.isStopped || pool.isSentToSale">
+                         class="form-control input-text w-100">
             </date-picker>
           </div>
 
           <div class="col-12 col-md-4 d-flex flex-row flex-wrap">
-            <button class="btn px-4 blue-submit btn-block" @click="addAutoSendToSale" :disabled="pool.isStopped || pool.isSentToSale">
+            <button class="btn px-4 blue-submit btn-block" @click="addAutoSendToSale">
               Add auto send to sale
             </button>
           </div>
@@ -460,61 +452,61 @@
 
       <div class="row mx-0 mb-2" v-if="!disabled">
         <div class="col-12 col-md-6 mb-2 mb-lg-0">
-          <button class="btn px-4 blue-submit btn-block" @click="sendToSaleWithCalldata" :disabled="pool.isSentToSale || pool.isStopped">
+          <button class="btn px-4 blue-submit btn-block" @click="sendToSaleWithCalldata" v-if="!(pool.isSentToSale || pool.isStopped)">
             Send to sale with predefined calldata
           </button>
         </div>
 
         <div class="col-12 col-md-6 mb-2 mb-lg-0">
-          <button class="btn px-4 blue-submit btn-block" @click="withdrawFromSaleWithCalldata" :disabled="!pool.isSentToSale">
+          <button class="btn px-4 blue-submit btn-block" @click="withdrawFromSaleWithCalldata" v-if="pool.isSentToSale">
             Withdraw with predefined calldata
           </button>
         </div>
       </div>
 
-      <div class="row mx-0 mb-2" v-if="!disabled">
+      <div class="row mx-0 mb-2" v-if="!disabled && !(pool.isStopped || pool.isSentToSale)">
         <div class="col-12 col-md-6 mb-2 mb-lg-0">
-          <input type="text" class="form-control input-text" v-model="sendToSaleCalldataFunctionSig" :disabled="pool.isSentToSale || pool.isStopped" />
+          <input type="text" class="form-control input-text" v-model="sendToSaleCalldataFunctionSig" />
         </div>
 
         <div class="col-12 col-md-6 mb-2 mb-lg-0">
-          <button class="btn blue-submit px-4 w-100" @click="setSaleParticipateCalldata" :disabled="pool.isSentToSale || pool.isStopped">
+          <button class="btn blue-submit px-4 w-100" @click="setSaleParticipateCalldata">
             Set send to sale calldata
           </button>
         </div>
       </div>
 
-      <div class="row mx-0 mb-2" v-if="!disabled">
+      <div class="row mx-0 mb-2" v-if="!disabled && pool.isSentToSale">
         <div class="col-12 col-md-6 mb-2 mb-lg-0">
-          <input type="text" class="form-control input-text" v-model="saleWithdrawCalldataFunctionSig" :disabled="!pool.isSentToSale" />
+          <input type="text" class="form-control input-text" v-model="saleWithdrawCalldataFunctionSig" />
         </div>
 
         <div class="col-12 col-md-6 mb-2 mb-lg-0">
-          <button class="btn blue-submit px-4 w-100" @click="setSaleWithdrawCalldata" :disabled="!pool.isSentToSale">
+          <button class="btn blue-submit px-4 w-100" @click="setSaleWithdrawCalldata">
             Set withdraw calldata
           </button>
         </div>
       </div>
 
-      <div class="row mx-0 mb-2" v-if="!disabled">
+      <div class="row mx-0 mb-2" v-if="!disabled && !(pool.isStopped || pool.isSentToSale)">
         <div class="col-12 col-md-6 mb-2 mb-lg-0">
-          <input type="text" class="form-control input-text" v-model="sendToSaleWithCalldataParameterFunctionSig" :disabled="pool.isSentToSale || pool.isStopped" />
+          <input type="text" class="form-control input-text" v-model="sendToSaleWithCalldataParameterFunctionSig" />
         </div>
 
         <div class="col-12 col-md-6 mb-2 mb-lg-0">
-          <button class="btn blue-submit px-4 w-100" @click="sendToSaleWithCalldataParameter" :disabled="pool.isSentToSale || pool.isStopped">
+          <button class="btn blue-submit px-4 w-100" @click="sendToSaleWithCalldataParameter">
             Send to sale with dynamic calldata
           </button>
         </div>
       </div>
 
-      <div class="row mx-0 mb-2" v-if="!disabled">
+      <div class="row mx-0 mb-2" v-if="!disabled && pool.isSentToSale">
         <div class="col-12 col-md-6 mb-2 mb-lg-0">
-          <input type="text" class="form-control input-text" v-model="withdrawFromSaleWithCalldataParameterFunctionSig" :disabled="!pool.isSentToSale" />
+          <input type="text" class="form-control input-text" v-model="withdrawFromSaleWithCalldataParameterFunctionSig"/>
         </div>
 
         <div class="col-12 col-md-6 mb-2 mb-lg-0">
-          <button class="btn blue-submit px-4 w-100" @click="withdrawFromSaleWithCalldataParameter" :disabled="!pool.isSentToSale">
+          <button class="btn blue-submit px-4 w-100" @click="withdrawFromSaleWithCalldataParameter">
             Withdraw with dynamic calldata
           </button>
         </div>
