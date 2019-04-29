@@ -65,6 +65,7 @@ export default {
   computed: {
     ...mapGetters([
       'connectICO',
+      'mode',
     ]),
   },
   methods: {
