@@ -481,6 +481,9 @@ export default {
             response.gasLimit,
           );
           openMewUrl(url);
+          this.loadPool();
+          this.initUserContributions();
+          this.initWithDrawRefundAvailable();
         }
       } catch (e) {
         this.$notify({ clean: true });
