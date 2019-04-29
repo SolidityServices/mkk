@@ -92,8 +92,8 @@
                   <div class="orange-24-16-bold d-flex justify-content-between">
                     <span class="blue-18-reg">Pool Tokens:</span>
                     <span class="orange-18-bold text-right">
-                            {{ tokenBalance }} {{ tokenSymbol }}
-                        </span>
+                            {{ tokenBalance }} <IconCrypto :coinname="tokenSymbol" color="color" format="svg" v-if="tokenSymbol" /> <template v-else>Symbol not available</template>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -287,7 +287,8 @@
 
         <div class="row mx-0 mb-3">
           <div class="col-12 col-lg-6 mb-2 mb-lg-0">
-            <span class="orange-18-bold">Available tokens to withdraw: {{ userTokens }} {{ tokenSymbol }}</span>
+            <span class="orange-18-bold">Available tokens to withdraw: {{ userTokens }} <IconCrypto :coinname="tokenSymbol" color="color" format="svg" v-if="tokenSymbol" /> <template v-else>Symbol not available</template>
+</span>
           </div>
         </div>
 
@@ -360,7 +361,7 @@ export default {
     autoTokenWithDrawDate: '',
     autoTokenWithDrawGweiValue: 0,
     tokensConfirmed: false,
-    tokenSymbol: 'Symbol not available',
+    tokenSymbol: null,
     tokenBalance: 0,
     userTokens: 0,
   }),
@@ -412,12 +413,6 @@ export default {
     },
     async initTokens() {
       this.tokensConfirmed = await this.connectICO.pool.areTokensReceivedConfirmed(this.address);
-
-      const dummyTokenAddress = '0x0000000000000000000000000000000000000000';
-
-      if (this.pool && this.pool.tokenAddress && this.pool.tokenAddress !== dummyTokenAddress) {
-        this.tokenSymbol = await this.connectICO.erc.getSymbol(this.pool.tokenAddress);
-      }
 
       if (this.tokensConfirmed) {
         this.tokenBalance = await this.connectICO.erc.getBalance(this.pool.tokenAddress, this.address);
@@ -704,6 +699,13 @@ export default {
         // console.log(e);
       }
     },
+    async initTokenSymbol(tokenAddress) {
+      const dummyTokenAddress = '0x0000000000000000000000000000000000000000';
+
+      if (tokenAddress && this.pool.tokenAddress !== dummyTokenAddress) {
+        this.tokenSymbol = await this.connectICO.erc.getSymbol(tokenAddress);
+      }
+    },
   },
   mounted() {
     if (this.$route.params.address) {
@@ -789,6 +791,15 @@ export default {
     }, {
       immediate: false,
     });
+  },
+  watch: {
+    'pool.tokenAddress': {
+      handler(newValue, oldValue) {
+        if (newValue !== oldValue) {
+          this.initTokenSymbol(newValue);
+        }
+      },
+    },
   },
 };
 </script>
