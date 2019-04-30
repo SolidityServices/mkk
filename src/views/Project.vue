@@ -702,7 +702,7 @@ export default {
     async initTokenSymbol(tokenAddress) {
       const dummyTokenAddress = '0x0000000000000000000000000000000000000000';
 
-      if (tokenAddress && this.pool.tokenAddress !== dummyTokenAddress) {
+      if (tokenAddress && tokenAddress !== dummyTokenAddress) {
         this.tokenSymbol = await this.connectICO.erc.getSymbol(tokenAddress);
       }
     },
