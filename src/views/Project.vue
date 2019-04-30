@@ -767,7 +767,7 @@ export default {
           return `The ${field} must bigger than 0 and lesser or equal ${this.userContribution}.`;
         }
 
-        if (this.pool.minContribution > 0 && this.userContribution <= this.pool.minContribution) {
+        if (this.pool.minContribution > 0 && this.userContribution <= this.pool.minContribution && this.userContribution > 0) {
           return 'Click withdraw all to receive all the remaining ETH';
         }
 
@@ -778,15 +778,19 @@ export default {
         return 'You must deposit ETH first if you want a withdraw';
       },
       validate: (value) => {
-        if (this.pool.isStopped && this.userContribution > 0) {
-          return value > 0 && value <= this.userContribution;
+        if (this.mode === 'mm') {
+          if (this.pool.isStopped && this.userContribution > 0) {
+            return value > 0 && value <= this.userContribution;
+          }
+
+          if (this.userContribution > 0) {
+            return value > 0 && value <= (this.userContribution - this.pool.minContribution);
+          }
+
+          return value > 0 && value <= 0;
         }
 
-        if (this.userContribution > 0) {
-          return value > 0 && value <= (this.userContribution - this.pool.minContribution);
-        }
-
-        return value > 0 && value <= 0;
+        return true;
       },
     }, {
       immediate: false,
