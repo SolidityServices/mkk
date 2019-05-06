@@ -92,7 +92,7 @@
                   <div class="orange-24-16-bold d-flex justify-content-between">
                     <span class="blue-18-reg">Pool Tokens:</span>
                     <span class="orange-18-bold text-right">
-                            {{ tokenBalance }} <IconCrypto :coinname="tokenSymbol" color="color" format="svg" v-if="tokenSymbol" /> <template v-else>Symbol not available</template>
+                            {{ tokenBalance }} {{ tokenSymbol }}
                     </span>
                   </div>
                 </div>
@@ -287,8 +287,7 @@
 
         <div class="row mx-0 mb-3">
           <div class="col-12 col-lg-6 mb-2 mb-lg-0">
-            <span class="orange-18-bold">Available tokens to withdraw: {{ userTokens }} <IconCrypto :coinname="tokenSymbol" color="color" format="svg" v-if="tokenSymbol" /> <template v-else>Symbol not available</template>
-</span>
+            <span class="orange-18-bold">Available tokens to withdraw: {{ userTokens }} {{ tokenSymbol}}</span>
           </div>
         </div>
 
@@ -361,7 +360,7 @@ export default {
     autoTokenWithDrawDate: '',
     autoTokenWithDrawGweiValue: 0,
     tokensConfirmed: false,
-    tokenSymbol: null,
+    tokenSymbol: 'Symbol not available',
     tokenBalance: 0,
     userTokens: 0,
   }),
