@@ -252,6 +252,16 @@
 
             <div class="row mx-0 mb-3">
                 <div class="col-12 col-lg-6 mb-2 mb-lg-0">
+                    <span class="orange-18-bold">Withdraw timelock in hours:</span>
+                </div>
+
+                <div class="col-12 col-lg-6 mb-2 mb-lg-0 text-right">
+                    {{ pool.withdrawTimelock }} h
+                </div>
+            </div>
+
+            <div class="row mx-0 mb-3">
+                <div class="col-12 col-lg-6 mb-2 mb-lg-0">
                     <span class="orange-18-bold">Withdraw Amount in ETH:</span>
                 </div>
 
@@ -413,9 +423,14 @@ export default {
     async initTokens() {
       this.tokensConfirmed = await this.connectICO.pool.areTokensReceivedConfirmed(this.address);
 
+      console.log(this.tokensConfirmed);
+
       if (this.tokensConfirmed) {
         this.tokenBalance = await this.connectICO.erc.getBalance(this.pool.tokenAddress, this.address);
         this.userTokens = await this.connectICO.pool.getTokensOwedToContributor(this.address, this.connectICO.account);
+
+        console.log(this.tokenBalance);
+        console.log(this.userTokens);
       }
     },
     async loadPool() {

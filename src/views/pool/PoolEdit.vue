@@ -157,12 +157,13 @@ export default {
       try {
         const response = await this.connectICO.pool.confirmTokensReceived(this.pool.poolAddress, 0);
 
-        // console.log(response);
+        // @TODO
+        console.log(response);
 
         if (this.mode === 'mm') {
           this.$notify({
             type: 'success',
-            text: response,
+            text: 'Confirm tokens successful!',
             duration: 5000,
           });
         }
