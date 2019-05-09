@@ -14,7 +14,7 @@
           </button>
         </div>
 
-        <div class="col-6 col-lg-3 mb-2 mb-lg-0" v-if="pool && pool.isSentToSale">
+        <div class="col-6 col-lg-3 mb-2 mb-lg-0" v-if="pool && pool.isSentToSale && !tokensConfirmed">
           <button class="btn btn-block blue-submit" @click="confirmTokensReceived">
             Confirms token received
           </button>
@@ -58,6 +58,7 @@ export default {
     address: '',
     pool: null,
     recipientAddress: '',
+    tokensConfirmed: false,
   }),
   components: {
     Pool,
@@ -73,6 +74,7 @@ export default {
       try {
         await this.connectICO.pool.pool.at(this.address);
         this.pool = new LocalPool(this.address);
+        this.tokensConfirmed = await this.connectICO.pool.areTokensReceivedConfirmed(this.address);
       } catch (e) {
         this.$notify({
           type: 'error',
