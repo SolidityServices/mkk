@@ -420,18 +420,36 @@ export default {
 
       this.userContribution = Web3.utils.fromWei((userContribution).toString(), 'ether');
     },
-    async initTokens() {
+    async initTokens(tokenAddress) {
       this.tokensConfirmed = await this.connectICO.pool.areTokensReceivedConfirmed(this.address);
+      // console.log(this.tokensConfirmed);
+      const decimals = await this.connectICO.erc.getDecimals(tokenAddress);
+      // console.log(decimals.toString());
+      // eslint-disable-next-line no-restricted-properties
+      const conversionValue = Math.pow(10, decimals);
+      const rawTokenBalance = await this.connectICO.erc.getBalance(tokenAddress, this.address.toLowerCase());
+      const rawUserTokens = await this.connectICO.pool.getTokensOwedToContributor(this.address.toLowerCase(), this.connectICO.account);
+      this.tokenBalance = rawTokenBalance / conversionValue;
+      this.userTokens = rawUserTokens / conversionValue;
 
-      console.log(this.tokensConfirmed);
+      // console.log(rawTokenBalance.toString());
+      // console.log(rawUserTokens.toString());
+      // console.log(this.tokenBalance.toString());
+      // console.log(this.userTokens.toString());
+      // console.log(Web3.utils.fromWei(rawTokenBalance.toString(), 'ether'));
+      // console.log(Web3.utils.fromWei(rawUserTokens.toString(), 'ether'));
+      // console.log(this.tokenBalance);
+      // console.log(this.userTokens);
+    },
+    async getTokenBalance() {
+      const balance = await this.connectICO.erc.getBalance(this.pool.tokenAddress, this.address);
 
-      if (this.tokensConfirmed) {
-        this.tokenBalance = await this.connectICO.erc.getBalance(this.pool.tokenAddress, this.address);
-        this.userTokens = await this.connectICO.pool.getTokensOwedToContributor(this.address, this.connectICO.account);
+      console.log(balance);
+    },
+    async getUserTokens() {
+      const balance = await this.connectICO.pool.getTokensOwedToContributor(this.address, this.connectICO.account);
 
-        console.log(this.tokenBalance);
-        console.log(this.userTokens);
-      }
+      console.log(balance);
     },
     async loadPool() {
       try {
@@ -728,7 +746,7 @@ export default {
       this.initUserContributions();
       this.initCountryData();
       this.initWithDrawRefundAvailable();
-      this.initTokens();
+      // this.initTokens();
 
       const self = this;
 
@@ -815,6 +833,7 @@ export default {
       handler(newValue, oldValue) {
         if (newValue !== oldValue) {
           this.initTokenSymbol(newValue);
+          this.initTokens(newValue);
         }
       },
     },
