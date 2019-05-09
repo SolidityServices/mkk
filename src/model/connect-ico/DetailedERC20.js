@@ -19,8 +19,15 @@ export default class ERC20 {
     return instance.name.call({ from: this.account });
   }
 
+  async getDecimals(tokenAddress) {
+    const instance = await this.erc20.at(tokenAddress);
+    return instance.decimals.call({ from: this.account });
+  }
+
   async getBalance(tokenAddress, poolAddress) {
     const instance = await this.erc20.at(tokenAddress);
     return instance.balanceOf.call(poolAddress, { from: this.account });
   }
+
+
 }
