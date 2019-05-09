@@ -556,7 +556,7 @@ export default {
           const url = mewLinkBuilder(
             this.address,
             response.callData,
-            this.withdrawAmount,
+            0,
             await window.web3.eth.net.getNetworkType(),
             response.gasLimit,
           );
