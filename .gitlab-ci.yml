@@ -21,17 +21,19 @@ install_npm:
   variables:
     MNEMONIC: ${MNEMONIC_DEV}
     INFURA_APIKEY: ${INFURA_APIKEY_DEV}
+    INFURA_NETWORK: ${INFURA_NETWORK_DEV}
   script:
   - cp infura.json.ci infura.json
   - sed -i -e "s@MNEMONIC_VALUE@${MNEMONIC}@g" infura.json
   - sed -i -e "s@INFURA_APIKEY_VALUE@${INFURA_APIKEY}@g" infura.json
+  - sed -i -e "s@INFURA_NETWORK_VALUE@${INFURA_NETWORK}@g" infura.json
   - eval $(ssh-agent -s)
   - ssh-add /root/gitlab_ci_key
   - mkdir ~/.ssh || true
   - ssh-keyscan -t rsa gitlab.codecluster.tk >> ~/.ssh/known_hosts || true
-  - npm install -g truffle
+  - npm install -g truffle@4.1.14
   - npm install
-  - truffle migrate --network rinkeby
+  - truffle migrate --network kovan
   - npm run build
   - echo -e "sha $CI_COMMIT_SHA\ntag ${CONTAINER_TAG}\nbuild_time $(date)"  >> dist/version
 

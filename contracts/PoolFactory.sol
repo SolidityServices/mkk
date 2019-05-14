@@ -10,25 +10,21 @@ contract PoolFactory is Ownable {
     struct Params {
         address kycContractAddress;
         uint256 flatFee;
-        uint16 maxAllocationFeeRate; // 1/1000
+        uint16 maxAllocationFeeRate; // 1/1000000
         uint16 maxCreatorFeeRate; // 1/1000
         uint16 providerFeeRate; // 1/1000
-        //bool useWhitelist;
+        bool useWhitelist;
     }
 
     Params public params;
 
-    address[] public poolList;
-    mapping (address => bool) public pools;
-    mapping (address => address[]) private poolsBySale;
-    mapping (address => address[]) private poolsByCreator;
-    //mapping (address => bool) public whitelist;
+    mapping (address => bool) public whitelist;
 
 
-    //pools by creators?
     //creator whitelist
 
-    event poolCreated(address poolAddress);
+    event poolCreated(address poolAddress, address indexed poolCreator, address indexed poolSale);
+    event whitelistChange(address whitelistAddresses, bool direction);
 
     constructor (address _kycContractAddress, uint _flatFee, uint16 _maxAllocationFeeRate, uint16 _maxCreatorFeeRate, uint16 _providerFeeRate) public {
         params.kycContractAddress = _kycContractAddress;
@@ -39,47 +35,79 @@ contract PoolFactory is Ownable {
     }
 
     function createPool(
-        address _saleAddress,
-        address _tokenAddress,
-        uint _creatorFeeRate,
-        uint _saleStartDate,
-        uint _saleEndDate,
-        uint _minContribution,
-        uint _maxContribution,
-        uint _minPoolGoal,
-        uint _maxPoolAllocation,
-        uint _withdrawTimelock,
-        bool _whitelistPool
+        address[2] addresses,
+        /* address _saleAddress,0
+        address _tokenAddress,1 */
+        bytes32[3] bytes32s,
+        /* bytes32 saleParticipateCalldata,0
+        bytes32 _saleWithdrawCalldata,1
+        bytes32 _poolDescription,2 */
+        uint[8] uints,
+        /* uint _creatorFeeRate,0
+        uint _saleStartDate,1
+        uint _saleEndDate,2
+        uint _minContribution,3
+        uint _maxContribution,4
+        uint _minPoolGoal,5
+        uint _maxPoolAllocation,6
+        uint _withdrawTimelock,7 */
+        bool[2] bools,
+        /*bool _whitelistPool,0
+        bool _strictlyTrustlessPool,1 */
+        address[] adminlist, 
+        address[] contributorWhitelist,
+        bytes32[] countryBlacklist
     ) public payable {
-        require(KYC(params.kycContractAddress).checkKYC(msg.sender), "createPool(...): Error, tx was not initiated by KYC address");
-        require(msg.value >= SafeMath.add(params.flatFee, SafeMath.mul(params.maxAllocationFeeRate, _maxPoolAllocation) / 1000), "createPool(...): Error, not enough value for fees");
-        require(params.maxCreatorFeeRate >= _creatorFeeRate, "createPool(...): Error, pool fee rate is greater than max allowed");
+        require(KYC(params.kycContractAddress).checkKYC(msg.sender), "createPool: tx by not KYC address");
+        if (params.useWhitelist) require(whitelist[msg.sender], "createPool: tx by not whitelisted address");
+        require(msg.value >= SafeMath.add(params.flatFee, SafeMath.mul(params.maxAllocationFeeRate, uints[6]) / 1000000), "createPool: not enough tx value");
+        require(params.maxCreatorFeeRate >= uints[0], "createPool: fee rate > max");
+        require(uints[1] <= uints[2], "createPool: saleStartDate > saleEndDate");
+        require(uints[3] <= uints[4] || uints[4] == 0, "createPool: minContribution > maxContribution");
+        require(uints[5] <= uints[6], "createPool: minPoolGoal > maxPoolAllocation");
         address poolAddress = new Pool(
-            [params.kycContractAddress, owner, msg.sender, _saleAddress, _tokenAddress],
-            [params.providerFeeRate, _creatorFeeRate, _saleStartDate, _saleEndDate,
-            _minContribution, _maxContribution, _minPoolGoal, _maxPoolAllocation,
-            _withdrawTimelock],
-            _whitelistPool
+            [params.kycContractAddress, owner, msg.sender, addresses[0], addresses[1]],
+            bytes32s,
+            [params.providerFeeRate, uints[0], uints[1], uints[2],
+            uints[3], uints[4], uints[5], uints[6],
+            uints[7]],
+            bools,
+            adminlist, 
+            contributorWhitelist,
+            countryBlacklist
             );
-        poolList.push(poolAddress);
-        poolsBySale[_saleAddress].push(poolAddress);
-        poolsByCreator[msg.sender].push(poolAddress);
-        pools[poolAddress] = true;
-        emit poolCreated(poolAddress);
+        emit poolCreated(poolAddress, msg.sender, addresses[0]);
     }
 
-    function wtihdraw() public onlyOwner{
+    function withdraw() public onlyOwner{
         owner.transfer(address(this).balance);
+    }
+
+
+    function addWhitelist(address[] addressList) public onlyOwner {
+        for(uint i = 0; i < addressList.length; i++) {
+          require(KYC(params.kycContractAddress).checkKYC(addressList[i]), "addWhitelist: not KYC address");
+          whitelist[addressList[i]] = true;
+          emit whitelistChange(addressList[i], true);
+        }
+    }
+
+    function removeWhitelist(address[] addressList) public onlyOwner {
+      for(uint i = 0; i < addressList.length; i++) {
+        whitelist[addressList[i]] = false;
+        emit whitelistChange(addressList[i], false);
+      }
     }
 
     function setParams(
         address _owner,
         address _kycContractAddress,
         uint256 _flatFee,
-        uint16 _maxAllocationFeeRate, // 1/1000
+        uint16 _maxAllocationFeeRate, // 1/1000000
         uint16 _maxCreatorFeeRate, // 1/1000
         uint16 _providerFeeRate, // 1/1000
-        bool[6] toSet
+        bool _useWhitelist,
+        bool[7] toSet
         ) public onlyOwner {
             if(toSet[0]){
                 owner = _owner;
@@ -99,31 +127,14 @@ contract PoolFactory is Ownable {
             if(toSet[5]){
                 params.providerFeeRate = _providerFeeRate;
             }
+            if(toSet[6]){
+                params.useWhitelist = _useWhitelist;
+            }
 
     }
 
     function () public payable {
-        revert("Error: fallback function");
-    }
-
-    function getPoolNumber() public view returns (uint){
-        return poolList.length;
-    }
-
-    function getPoolNumberBySale(address saleAddress) public view returns (uint){
-        return poolsBySale[saleAddress].length;
-    }
-
-    function getPoolBySale(address saleAddress, uint index) public view returns (address){
-        return poolsBySale[saleAddress][index];
-    }
-
-    function getPoolNumberByCreator(address creatorAddress) public view returns (uint){
-        return poolsByCreator[creatorAddress].length;
-    }
-
-    function getPoolByCreator(address creatorAddress, uint index) public view returns (address){
-        return poolsByCreator[creatorAddress][index];
+        revert("fallback function");
     }
 
 }

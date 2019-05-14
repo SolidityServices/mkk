@@ -2,51 +2,59 @@ import Vue from 'vue';
 import PoolFactory from './PoolFactory';
 import Pool from './Pool';
 import KYC from './KYC';
-import TokenPushRegistry from './TokenPushRegistry';
+import Automations from './Automations';
+import ERC20 from './DetailedERC20';
 
 export default class ConnectICO {
-  constructor() {
+  constructor(mode) {
     this.account = null;
     this.web3 = window.web3;
+    this.loaded = false;
+    this.mode = mode;
   }
 
-  start() {
+  async start() {
     // Bootstrap the abstractions for Use.
-    console.log(this.web3.currentProvider);
+    // console.log(this.web3.currentProvider);
 
     // set the initial this.account balance so it can be displayed.
     this.web3.eth.getAccounts((err, accounts) => {
-      if (err != null) {
-        Vue.notify({
-          type: 'error',
-          title: 'Error',
-          text: 'There was an error fetching your accounts!',
-        });
-        console.log('There was an error fetching your this.accounts.');
-        return;
+      let account = '0x0000000000000000000000000000000000000000';
+
+      if (this.mode === 'mm') {
+        if (err) {
+          Vue.notify({
+            type: 'error',
+            title: 'Error',
+            text: 'There was an error fetching your accounts!',
+          });
+          console.log('There was an error fetching your this.accounts.');
+          return;
+        }
+
+        if (this.mode === 'mm' && accounts.length === 0) {
+          Vue.notify({
+            type: 'error',
+            title: 'Error',
+            text: 'Couldn\'t get any this.accounts! Make sure your Ethereum client is configured correctly!',
+          });
+          console.log('Couldn\'t get any this.accounts! Make sure your Ethereum client is configured correctly.');
+          return;
+        }
+
+        // eslint-disable-next-line prefer-destructuring
+        account = accounts[0];
       }
+      this.account = account;
 
-      if (accounts.length === 0) {
-        Vue.notify({
-          type: 'error',
-          title: 'Error',
-          text: 'Couldn\'t get any this.accounts! Make sure your Ethereum client is configured correctly!',
-        });
-        console.log('Couldn\'t get any this.accounts! Make sure your Ethereum client is configured correctly.');
-        return;
-      }
-
-      // eslint-disable-next-line prefer-destructuring
-      this.account = accounts[0];
-
-      // TODO: is this necessary?
-      this.web3.currentProvider.enable();
-      this.pool = new Pool(this.web3.currentProvider, this.account, this.web3);
-      this.poolFactory = new PoolFactory(this.web3.currentProvider, this.account, this.web3);
-      this.KYC = new KYC(this.web3.currentProvider);
-      this.tokenPushRegistry = new TokenPushRegistry(this.web3.currentProvider);
+      this.pool = new Pool(this.web3.currentProvider, this.account, this.web3, this.mode);
+      this.poolFactory = new PoolFactory(this.web3.currentProvider, this.account, this.web3, this.mode);
+      this.KYC = new KYC(this.web3.currentProvider, this.account, this.web3);
+      this.automations = new Automations(this.web3.currentProvider, this.account, this.web3, this.mode);
+      this.erc = new ERC20(this.web3.currentProvider, this.account, this.web3);
 
       console.log('Application initialized');
+      this.loaded = true;
     });
   }
 }

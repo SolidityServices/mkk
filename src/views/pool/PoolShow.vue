@@ -119,7 +119,8 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Minimum pool goal in ETH</div>
             <div class="col-12 col-lg-6">
-              <input type="number" v-validate="'required|numeric|min_value:0'"
+              <input type="number"
+                     v-validate="'required|numeric|min_value:0'"
                      class="form-control input-text w-100" disabled
                      data-vv-name="Minimum pool goal"
                      v-model="pool.minPoolGoal">
@@ -129,7 +130,8 @@
           <div class="col-12 col-md-6 d-flex flex-row align-items-center mt-3 flex-wrap">
             <div class="col-12 col-lg-6 blue-18-reg">Max allocation in ETH</div>
             <div class="col-12 col-lg-6">
-              <input type="number" v-validate="'required|numeric|min_value:0'"
+              <input type="number"
+                     v-validate="'required|decimal|min_value:0.01'"
                      class="form-control input-text w-100" disabled
                      data-vv-name="Max allocation"
                      v-model="pool.maxPoolAllocation">
@@ -192,8 +194,9 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import datePicker from 'vue-bootstrap-datetimepicker';
-import Pool from '../../model/LocalPool';
+import LocalPool from '../../model/LocalPool';
 
 export default {
   components: {
@@ -208,16 +211,30 @@ export default {
       sideBySide: true,
     },
   }),
+  mounted() {
+    if (this.$route.params.address) {
+      this.address = this.$route.params.address;
+      this.search();
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'connectICO',
+    ]),
+  },
   methods: {
     async search() {
-      if (await this.$connectIco.poolFactory.checkIfPoolExists(this.address)) {
-        this.pool = new Pool(this.address);
-      } else {
+      try {
+        await this.connectICO.pool.pool.at(this.address);
+        this.pool = new LocalPool(this.address);
+      } catch (e) {
         this.$notify({
           type: 'error',
-          title: 'Not found!',
           text: 'Pool not found by the given address!',
+          duration: 5000,
         });
+
+        // console.log(e);
       }
     },
   },

@@ -14,8 +14,9 @@ contract Pool {
     }
 
     struct Params{
-        bytes32 saleParticipateFunctionSig;
-        bytes32 saleWithdrawFunctionSig;
+        bytes32 saleParticipateCalldata;
+        bytes32 saleWithdrawCalldata;
+        bytes32 poolDescription;
         address saleAddress; //address of token sale
         address tokenAddress; // address of erc20 token contract
         address kycAddress;
@@ -31,6 +32,7 @@ contract Pool {
         uint16 providerFeeRate; // 1/1000
         uint16 creatorFeeRate; // 1/1000
         bool whitelistPool;
+        bool strictlyTrustlessPool;
     }
 
     struct PoolStats{
@@ -39,46 +41,60 @@ contract Pool {
         uint256 providerStash;
         bool tokensReceivedConfirmed;
         bool sentToSale;
+        bool stopped;
     }
 
-    address[] public contributorList; // possible to get on frontend?
-
-    mapping(address => bool) public admins; //additional admins
-    mapping(address => bool) public whitelist;
-    mapping(bytes32 => bool) public kycCountryBlacklist; //key: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
+    mapping(address => bool) private admins; //additional admins
+    mapping(address => bool) private whitelist;
+    mapping(bytes32 => bool) private kycCountryBlacklist; //key: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
 
     mapping(address => ContributorData) public contributors;
     mapping(address => mapping(address => uint)) private payedOut; //(contributorAddress => (tokenAddress => amountPayedOut)) 0x0 tokenAddress: ETH
 
     mapping(address => uint) private totalPayedOut; //(tokenAddress => totalAmountPayedOut) 0x0 address: ETH
 
-    uint8 private ETHEREUM_DECIMALS = 18;
-
     Params private params;
 
     PoolStats public poolStats;
 
     modifier onlyCreator{
-        require(msg.sender == params.creator, "modifier onlyCreator: Error, tx was not initiated by creator address");
+        require(msg.sender == params.creator, "modifier onlyCreator");
         _;
     }
 
     modifier onlyAdmin{
-        require(admins[msg.sender], "modifier onlyAdmin: Error, tx was not initiated by admin address");
+        require(admins[msg.sender], "modifier onlyAdmin");
         _;
     }
 
     modifier onlyProvider{
-        require(msg.sender == params.provider, "modifier onlyProvider: Error, tx was not initiated by provider address");
+        require(msg.sender == params.provider, "modifier onlyProvider");
         _;
     }
 
-    constructor (address[5] addresses, uint[9] integers, bool _whitelistPool) public {
+    event adminsChange(address listItem, bool isActive); //added=true, removed=false
+    event whitelistChange(address listItem, bool isActive); //added=true, removed=false
+    event countryBlacklistChange(bytes32 listItem, bool isActive); //added=true, removed=false
+    event contributed(address indexed contributor, uint amount);
+    event tokensReceived();
+
+    constructor (
+        address[5] addresses,
+        bytes32[3] bytes32s,
+        uint[9] integers,
+        bool[2] bools,
+        address[] adminlist,
+        address[] contributorWhitelist,
+        bytes32[] countryBlacklist
+     ) public {
         params.kycAddress = addresses[0];
         params.provider = addresses[1];
         params.creator = addresses[2];
         params.saleAddress = addresses[3];
         params.tokenAddress = addresses[4];
+        params.saleParticipateCalldata = bytes32s[0];
+        params.saleWithdrawCalldata = bytes32s[1];
+        params.poolDescription = bytes32s[2];
         params.providerFeeRate = uint16(integers[0]);
         params.creatorFeeRate = uint16(integers[1]);
         params.saleStartDate = uint32(integers[2]);
@@ -88,62 +104,97 @@ contract Pool {
         params.minPoolGoal = integers[6];
         params.maxPoolAllocation = integers[7];
         params.withdrawTimelock = uint32(integers[8]);
-        params.whitelistPool = _whitelistPool;
+        params.whitelistPool = bools[0];
+        params.strictlyTrustlessPool = bools[1];
         admins[params.creator] = true;
+        addAdminPrivate(adminlist);
+        addWhitelistPrivate(contributorWhitelist);
+        addCountryBlacklistPrivate(countryBlacklist);
     }
 
     function addAdmin(address[] addressList) public onlyCreator {
         for(uint i = 0; i < addressList.length; i++) {
-            require(KYC(params.kycAddress).checkKYC(addressList[i]), "addAdmin(address[] addressList): Error, tx was not initiated by KYC address");
+            require(KYC(params.kycAddress).checkKYC(addressList[i]), "addAdmin: not KYC address");
             admins[addressList[i]] = true;
+            emit adminsChange(addressList[i], true);
         }
     }
+
+    function addAdminPrivate(address[] addressList) private {
+        for(uint i = 0; i < addressList.length; i++) {
+            require(KYC(params.kycAddress).checkKYC(addressList[i]), "addAdmin: not KYC address");
+            admins[addressList[i]] = true;
+            emit adminsChange(addressList[i], true);
+        }
+    }
+
     function removeAdmin(address[] addressList) public onlyCreator {
       for(uint i = 0; i < addressList.length; i++) {
-        require(KYC(params.kycAddress).checkKYC(addressList[i]), "addAdmin(address[] addressList): Error, tx was not initiated by KYC address");
         admins[addressList[i]] = false;
+        emit adminsChange(addressList[i], false);
       }
     }
 
     function addWhitelist(address[] addressList) public onlyAdmin {
         for(uint i = 0; i < addressList.length; i++) {
-          require(KYC(params.kycAddress).checkKYC(addressList[i]), "addWhitelist(address[] addressList): Error, tx was not initiated by KYC address");
+          require(KYC(params.kycAddress).checkKYC(addressList[i]), "addWhitelist: not KYC address");
           whitelist[addressList[i]] = true;
+          emit whitelistChange(addressList[i], true);
+        }
+    }
+
+    function addWhitelistPrivate(address[] addressList) private {
+        for(uint i = 0; i < addressList.length; i++) {
+          require(KYC(params.kycAddress).checkKYC(addressList[i]), "addWhitelist: not KYC address");
+          whitelist[addressList[i]] = true;
+          emit whitelistChange(addressList[i], true);
         }
     }
 
     function removeWhitelist(address[] addressList) public onlyAdmin {
+      require(!poolStats.sentToSale, "removeWhitelist: already sent to sale");
       for(uint i = 0; i < addressList.length; i++) {
-        require(KYC(params.kycAddress).checkKYC(addressList[i]), "removeWhitelist(address[] addressList): Error, tx was not initiated by KYC address");
         whitelist[addressList[i]] = false;
+        emit whitelistChange(addressList[i], false);
       }
     }
 
     function addCountryBlacklist(bytes32[] countryList) public onlyAdmin {
       for(uint i = 0; i < countryList.length; i++){
         kycCountryBlacklist[countryList[i]] = true;
+        emit countryBlacklistChange(countryList[i], true);
+      }
+    }
+
+    function addCountryBlacklistPrivate(bytes32[] countryList) private {
+      for(uint i = 0; i < countryList.length; i++){
+        kycCountryBlacklist[countryList[i]] = true;
+        emit countryBlacklistChange(countryList[i], true);
       }
     }
 
     function removeCountryBlacklist(bytes32[] countryList) public onlyAdmin {
+      require(!poolStats.sentToSale, "removeCountryBlacklist: already sent to sale");
       for(uint i = 0; i < countryList.length; i++){
         kycCountryBlacklist[countryList[i]] = false;
+        emit countryBlacklistChange(countryList[i], false);
       }
     }
 
     function contribute() public payable {
-        if(params.whitelistPool) require(whitelist[msg.sender], "contribute(): Error, tx was not initiated by whitelisted address");
-        require(KYC(params.kycAddress).checkKYC(msg.sender), "contribute(): Error, tx was not initiated by KYC address");
-        require(!kycCountryBlacklist[KYC(params.kycAddress).kycCountry(msg.sender)], "contribute(): Contributors countr is on blacklist");
-        require(SafeMath.add(msg.value, contributors[msg.sender].grossContribution) >= params.minContribution, "contribute(): Error, contribution value is lower than minimum allowed");
-        require(params.maxContribution == 0 || msg.value.add(contributors[msg.sender].grossContribution) <= params.maxContribution, "contribute(): Error, tx value is higher than maximum allowed");
-        require(params.maxPoolAllocation == 0 || msg.value.add(poolStats.allGrossContributions) <= params.maxPoolAllocation, "contribute(): Error, all contributions are higher than maximum allowed");
-        require(block.timestamp < params.saleEndDate, "contribute(): Error, the sale has ended");
-        require(!poolStats.sentToSale, "contribute(): Error, the pools funds were already sent to the sale");
+        if(params.whitelistPool) require(whitelist[msg.sender], "contribute: not whitelisted address");
+        require(KYC(params.kycAddress).checkKYC(msg.sender), "contribute: not KYC address");
+        require(!kycCountryBlacklist[KYC(params.kycAddress).kycCountry(msg.sender)], "contribute: kyc country is on blacklist");
+        require(SafeMath.add(msg.value, contributors[msg.sender].grossContribution) >= params.minContribution, "contribute: contribution < min");
+        require(params.maxContribution == 0 || msg.value.add(contributors[msg.sender].grossContribution) <= params.maxContribution, "contribute: contribution > max");
+        require(params.maxPoolAllocation == 0 || msg.value.add(poolStats.allGrossContributions) <= params.maxPoolAllocation, "contribute: all contributions > max");
+        require(block.timestamp < params.saleEndDate, "contribute: sale ended");
+        require(!poolStats.sentToSale, "contribute: already sent to sale");
+        require(!poolStats.stopped,  "contribute: pool stopped");
         contributors[msg.sender].lastContributionTime = block.timestamp;
-        if(contributors[msg.sender].lastContributionTime == 0) contributorList.push(msg.sender);
         contributors[msg.sender].grossContribution = contributors[msg.sender].grossContribution.add(msg.value);
         poolStats.allGrossContributions = poolStats.allGrossContributions.add(msg.value);
+        emit contributed(msg.sender, msg.value);
     }
 
     function calculateReward(uint toDistribute, address contributor) private view returns (uint) {
@@ -162,24 +213,30 @@ contract Pool {
         return totalReward.sub(payedOut[contributor][0x0]);
     }
 
+    function tokensOwedToContributor(address contributor) public view returns (uint) {
+        return calculateERC20OwedToContributor(params.tokenAddress, contributor);
+    }
+
     function withdraw(uint amount) public {
-        require(!poolStats.sentToSale, "withdraw(): Error, the pools funds were already sent to the sale");
-        require(contributors[msg.sender].lastContributionTime.add(params.withdrawTimelock) > block.timestamp, "withdraw(): Error, the timelock is not over yet");
-        require(contributors[msg.sender].grossContribution >= amount, "withdraw(): Error, tx sender has not enough funds in pool");
-        require(contributors[msg.sender].grossContribution.sub(amount) >= params.minContribution || amount == 0, "withdraw(): Error, remaining contribution amount would have been less than 'minContribution'");
+        require(!poolStats.sentToSale, "withdraw: sent to sale");
+        if(!(poolStats.stopped || amount == 0)){ //if either amount is 0 or pool is stopped, skip these checks
+            require(contributors[msg.sender].lastContributionTime.add(params.withdrawTimelock) <= block.timestamp, "withdraw: timelock");
+            require(contributors[msg.sender].grossContribution >= amount, "withdraw: not enough funds");
+            require(contributors[msg.sender].grossContribution.sub(amount) >= params.minContribution, "withdraw: remaining  < min");
+        }
         uint transferAmount;
-        if (amount == 0) {
+        if (poolStats.stopped || amount == 0) {
             transferAmount = contributors[msg.sender].grossContribution;
         } else {
             transferAmount = amount;
         }
         poolStats.allGrossContributions = poolStats.allGrossContributions.sub(transferAmount);
         contributors[msg.sender].grossContribution = contributors[msg.sender].grossContribution.sub(transferAmount);
-        msg.sender.transfer(amount);
+        msg.sender.transfer(transferAmount);
     }
 
     function withdrawRefund() public {
-        require(poolStats.sentToSale, "withdrawRefund(): Error, the pools funds were not sent to the sale yet");
+        require(poolStats.sentToSale, "withdrawRefund: not sent to sale yet");
         uint amount = calculateETHOwedToContributor(msg.sender);
         payedOut[msg.sender][0x0] = payedOut[msg.sender][0x0].add(amount);
         totalPayedOut[0x0] = totalPayedOut[0x0].add(amount);
@@ -187,12 +244,17 @@ contract Pool {
     }
 
     function sendOutToken(address _tokenAddress, address recipient) private {
-        require(poolStats.sentToSale, "sendOutToken(address _tokenAddress, address recipient): Error, the pools funds were not sent to the sale yet");
-        require(params.tokenAddress != 0x0, "sendOutToken(address _tokenAddress, address recipient): Error, ERC20 token addres cannot be 0x0, that is reserved for ether");
+        require(poolStats.sentToSale, "sendOutToken: not sent sale yet");
+        require(params.tokenAddress != 0x0, "sendOutToken: token addres cannot be 0x0");
         uint amount = calculateERC20OwedToContributor(_tokenAddress, recipient);
         payedOut[recipient][_tokenAddress] = payedOut[recipient][_tokenAddress].add(amount);
         totalPayedOut[_tokenAddress] = totalPayedOut[_tokenAddress].add(amount);
         ERC20Basic(_tokenAddress).transfer(recipient, amount);
+    }
+
+    function stopPool() public onlyCreator {
+        require(!poolStats.sentToSale, "stopPool: already sent to sale");
+        poolStats.stopped = true;
     }
 
     function withdrawToken() public {
@@ -208,32 +270,46 @@ contract Pool {
     }
 
     function confirmTokensReceived(uint tokensExpected) public onlyAdmin{
-        require(poolStats.sentToSale, "confirmTokensReceived(uint tokensExpected): Error, the pools funds were not sent to the sale yet");
-        require(!poolStats.tokensReceivedConfirmed, "confirmTokensReceived(uint tokensExpected): Error, tokens are already confirmed as received");
-        require (tokensExpected > 0, "confirmTokensReceived(uint tokensExpected): Error, number of tokens expected has to be greater than 0");
+        require(poolStats.sentToSale, "confirmTokensReceived: not sent to sale yet");
+        require(!poolStats.tokensReceivedConfirmed, "confirmTokensReceived: already confirmed");
         if(ERC20Basic(params.tokenAddress).balanceOf(address(this)) > tokensExpected) poolStats.tokensReceivedConfirmed = true;
+        emit tokensReceived();
     }
 
     function sendToSale() public onlyAdmin{
-        require(params.saleParticipateFunctionSig.length == 0, "sendToSale(): Error, participation function signature is given, 'sendToSaleFunction()' has to be used");
-        require(!poolStats.sentToSale, "sendToSale(): Error, the pools funds were already sent to the sale");
-        require(now >= params.saleStartDate, "sendToSale(): Error, sale hasn't started yet");
-        require(block.timestamp < params.saleEndDate, "sendToSale(): Error, the sale has ended");
-        require(calculateNetContribution() >= params.minPoolGoal, "sendToSale(): Not enough funds collected for sale");
+        require(!poolStats.stopped,  "sendToSale: pool stopped");
+        require(!poolStats.sentToSale, "sendToSale: already sent to sale");
+        require(now >= params.saleStartDate, "sendToSale: sale not started");
+        require(block.timestamp < params.saleEndDate, "sendToSale: sale ended");
+        require(calculateNetContribution() >= params.minPoolGoal, "sendToSale: not enough funds");
         takeFees();
+        require(params.saleAddress.call.value(calculateNetContribution())(), "sendToSale: transaction failed");
         poolStats.sentToSale = true;
-        params.saleAddress.transfer(calculateNetContribution());
     }
 
-    function sendToSaleFunction() public onlyAdmin {
-        require(params.saleParticipateFunctionSig.length > 0, "sendToSaleFunction(): Error, no participation function signature given");
-        require(!poolStats.sentToSale, "sendToSaleFunction(): Error, the pools funds were already sent to the sale");
-        require(now >= params.saleStartDate, "sendToSaleFunction(): Error, sale hasn't started yet");
-        require(block.timestamp < params.saleEndDate, "sendToSaleFunction(): Error, the sale has ended");
-        require(calculateNetContribution() >= params.minPoolGoal, "sendToSaleFunction():: Not enough funds collected for sale");
+    function sendToSaleWithCalldata() public onlyAdmin {
+        require(!poolStats.stopped,  "sendToSaleWithCalldata: pool stopped");
+        require(params.saleParticipateCalldata != 0x0, "sendToSaleWithCalldata: no calldata");
+        require(!poolStats.sentToSale, "sendToSaleWithCalldata: already sent to sale");
+        require(now >= params.saleStartDate, "sendToSaleWithCalldata: sale not started");
+        require(block.timestamp < params.saleEndDate, "sendToSaleWithCalldata: sale ended");
+        require(calculateNetContribution() >= params.minPoolGoal, "sendToSaleWithCalldata: not enough funds");
         takeFees();
+        require(params.saleAddress.call.value(calculateNetContribution())(bytes4(keccak256(params.saleParticipateCalldata))), "sendToSaleWithCalldata: transaction failed");
         poolStats.sentToSale = true;
-        require(params.saleAddress.call.value(calculateNetContribution())(bytes4(keccak256(params.saleParticipateFunctionSig))), "Error, transaction failed");
+    }
+
+    function sendToSaleWithCalldataParameter(bytes32 calldata) public onlyAdmin {
+        require(!params.strictlyTrustlessPool, "sendToSaleWithCalldataParameter: strictlyTrustlessPool");
+        require(!poolStats.stopped,  "sendToSaleWithCalldata: pool stopped");
+        require(calldata != 0x0, "sendToSaleWithCalldata: no calldata");
+        require(!poolStats.sentToSale, "sendToSaleWithCalldata: already sent to sale");
+        require(now >= params.saleStartDate, "sendToSaleWithCalldata: sale not started");
+        require(block.timestamp < params.saleEndDate, "sendToSaleWithCalldata: sale ended");
+        require(calculateNetContribution() >= params.minPoolGoal, "sendToSaleWithCalldata: not enough funds");
+        takeFees();
+        require(params.saleAddress.call.value(calculateNetContribution())(bytes4(keccak256(calldata))), "sendToSaleWithCalldataParameter: transaction failed");
+        poolStats.sentToSale = true;
     }
 
 
@@ -244,17 +320,31 @@ contract Pool {
 
 
     function calculateNetContribution() private view returns (uint) {
-        return poolStats.allGrossContributions.sub(poolStats.creatorStash.sub(poolStats.providerStash));
+        return poolStats.allGrossContributions.sub(poolStats.creatorStash.add(poolStats.providerStash));
+    }
+
+    function getNetContribution() public view returns (uint) {
+        return poolStats.allGrossContributions.sub(
+            calculateFee(poolStats.allGrossContributions, params.creatorFeeRate)
+            .add(calculateFee(poolStats.allGrossContributions, params.providerFeeRate))
+        );
     }
 
     function calculateFee(uint value, uint feePerThousand) private pure returns(uint fee) {
         return (value / 1000).mul(feePerThousand);
     }
 
-    function withdrawFromSaleFunction() public onlyAdmin{
-        require(params.saleParticipateFunctionSig.length > 0, "withdrawFromSaleFunction(): Error, no withdraw function signature given");
-        require(poolStats.sentToSale, "withdrawFromSaleFunction(): Error, the pools funds were not sent to the sale yet");
-        require(params.saleAddress.call(bytes4(keccak256(params.saleWithdrawFunctionSig))), "withdrawFromSaleFunction(): Error, transaction failed");
+    function withdrawFromSaleWithCalldata() public onlyAdmin{
+        require(params.saleWithdrawCalldata != 0x0, "withdrawFromSaleWithCalldata: no calldata");
+        require(poolStats.sentToSale, "withdrawFromSaleWithCalldata: not sent to sale yet");
+        require(params.saleAddress.call(bytes4(keccak256(params.saleWithdrawCalldata))), "withdrawFromSaleWithCalldata: transaction failed");
+    }
+
+    function withdrawFromSaleWithCalldataParameter(bytes32 calldata) public onlyAdmin{
+        require(!params.strictlyTrustlessPool, "withdrawFromSaleWithCalldataParameter: strictlyTrustlessPool");
+        require(params.saleWithdrawCalldata != 0x0, "withdrawFromSaleWithCalldata: no calldata");
+        require(poolStats.sentToSale, "withdrawFromSaleWithCalldata: not sent to sale yet");
+        require(params.saleAddress.call(bytes4(keccak256(params.saleWithdrawCalldata))), "withdrawFromSaleWithCalldata: transaction failed");
     }
 
     function () public payable {
@@ -273,7 +363,7 @@ contract Pool {
         params.creator.transfer(amount);
     }
 
-    function setParams(
+    function setParamsCreator(
         address _creator,
         uint16 _creatorFeeRate, // 1/1000
         uint32 _saleStartDate,
@@ -283,8 +373,9 @@ contract Pool {
         uint256 _maxContribution, //maximum amount expected from pool participants 0: no limit
         uint256 _minPoolGoal,  //minimum amount needed for the sale
         bool _whitelistPool,
+        bytes32 _poolDescription,
         address _tokenAddress, // address of erc20 token contract
-        bool[10] toSet
+        bool[11] toSet
     ) public onlyCreator {
         if(toSet[0]){
             params.creator = _creator;
@@ -314,12 +405,15 @@ contract Pool {
             params.whitelistPool = _whitelistPool;
         }
         if(toSet[9]){
-            require(!poolStats.tokensReceivedConfirmed, "setTokenAddress(address _tokenAddress): Error, tokens are already confirmed as received");
+            params.poolDescription = _poolDescription;
+        }
+        if(toSet[10]){
+            require(!poolStats.tokensReceivedConfirmed, "setTokenAddress: already confirmed received");
             params.tokenAddress = _tokenAddress;
         }
     }
 
-    function setParams(
+    function setParamsProvider(
         address _provider, //connectICO address for fees
         uint16 _providerFeeRate, // 1/1000
         uint256 _maxPoolAllocation, //maximum amount raisable by pool
@@ -334,6 +428,16 @@ contract Pool {
         if(toSet[2]){
             params.maxPoolAllocation = _maxPoolAllocation;
         }
+    }
+
+    function setSaleParticipateCalldata(bytes32 calldata) public onlyAdmin{
+        require(!params.strictlyTrustlessPool, "setsaleParticipateCalldata: strictlyTrustlessPool");
+        params.saleParticipateCalldata = calldata;
+    }
+
+    function setSaleWithdrawCalldata(bytes32 calldata) public onlyAdmin{
+        require(!params.strictlyTrustlessPool, "setSaleWithdrawCalldata: strictlyTrustlessPool");
+        params.saleWithdrawCalldata = calldata;
     }
 
     function getParams1() public view returns (
@@ -363,8 +467,10 @@ contract Pool {
 
     function getParams2() public view returns (
         bool whitelistPool,
-        bytes32 saleParticipateFunctionSig,
-        bytes32 saleWithdrawFunctionSig,
+        bool strictlyTrustlessPool,
+        bytes32 saleParticipateCalldata,
+        bytes32 saleWithdrawCalldata,
+        bytes32 poolDescription,
         address saleAddress, //address of token sale
         address tokenAddress, // address of erc20 token contract
         address kycAddress,
@@ -374,8 +480,10 @@ contract Pool {
     {
         return(
             params.whitelistPool,
-            params.saleParticipateFunctionSig,
-            params.saleWithdrawFunctionSig,
+            params.strictlyTrustlessPool,
+            params.saleParticipateCalldata,
+            params.saleWithdrawCalldata,
+            params.poolDescription,
             params.saleAddress,
             params.tokenAddress,
             params.kycAddress,
